@@ -4,4 +4,9 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\TaskBase.Core\TaskBase.Core.csproj" />
+    <ProjectReference Include="..\..\src\TaskBase.Services\TaskBase.Services.csproj" />
+  </ItemGroup>
+
 </Project>
