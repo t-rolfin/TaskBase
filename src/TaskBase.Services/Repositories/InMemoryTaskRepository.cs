@@ -12,7 +12,6 @@ namespace TaskBase.Services.Repositories
 {
     public class InMemoryTaskRepository : ITaskAsyncRepository
     {
-
         private readonly List<CoreTask> _tasks;
 
         public InMemoryTaskRepository()
@@ -20,7 +19,7 @@ namespace TaskBase.Services.Repositories
             _tasks = new();
         }
 
-        public async Task<CoreTask> AddAsync(CoreTask entity, CancellationToken cancellationToken)
+        public async Task<CoreTask> AddAsync(CoreTask entity, CancellationToken cancellationToken = default)
         {
             return await Task.Factory.StartNew(() =>
             {
@@ -29,23 +28,7 @@ namespace TaskBase.Services.Repositories
             });
         }
 
-        public async Task<CoreTask> GetTaskAsync(Guid taskId)
-        {
-            return await Task.Factory.StartNew(() =>
-            {
-                return _tasks.FirstOrDefault(x => x.Id == taskId);
-            });
-        }
-
-        public async Task<IEnumerable<CoreTask>> GetTasksAsync()
-        {
-            return await Task.Factory.StartNew(() =>
-            {
-                return _tasks;
-            });
-        }
-
-        public async Task<CoreTask> UpdateAsync(CoreTask entity, CancellationToken cancellationToken)
+        public async Task<CoreTask> UpdateAsync(CoreTask entity, CancellationToken cancellationToken = default)
         {
             var newTask = await Task.Factory.StartNew( async () =>
             {
@@ -62,6 +45,34 @@ namespace TaskBase.Services.Repositories
             });
 
             return await newTask;
+        }
+
+        public async Task RemoveTask(CoreTask task, CancellationToken cancellationToken = default)
+        {
+            await Task.Factory.StartNew(() =>
+            {
+                _tasks.Remove(task);
+            });
+        }
+
+        public async Task<CoreTask> GetTaskAsync(Guid taskId)
+        {
+            return await Task.Factory.StartNew(() =>
+            {
+                var task = _tasks.FirstOrDefault(x => x.Id == taskId);
+                if (task == default)
+                    throw new TaskNotFoundException("The specified task doesn't exist!");
+                else
+                    return task;
+            });
+        }
+
+        public async Task<IEnumerable<CoreTask>> GetTasksAsync()
+        {
+            return await Task.Factory.StartNew(() =>
+            {
+                return _tasks;
+            });
         }
     }
 }
