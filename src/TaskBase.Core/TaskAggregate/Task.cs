@@ -5,11 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaskBase.Core.Enums;
+using TaskBase.Core.Interfaces;
 using TaskBase.Core.Shared;
 
 namespace TaskBase.Core.TaskAggregate
 {
-    public class Task : Entity<Guid>
+    public class Task : Entity<Guid>, IRootAggregate
     {
         public Task(string title, string description, DateTime dueDate)
             : base(Guid.NewGuid())
