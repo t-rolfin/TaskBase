@@ -6,15 +6,16 @@
     ViewData["Title"] = "My Tasks";
 }
 
-<div class="row w-100 rounded m-auto tabbable" style="max-height: 85vh; min-height:85vh">
+<div class="row w-100 rounded m-auto tabbable" >
 
-    <div class="col-sm h-auto border mx-1 p-0 rounded">
+    <div class="col-sm h-auto border mx-1 p-0 rounded overflow-hidden" style="max-height: 85vh; min-height:85vh" >
 
         <div class="bg-info w-100 p-3 rounded-top">
             <h5 class="mb-0 text-center text-white">New</h5>
         </div>
 
-        <div class="p-3 w-100 h-100">
+        <div class="p-3 w-auto overflow-auto" style="height:95%">
+
             <table class="container p-3 w-100 h-100">
                 <tbody class="connectedSortable p-3">
 
@@ -38,16 +39,18 @@
 
                 </tbody>
             </table>
+
         </div>
 
     </div>
 
-    <div class="col-sm h-auto border mx-1 p-0 rounded">
+    <div class="col-sm h-auto border mx-1 p-0 rounded overflow-hidden" style="max-height: 85vh; min-height:85vh">
+
         <div class="bg-primary w-100 p-3 rounded-top">
             <h5 class="mb-0 text-center text-white">In Progress</h5>
         </div>
 
-        <div class="p-3 w-100 h-100">
+        <div class="p-3 w-auto overflow-auto" style="height:95%">
             <table class="container p-3 w-100 h-100">
                 <tbody class="connectedSortable p-3">
 
@@ -76,12 +79,13 @@
     </div>
 
 
-    <div class="col-sm h-auto border mx-1 p-0 rounded">
+    <div class="col-sm h-auto border mx-1 p-0 rounded overflow-hidden" style="max-height: 85vh; min-height:85vh">
+
         <div class="bg-success w-100 p-3 rounded-top">
             <h5 class="mb-0 text-center text-white">Closed</h5>
         </div>
 
-        <div class="p-3 w-100 h-100">
+        <div class="p-3 w-100 overflow-auto" style="height:95%" >
             <table class="container p-3 w-100 h-100">
                 <tbody class="connectedSortable p-3">
 
