@@ -12,5 +12,10 @@ namespace TaskBase.RazorPages.Pages
         public void OnGet()
         {
         }
+
+        public IActionResult OnGetPartial()
+        {
+            return new ViewComponentResult() { };
+        }
     }
 }

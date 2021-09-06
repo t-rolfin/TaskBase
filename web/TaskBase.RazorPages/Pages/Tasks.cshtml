@@ -1,120 +1,18 @@
 ﻿@page
-
 @model TaskBase.RazorPages.Pages.TasksModel
 
 @{
     ViewData["Title"] = "My Tasks";
 }
 
-<div class="row w-100 rounded m-auto tabbable" >
+<div class="row w-100 rounded m-auto tabbable">
 
-    <div class="col-sm h-auto border mx-1 p-0 rounded overflow-hidden" style="max-height: 85vh; min-height:85vh" >
-
-        <div class="bg-info w-100 p-3 rounded-top">
-            <h5 class="mb-0 text-center text-white">New</h5>
-        </div>
-
-        <div class="p-3 w-auto overflow-auto" style="height:95%">
-
-            <table class="container p-3 w-100 h-100">
-                <tbody class="connectedSortable p-3">
-
-                    <tr class="card mb-3">
-                        <td class="card-header">
-                            <h6>Work to this project</h6>
-                        </td>
-                        <td class="card-body">
-                            <p>You have to implement the interface.</p>
-                        </td>
-                    </tr>
-
-                    <tr class="card mb-3">
-                        <td class="card-header">
-                            <h6>Work to this project</h6>
-                        </td>
-                        <td class="card-body">
-                            <p>You have to implement the interface.</p>
-                        </td>
-                    </tr>
-
-                </tbody>
-            </table>
-
-        </div>
-
-    </div>
-
-    <div class="col-sm h-auto border mx-1 p-0 rounded overflow-hidden" style="max-height: 85vh; min-height:85vh">
-
-        <div class="bg-primary w-100 p-3 rounded-top">
-            <h5 class="mb-0 text-center text-white">In Progress</h5>
-        </div>
-
-        <div class="p-3 w-auto overflow-auto" style="height:95%">
-            <table class="container p-3 w-100 h-100">
-                <tbody class="connectedSortable p-3">
-
-                    <tr class="card mb-3">
-                        <td class="card-header">
-                            <h6>Work to this project</h6>
-                        </td>
-                        <td class="card-body">
-                            <p>You have to implement the interface.</p>
-                        </td>
-                    </tr>
-
-                    <tr class="card mb-3">
-                        <td class="card-header">
-                            <h6>Work to this project</h6>
-                        </td>
-                        <td class="card-body">
-                            <p>You have to implement the interface.</p>
-                        </td>
-                    </tr>
-
-                </tbody>
-            </table>
-        </div>
-
-    </div>
-
-
-    <div class="col-sm h-auto border mx-1 p-0 rounded overflow-hidden" style="max-height: 85vh; min-height:85vh">
-
-        <div class="bg-success w-100 p-3 rounded-top">
-            <h5 class="mb-0 text-center text-white">Closed</h5>
-        </div>
-
-        <div class="p-3 w-100 overflow-auto" style="height:95%" >
-            <table class="container p-3 w-100 h-100">
-                <tbody class="connectedSortable p-3">
-
-                    <tr class="card mb-3">
-                        <td class="card-header">
-                            <h6>Work to this project</h6>
-                        </td>
-                        <td class="card-body">
-                            <p>You have to implement the interface.</p>
-                        </td>
-                    </tr>
-
-                    <tr class="card mb-3">
-                        <td class="card-header">
-                            <h6>Work to this project</h6>
-                        </td>
-                        <td class="card-body">
-                            <p>You have to implement the interface.</p>
-                        </td>
-                    </tr>
-
-                </tbody>
-            </table>
-        </div>
-
-    </div>
-
+    @await Component.InvokeAsync("TaskRow", new TaskRowCustomizationModel(true, "New", "bg-info"))
+    @await Component.InvokeAsync("TaskRow", new TaskRowCustomizationModel(false, "In Proggress", "bg-secondary"))
+    @await Component.InvokeAsync("TaskRow", new TaskRowCustomizationModel(false, "Closed", "bg-success"))
 
 </div>
+
 
 @section Scripts{
     <script>
@@ -134,7 +32,7 @@
                     stop: function () { $tabs.removeClass("dragging") }
                 }).disableSelection();
 
-         });
+        });
 
     </script>
 }
