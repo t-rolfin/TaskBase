@@ -7,9 +7,24 @@
 
 <div class="row w-100 rounded m-auto tabbable">
 
-    @await Component.InvokeAsync("TaskRow", new TaskRowCustomizationModel(true, "New", "bg-info"))
-    @await Component.InvokeAsync("TaskRow", new TaskRowCustomizationModel(false, "In Proggress", "bg-secondary"))
-    @await Component.InvokeAsync("TaskRow", new TaskRowCustomizationModel(false, "Closed", "bg-success"))
+    @await Component.InvokeAsync("TaskRow",
+        new TaskRowModel(
+            new List<TaskModel>() { new TaskModel() { TaskTitle = "Test Task", TaskDescription = "This task is for testing!" } },
+            new TaskRowCustomizationModel(true, "New", "bg-info")
+        )
+    )
+
+    @await Component.InvokeAsync("TaskRow", new TaskRowModel(
+            new List<TaskModel>(),
+            new TaskRowCustomizationModel(false, "In Proggress", "bg-secondary")
+        )
+    )
+
+    @await Component.InvokeAsync("TaskRow", new TaskRowModel(
+            new List<TaskModel>(),
+            new TaskRowCustomizationModel(false, "Closed", "bg-success")
+        )
+    )
 
 </div>
 

@@ -16,7 +16,7 @@ namespace TaskBase.Components.Models
         }
 
         public bool HasTaskCreationButton { get; set; }
-        public string RowName { get; set; }
-        public string BgColor { get; set; }
+        public string RowName { get; set; } = "New Row";
+        public string BgColor { get; set; } = "bg-primary";
     }
 }

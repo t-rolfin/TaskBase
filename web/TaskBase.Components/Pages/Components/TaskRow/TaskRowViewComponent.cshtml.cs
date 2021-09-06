@@ -10,7 +10,7 @@ namespace TaskBase.Components.Pages.Components.TaskRow
 {
     public class TaskRowViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(TaskRowCustomizationModel model)
+        public async Task<IViewComponentResult> InvokeAsync(TaskRowModel model)
         {
             return await Task.Factory.StartNew(() =>
             {

@@ -1,11 +1,12 @@
-﻿@model TaskBase.Components.Models.TaskRowCustomizationModel
+﻿@model TaskBase.Components.Models.TaskRowModel
 
 <div class="col-sm h-auto border mx-1 p-0 rounded overflow-hidden" style="max-height: 85vh; min-height:85vh">
 
-    <div class="p-3 rounded-top row justify-content-around align-items-center @Model.BgColor">
-        <h5 class="mb-0 text-center text-white w-50">@Model.RowName</h5>
+    <div class="p-3 rounded-top row justify-content-around align-items-center @Model.ComponentCustomization.BgColor"
+         style="min-height:68px">
+        <h5 class="mb-0 text-center text-white w-50">@Model.ComponentCustomization.RowName</h5>
 
-        @if(Model.HasTaskCreationButton is true)
+        @if(Model.ComponentCustomization.HasTaskCreationButton is true)
         {
             @await Component.InvokeAsync("Modal")
         }
@@ -16,23 +17,20 @@
         <table class="container p-3 w-100 h-100">
             <tbody class="connectedSortable p-3">
 
-                <tr class="card mb-3">
-                    <td class="card-header">
-                        <h6>Work to this project</h6>
-                    </td>
-                    <td class="card-body">
-                        <p>You have to implement the interface.</p>
-                    </td>
-                </tr>
-
-                <tr class="card mb-3">
-                    <td class="card-header">
-                        <h6>Work to this project</h6>
-                    </td>
-                    <td class="card-body">
-                        <p>You have to implement the interface.</p>
-                    </td>
-                </tr>
+                @if (Model.Tasks != null && Model.Tasks.Count() != 0)
+                {
+                    foreach (var task in Model.Tasks)
+                    {
+                        <tr class="card mb-3">
+                            <td class="card-header">
+                                <h6>@task.TaskTitle</h6>
+                            </td>
+                            <td class="card-body">
+                                <p>@task.TaskDescription</p>
+                            </td>
+                        </tr>
+                    }
+                }
 
             </tbody>
         </table>
