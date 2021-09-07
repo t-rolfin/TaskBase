@@ -10,6 +10,7 @@
 *.userosscache
 *.sln.docstates
 web/TaskBase.Components/wwwroot/lib/*
+web/TaskBase.RazorPages/wwwroot/lib/*
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
