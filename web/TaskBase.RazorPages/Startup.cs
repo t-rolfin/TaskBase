@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TaskBase.Services;
 using TaskBase.Components;
+using TaskBase.Core.Interfaces;
+using TaskBase.Core.Facades;
 
 namespace TaskBase.RazorPages
 {
@@ -29,6 +31,7 @@ namespace TaskBase.RazorPages
             services.AddRazorPages();
 
             services.AddInfrastructure();
+            services.AddTransient<ITaskFacade, TaskFacade>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

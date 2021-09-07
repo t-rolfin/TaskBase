@@ -1,4 +1,5 @@
-﻿<div class="col text-center" style="color:white; font-size:1.5rem">
+﻿
+<div class="col text-center" style="color:white; font-size:1.5rem">
     <i class="fas fa-plus" data-bs-toggle="modal" data-bs-target="#createTaskModal" ></i>
 </div>
 
@@ -12,23 +13,48 @@
             </div>
 
             <div class="modal-body">
-                <form>
 
+                <form method="post" data-ajax="true" asp-controller="Tasks" data-ajax-method="post" data-ajax-mode="replace-with" data-ajax-update="#newTaskRow"
+                      data-ajax-complete="closeModal()">
                     <div class="mb-3">
                         <label for="taskTitle" class="form-label">Task Title</label>
-                        <input type="text" class="form-control" id="taskTitle" aria-describedby="taskTitleHelp">
+                        <input type="text" name="title" class="form-control" id="taskTitle" aria-describedby="taskTitleHelp">
                     </div>
 
                     <div class="mb-3">
                         <label for="taskDescription" class="form-label">Task Description</label>
-                        <textarea class="form-control" id="taskDescription"></textarea>
+                        <textarea name="description" class="form-control" id="taskDescription"></textarea>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Create</button>
 
                 </form>
+
             </div>
 
         </div>
     </div>
 </div>
+
+<script defer>
+    function closeModal() {
+        $('#your-modal-id').modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+
+        enableRows();
+    }
+    function enableRows() {
+        tabs = $(".tabbable");
+        $("tbody.connectedSortable")
+            .sortable({
+                connectWith: ".connectedSortable",
+                items: "> tr",
+                appendTo: $tabs,
+                helper: "clone",
+                zIndex: 999990,
+                start: function () { $tabs.addClass("dragging") },
+                stop: function () { $tabs.removeClass("dragging") }
+            }).disableSelection();
+    }
+</script>

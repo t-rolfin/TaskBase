@@ -8,6 +8,11 @@ namespace TaskBase.Components.Models
 {
     public class TaskRowModel
     {
+        public TaskRowModel()
+        {
+
+        }
+
         public TaskRowModel(IEnumerable<TaskModel> tasks, TaskRowCustomizationModel componentCustomization)
         {
             Tasks = tasks;

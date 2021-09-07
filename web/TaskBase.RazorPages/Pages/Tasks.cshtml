@@ -10,32 +10,29 @@
     @await Component.InvokeAsync("TaskRow",
         new TaskRowModel(
             new List<TaskModel>() { new TaskModel() { TaskTitle = "Test Task", TaskDescription = "This task is for testing!" } },
-            new TaskRowCustomizationModel(true, "New", "bg-info")
+            new TaskRowCustomizationModel(true, "New", "bg-info", "newTaskRow")
         )
     )
 
     @await Component.InvokeAsync("TaskRow", new TaskRowModel(
             new List<TaskModel>(),
-            new TaskRowCustomizationModel(false, "In Proggress", "bg-secondary")
+            new TaskRowCustomizationModel(false, "In Proggress", "bg-secondary", null)
         )
     )
 
     @await Component.InvokeAsync("TaskRow", new TaskRowModel(
             new List<TaskModel>(),
-            new TaskRowCustomizationModel(false, "Closed", "bg-success")
+            new TaskRowCustomizationModel(false, "Closed", "bg-success", null)
         )
     )
 
 </div>
 
-
 @section Scripts{
     <script>
 
-        $(document).ready(function () {
-
+        $(document).ready(() => {
             $tabs = $(".tabbable");
-
             $("tbody.connectedSortable")
                 .sortable({
                     connectWith: ".connectedSortable",
@@ -46,7 +43,6 @@
                     start: function () { $tabs.addClass("dragging") },
                     stop: function () { $tabs.removeClass("dragging") }
                 }).disableSelection();
-
         });
 
     </script>

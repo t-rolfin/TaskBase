@@ -1,6 +1,7 @@
 ﻿@model TaskBase.Components.Models.TaskRowModel
 
-<div class="col-sm h-auto border mx-1 p-0 rounded overflow-hidden" style="max-height: 85vh; min-height:85vh">
+<div class="col-sm h-auto border mx-1 p-0 rounded overflow-hidden" style="max-height: 85vh; min-height:85vh" 
+     id="@Model.ComponentCustomization.Id">
 
     <div class="p-3 rounded-top row justify-content-around align-items-center @Model.ComponentCustomization.BgColor"
          style="min-height:68px">
@@ -15,7 +16,7 @@
     <div class="p-3 w-auto overflow-auto" style="height:95%">
 
         <table class="container p-3 w-100 h-100">
-            <tbody class="connectedSortable p-3">
+            <tbody class="connectedSortable p-3 ui-sortable">
 
                 @if (Model.Tasks != null && Model.Tasks.Count() != 0)
                 {
