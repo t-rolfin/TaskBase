@@ -1,6 +1,8 @@
 ﻿@page
 @model TaskBase.RazorPages.Pages.TasksModel
 
+@using TaskBase.Core.Enums
+
 @{
     ViewData["Title"] = "My Tasks";
 }
@@ -9,20 +11,23 @@
 
     @await Component.InvokeAsync("TaskRow",
         new TaskRowModel(
+            TaskState.New,
             new List<TaskModel>() { new TaskModel() { TaskTitle = "Test Task", TaskDescription = "This task is for testing!" } },
-            new TaskRowCustomizationModel(true, "New", "bg-info", "newTaskRow")
+            new TaskRowCustomizationModel(true, nameof(TaskState.New), "bg-info", "newTaskRow")
         )
     )
 
     @await Component.InvokeAsync("TaskRow", new TaskRowModel(
+            TaskState.InProgress,
             new List<TaskModel>(),
-            new TaskRowCustomizationModel(false, "In Proggress", "bg-secondary", null)
+            new TaskRowCustomizationModel(false, nameof(TaskState.InProgress), "bg-secondary", null)
         )
     )
 
     @await Component.InvokeAsync("TaskRow", new TaskRowModel(
+            TaskState.Completed,
             new List<TaskModel>(),
-            new TaskRowCustomizationModel(false, "Closed", "bg-success", null)
+            new TaskRowCustomizationModel(false, nameof(TaskState.Completed), "bg-success", null)
         )
     )
 
@@ -30,7 +35,6 @@
 
 @section Scripts{
     <script>
-
         $(document).ready(() => {
             $tabs = $(".tabbable");
             $("tbody.connectedSortable")
@@ -44,6 +48,5 @@
                     stop: function () { $tabs.removeClass("dragging") }
                 }).disableSelection();
         });
-
     </script>
 }

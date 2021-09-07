@@ -20,12 +20,11 @@ namespace TaskBase.Components.Pages.Components.TaskRow
 
         public async Task<IViewComponentResult> InvokeAsync(TaskRowModel model)
         {
-            if (model.Tasks != null && model.Tasks.Count() != 0)
-                return View(model);
 
             var tasks = await _taskFacade.GetTasksAsync();
 
             model.Tasks = tasks?.Where(x => x.TaskState == Core.Enums.TaskState.New)
+                .Where(x => x.TaskState == model.RowType)
                 .Select(x => {
                     return new TaskModel() { TaskTitle = x.Title, TaskDescription = x.Description };
                 });
