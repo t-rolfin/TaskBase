@@ -28,10 +28,29 @@ namespace TaskBase.RazorPages.Pages
 
             return ViewComponent("TaskRow", new TaskRowModel(
                 TaskState.New,
-                tasks.Select(x => { return new TaskModel() { TaskTitle = x.Title, TaskDescription = x.Description }; }),
+                tasks.Select(x => { 
+                    return new TaskModel() { Id = x.Id, TaskTitle = x.Title, TaskDescription = x.Description, TaskState = x.TaskState }; 
+                }),
                 new TaskRowCustomizationModel(true, "Haha", "bg-info", "newTaskRow")
             ));
         }
 
+        public async Task<IActionResult> OnPostDeleteAsync(string taskId)
+        {
+            var response = await _taskFacade.DeleteTaskAsync(Guid.Parse(taskId), default);
+
+            var tasks = await _taskFacade.GetTasksAsync();
+
+            return RedirectPermanent("/Tasks");
+        }
+
+        public async Task<IActionResult> OnPostDoneAsync(string taskId)
+        {
+            var response = await _taskFacade.CloseTaskAsync(Guid.Parse(taskId), default);
+
+            var tasks = await _taskFacade.GetTasksAsync();
+
+            return RedirectPermanent("/Tasks");
+        }
     }
 }

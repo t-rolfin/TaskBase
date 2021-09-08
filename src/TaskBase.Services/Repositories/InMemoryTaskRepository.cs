@@ -17,6 +17,7 @@ namespace TaskBase.Services.Repositories
         public InMemoryTaskRepository()
         {
             _tasks = new();
+            _tasks.Add(new CoreTask("Task", "Description", DateTime.Now.AddDays(3)));
         }
 
         public async Task<CoreTask> AddAsync(CoreTask entity, CancellationToken cancellationToken = default)

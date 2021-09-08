@@ -23,8 +23,32 @@
                     foreach (var task in Model.Tasks)
                     {
                         <tr class="card mb-3">
-                            <td class="card-header">
-                                <h6>@task.TaskTitle</h6>
+                            <td class="d-flex flex-row card-header">
+                                <h6 class="w-50">@task.TaskTitle</h6>
+                                <div class="dropdown w-50 d-flex flex-row justify-content-end">
+                                    <div type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </div>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        @if(task.TaskState != Core.Enums.TaskState.Completed)
+                                        {
+                                            <form method="post" asp-page-handler="done" asp-route-taskId="@task.Id">
+                                                <button type="submit" class="dropdown-item">
+                                                    Done
+                                                </button>
+                                            </form>
+                                        }
+
+                                        <form method="post" asp-page-handler="delete" asp-route-taskId="@task.Id">
+                                            <button type="submit" class="dropdown-item">
+                                                <b style="color:red;">Delete</b>
+                                            </button>
+                                        </form>
+
+
+
+                                    </div>
+                                </div>
                             </td>
                             <td class="card-body">
                                 <p>@task.TaskDescription</p>

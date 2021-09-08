@@ -7,6 +7,7 @@
     ViewData["Title"] = "My Tasks";
 }
 
+
 <div class="row w-100 rounded m-auto tabbable">
 
     @await Component.InvokeAsync("TaskRow",
@@ -20,14 +21,14 @@
     @await Component.InvokeAsync("TaskRow", new TaskRowModel(
             TaskState.InProgress,
             new List<TaskModel>(),
-            new TaskRowCustomizationModel(false, nameof(TaskState.InProgress), "bg-secondary", null)
+            new TaskRowCustomizationModel(false, nameof(TaskState.InProgress), "bg-secondary", "inProggressTaskRow")
         )
     )
 
     @await Component.InvokeAsync("TaskRow", new TaskRowModel(
             TaskState.Completed,
             new List<TaskModel>(),
-            new TaskRowCustomizationModel(false, nameof(TaskState.Completed), "bg-success", null)
+            new TaskRowCustomizationModel(false, nameof(TaskState.Completed), "bg-success", "completedTaskRow")
         )
     )
 
@@ -35,6 +36,7 @@
 
 @section Scripts{
     <script>
+
         $(document).ready(() => {
             $tabs = $(".tabbable");
             $("tbody.connectedSortable")
@@ -48,5 +50,6 @@
                     stop: function () { $tabs.removeClass("dragging") }
                 }).disableSelection();
         });
+
     </script>
 }
