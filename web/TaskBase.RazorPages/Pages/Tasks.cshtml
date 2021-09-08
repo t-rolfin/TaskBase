@@ -1,0 +1,55 @@
+﻿@page
+@model TaskBase.RazorPages.Pages.TasksModel
+
+@using TaskBase.Core.Enums
+
+@{
+    ViewData["Title"] = "My Tasks";
+}
+
+
+<div class="row w-100 rounded m-auto tabbable">
+
+    @await Component.InvokeAsync("TaskRow",
+        new TaskRowModel(
+            TaskState.New,
+            new List<TaskModel>() { new TaskModel() { TaskTitle = "Test Task", TaskDescription = "This task is for testing!" } },
+            new TaskRowCustomizationModel(true, nameof(TaskState.New), "bg-info", "newTaskRow")
+        )
+    )
+
+    @await Component.InvokeAsync("TaskRow", new TaskRowModel(
+            TaskState.InProgress,
+            new List<TaskModel>(),
+            new TaskRowCustomizationModel(false, nameof(TaskState.InProgress), "bg-secondary", "inProggressTaskRow")
+        )
+    )
+
+    @await Component.InvokeAsync("TaskRow", new TaskRowModel(
+            TaskState.Completed,
+            new List<TaskModel>(),
+            new TaskRowCustomizationModel(false, nameof(TaskState.Completed), "bg-success", "completedTaskRow")
+        )
+    )
+
+</div>
+
+@section Scripts{
+    <script>
+
+        $(document).ready(() => {
+            $tabs = $(".tabbable");
+            $("tbody.connectedSortable")
+                .sortable({
+                    connectWith: ".connectedSortable",
+                    items: "> tr",
+                    appendTo: $tabs,
+                    helper: "clone",
+                    zIndex: 999990,
+                    start: function () { $tabs.addClass("dragging") },
+                    stop: function () { $tabs.removeClass("dragging") }
+                }).disableSelection();
+        });
+
+    </script>
+}
