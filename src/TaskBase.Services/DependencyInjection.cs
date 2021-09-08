@@ -15,7 +15,7 @@ namespace TaskBase.Services
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
             services.AddDbContext<TaskDbContext>();
-            services.AddSingleton<ITaskAsyncRepository, InMemoryTaskRepository>();
+            services.AddTransient<ITaskAsyncRepository, InMemoryTaskRepository>();
 
             return services;
         }

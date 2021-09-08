@@ -35,9 +35,9 @@ namespace TaskBase.Services.Repositories
                 throw new TaskNotFoundException("The specified task wasn't found!");
             else
             {
-                _context.Tasks.Remove(oldTask);
-                var newTask = await AddAsync(entity, cancellationToken);
-                return newTask;
+                _context.Tasks.Update(oldTask);
+                await _context.SaveChangesAsync(cancellationToken);
+                return await GetTaskAsync(entity.Id);
             }
         }
 
