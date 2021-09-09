@@ -13,6 +13,9 @@ using TaskBase.Services;
 using TaskBase.Components;
 using TaskBase.Core.Interfaces;
 using TaskBase.Core.Facades;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Options;
 
 namespace TaskBase.RazorPages
 {
@@ -28,7 +31,24 @@ namespace TaskBase.RazorPages
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
+            services.AddRazorPages()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddDataAnnotationsLocalization();
+
+            services.AddPortableObjectLocalization(opt => { opt.ResourcesPath = "Resources"; });
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new List<CultureInfo>
+                {
+                    new CultureInfo("ro-RO"),
+                    new CultureInfo("en-US")
+                };
+
+                options.DefaultRequestCulture = new RequestCulture("ro-RO");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
 
             services.AddInfrastructure();
             services.AddTransient<ITaskFacade, TaskFacade>();
@@ -54,6 +74,8 @@ namespace TaskBase.RazorPages
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseRequestLocalization();
 
             app.UseEndpoints(endpoints =>
             {

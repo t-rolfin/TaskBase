@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31612.314
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5ABAF0EE-6293-40C3-B589-C943CD4E5B08}"
 EndProject
@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "web", "web", "{F2B34B84-F2F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskBase.RazorPages", "web\TaskBase.RazorPages\TaskBase.RazorPages.csproj", "{A2AC66DE-4DE2-4870-A08D-5EC5D3D5C7B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskBase.Components", "web\TaskBase.Components\TaskBase.Components.csproj", "{B1AE9954-C298-447E-8DB2-CE4062F57849}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskBase.Components", "web\TaskBase.Components\TaskBase.Components.csproj", "{B1AE9954-C298-447E-8DB2-CE4062F57849}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

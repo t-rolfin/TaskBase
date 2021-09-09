@@ -1,0 +1,17 @@
+﻿msgid "Welcome!"
+msgstr "Bun venit!"
+
+msgid "Home"
+msgstr "Acasă"
+
+msgid "New"
+msgstr "Nou"
+
+msgid "InProgress"
+msgstr "In Lucru"
+
+msgid "Completed"
+msgstr "Completate"
+
+msgid "Tasks"
+msgstr "Sarcini"
