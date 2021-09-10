@@ -36,14 +36,14 @@
                                         {
                                             <form method="post" asp-page-handler="done" asp-route-taskId="@task.Id">
                                                 <button type="submit" class="dropdown-item">
-                                                    Done
+                                                    @Localizer["Complete"]
                                                 </button>
                                             </form>
                                         }
 
                                         <form method="post" asp-page-handler="delete" asp-route-taskId="@task.Id">
                                             <button type="submit" class="dropdown-item">
-                                                <b style="color:red;">Delete</b>
+                                                <b style="color:red;">@Localizer["Delete"]</b>
                                             </button>
                                         </form>
 

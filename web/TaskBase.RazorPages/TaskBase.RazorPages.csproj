@@ -5,12 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\ro.po" />
+    <None Remove="Resources\ro-RO.po" />
     <None Remove="ro.po" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Resources\ro.po" />
+    <Content Include="Resources\ro-RO.po" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,5 @@
-﻿
+﻿@inject IViewLocalizer Localizer 
+
 <div class="col text-center" style="color:white; font-size:1.5rem">
     <i class="fas fa-plus" data-bs-toggle="modal" data-bs-target="#createTaskModal" ></i>
 </div>
@@ -8,7 +9,7 @@
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Create Task</h5>
+                <h5 class="modal-title" id="exampleModalLabel">@Localizer["New Task"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -17,16 +18,16 @@
                 <form method="post" data-ajax="true" asp-controller="Tasks" data-ajax-method="post" data-ajax-mode="replace-with" data-ajax-update="#newTaskRow"
                       data-ajax-complete="closeModal()">
                     <div class="mb-3">
-                        <label for="taskTitle" class="form-label">Task Title</label>
+                        <label for="taskTitle" class="form-label">@Localizer["Title"]</label>
                         <input type="text" name="title" class="form-control" id="taskTitle" aria-describedby="taskTitleHelp">
                     </div>
 
                     <div class="mb-3">
-                        <label for="taskDescription" class="form-label">Task Description</label>
+                        <label for="taskDescription" class="form-label">@Localizer["Description"]</label>
                         <textarea name="description" class="form-control" id="taskDescription"></textarea>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="submit" class="btn btn-primary">@Localizer["Create"]</button>
 
                 </form>
 

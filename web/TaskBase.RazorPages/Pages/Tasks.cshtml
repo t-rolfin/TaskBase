@@ -14,7 +14,7 @@
         new TaskRowModel(
             TaskState.New,
             new List<TaskModel>() { new TaskModel() { TaskTitle = "Test Task", TaskDescription = "This task is for testing!" } },
-            new TaskRowCustomizationModel(true, "New", "bg-info", "newTaskRow")
+            new TaskRowCustomizationModel(true, "To Do", "bg-info", "newTaskRow")
         )
     )
 
@@ -28,7 +28,7 @@
     @await Component.InvokeAsync("TaskRow", new TaskRowModel(
             TaskState.Completed,
             new List<TaskModel>(),
-            new TaskRowCustomizationModel(false, "Completed", "bg-success", "completedTaskRow")
+            new TaskRowCustomizationModel(false, "Done", "bg-success", "completedTaskRow")
         )
     )
 

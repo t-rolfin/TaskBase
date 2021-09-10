@@ -1,0 +1,35 @@
+﻿msgid "Welcome!"
+msgstr "Bun venit!"
+
+msgid "Home"
+msgstr "Acasă"
+
+msgid "To Do"
+msgstr "De Făcut"
+
+msgid "In Progress"
+msgstr "În Lucru"
+
+msgid "Done"
+msgstr "Terminate"
+
+msgid "Tasks"
+msgstr "Sarcini"
+
+msgid "New Task"
+msgstr "Sarcină nouă"
+
+msgid "Title"
+msgstr "Titlu"
+
+msgid "Description"
+msgstr "Descriere"
+
+msgid "Create"
+msgstr "Crează"
+
+msgid "Complete"
+msgstr "Complet"
+
+msgid "Delete"
+msgstr "Șterge"
