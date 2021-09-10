@@ -1,9 +1,8 @@
 ﻿@model TaskBase.Components.Models.CultureSwitchModel
 
 <div>
-    <form id="culture-switcher">
+    <form id="culture-switcher" >
         <select name="culture" id="culture-options">
-            <option></option>
             @foreach (var culture in Model.SupportedCultures)
             {
                 <option value="@culture.Name" selected="@(Model.CurrentUICulture.Name == culture.Name)">@culture.DisplayName</option>
@@ -12,8 +11,3 @@
     </form>
 </div>
 
-<script defe >
-    document.getElementById("culture-options").addEventListener("change", () => {
-        document.getElementById("culture-switcher").submit();
-    });
-</script>

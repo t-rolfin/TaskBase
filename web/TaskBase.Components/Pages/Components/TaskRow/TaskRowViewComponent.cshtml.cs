@@ -13,12 +13,10 @@ namespace TaskBase.Components.Pages.Components.TaskRow
     public class TaskRowViewComponent : ViewComponent
     {
         private readonly ITaskFacade _taskFacade;
-        private readonly IStringLocalizer<TaskRowViewComponent> _stringLocalizer;
 
-        public TaskRowViewComponent(ITaskFacade taskFacade, IStringLocalizer<TaskRowViewComponent> stringLocalizer)
+        public TaskRowViewComponent(ITaskFacade taskFacade)
         {
             _taskFacade = taskFacade;
-            _stringLocalizer = stringLocalizer;
         }
 
         public async Task<IViewComponentResult> InvokeAsync(TaskRowModel model)

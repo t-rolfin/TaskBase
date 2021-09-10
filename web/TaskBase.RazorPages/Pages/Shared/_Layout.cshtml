@@ -48,11 +48,19 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/_content/TaskBase.Components/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/_content/TaskBase.Components/lib/bootstrap/js/bootstrap.bundle.min.js"></script> 
     <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
     <script src="https://kit.fontawesome.com/4c99a2880c.js" crossorigin="anonymous"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        $("#culture-switcher").change(function () {
+            $.get("Culture/HandleCulture?culture=" + $("#culture-options").val() + "&redirectUri=" + location.href, (response) => {
+                window.location.href = response;
+            })
+        });
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

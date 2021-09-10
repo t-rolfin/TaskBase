@@ -7,7 +7,7 @@ msgstr "Acasă"
 msgid "New"
 msgstr "Nou"
 
-msgid "InProgress"
+msgid "In Progress"
 msgstr "In Lucru"
 
 msgid "Completed"

@@ -14,21 +14,21 @@
         new TaskRowModel(
             TaskState.New,
             new List<TaskModel>() { new TaskModel() { TaskTitle = "Test Task", TaskDescription = "This task is for testing!" } },
-            new TaskRowCustomizationModel(true, nameof(TaskState.New), "bg-info", "newTaskRow")
+            new TaskRowCustomizationModel(true, "New", "bg-info", "newTaskRow")
         )
     )
 
     @await Component.InvokeAsync("TaskRow", new TaskRowModel(
             TaskState.InProgress,
             new List<TaskModel>(),
-            new TaskRowCustomizationModel(false, nameof(TaskState.InProgress), "bg-secondary", "inProggressTaskRow")
+            new TaskRowCustomizationModel(false, "In Progress", "bg-secondary", "inProggressTaskRow")
         )
     )
 
     @await Component.InvokeAsync("TaskRow", new TaskRowModel(
             TaskState.Completed,
             new List<TaskModel>(),
-            new TaskRowCustomizationModel(false, nameof(TaskState.Completed), "bg-success", "completedTaskRow")
+            new TaskRowCustomizationModel(false, "Completed", "bg-success", "completedTaskRow")
         )
     )
 

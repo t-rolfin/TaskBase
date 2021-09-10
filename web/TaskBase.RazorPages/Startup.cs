@@ -31,27 +31,28 @@ namespace TaskBase.RazorPages
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages()
+            services.AddControllers()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
 
+            services.AddRazorPages();
+
             services.AddPortableObjectLocalization(opt => { opt.ResourcesPath = "Resources"; });
-
-            services.Configure<RequestLocalizationOptions>(options =>
-            {
-                var supportedCultures = new List<CultureInfo>
-                {
-                    new CultureInfo("ro-RO"),
-                    new CultureInfo("en-US")
-                };
-
-                options.DefaultRequestCulture = new RequestCulture("ro-RO");
-                options.SupportedCultures = supportedCultures;
-                options.SupportedUICultures = supportedCultures;
-            });
 
             services.AddInfrastructure();
             services.AddTransient<ITaskFacade, TaskFacade>();
+        }
+
+        private RequestLocalizationOptions GetLocalizationOptions()
+        {
+            var supportedCultures = Configuration.GetSection("Cultures").GetChildren().ToList()
+            .Select(x => { return new CultureInfo(x.Key); }).ToList();
+
+            var options = new RequestLocalizationOptions();
+            options.SupportedCultures = supportedCultures;
+            options.SupportedUICultures = supportedCultures;
+
+            return options;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,15 +72,17 @@ namespace TaskBase.RazorPages
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseRequestLocalization(GetLocalizationOptions());
+
             app.UseRouting();
 
             app.UseAuthorization();
 
-            app.UseRequestLocalization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
         }
     }

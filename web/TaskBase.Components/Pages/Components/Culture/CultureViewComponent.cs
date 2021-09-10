@@ -5,26 +5,30 @@ using Microsoft.Extensions.Options;
 using TaskBase.Components.Models;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace TaskBase.Components.Pages.Components.Culture
 {
     public class CultureViewComponent : ViewComponent
     {
-        private readonly IOptions<RequestLocalizationOptions> localizationOptions;
+        private readonly IConfiguration _configs;
 
-        public CultureViewComponent(IOptions<RequestLocalizationOptions> localizationOptions)
-            => this.localizationOptions = localizationOptions;
+        public CultureViewComponent(IConfiguration configs)
+        {
+            _configs = configs;
+        }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
             return await Task.Factory.StartNew(() =>
             {
-                var cultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
+                var cultureFeature = System.Threading.Thread.CurrentThread.CurrentUICulture;
 
                 var model = new CultureSwitchModel()
                 {
-                    CurrentUICulture = cultureFeature.RequestCulture.UICulture,
-                    SupportedCultures = localizationOptions.Value.SupportedUICultures.ToList()
+                    CurrentUICulture = cultureFeature,
+                    SupportedCultures = _configs.GetSection("Cultures").GetChildren()
+                    .Select(x => { return new System.Globalization.CultureInfo(x.Key); }).ToList()
                 };
 
                 return View(model);
