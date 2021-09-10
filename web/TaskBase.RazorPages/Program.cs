@@ -21,6 +21,11 @@ namespace TaskBase.RazorPages
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .ConfigureLogging(logBuilder => 
+                {
+                    logBuilder.AddLog4Net();
+                })
+                .UseConsoleLifetime();
     }
 }

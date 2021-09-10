@@ -16,6 +16,7 @@ using TaskBase.Core.Facades;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace TaskBase.RazorPages
 {
@@ -41,18 +42,6 @@ namespace TaskBase.RazorPages
 
             services.AddInfrastructure();
             services.AddTransient<ITaskFacade, TaskFacade>();
-        }
-
-        private RequestLocalizationOptions GetLocalizationOptions()
-        {
-            var supportedCultures = Configuration.GetSection("Cultures").GetChildren().ToList()
-            .Select(x => { return new CultureInfo(x.Key); }).ToList();
-
-            var options = new RequestLocalizationOptions();
-            options.SupportedCultures = supportedCultures;
-            options.SupportedUICultures = supportedCultures;
-
-            return options;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -84,6 +73,18 @@ namespace TaskBase.RazorPages
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
             });
+        }
+
+        private RequestLocalizationOptions GetLocalizationOptions()
+        {
+            var supportedCultures = Configuration.GetSection("Cultures").GetChildren().ToList()
+            .Select(x => { return new CultureInfo(x.Key); }).ToList();
+
+            var options = new RequestLocalizationOptions();
+            options.SupportedCultures = supportedCultures;
+            options.SupportedUICultures = supportedCultures;
+
+            return options;
         }
     }
 }
