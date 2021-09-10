@@ -5,6 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\ro-RO.po" />
+    <None Remove="ro.po" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\ro-RO.po" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OrchardCore.Localization.Core" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\TaskBase.Core\TaskBase.Core.csproj" />
     <ProjectReference Include="..\..\src\TaskBase.Services\TaskBase.Services.csproj" />
     <ProjectReference Include="..\TaskBase.Components\TaskBase.Components.csproj" />

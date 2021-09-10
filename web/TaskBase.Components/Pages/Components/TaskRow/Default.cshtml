@@ -1,11 +1,13 @@
 ﻿@model TaskBase.Components.Models.TaskRowModel
 
+@inject IViewLocalizer Localizer
+
 <div class="col-sm h-auto border mx-1 p-0 rounded overflow-hidden" style="max-height: 85vh; min-height:85vh" 
      id="@Model.ComponentCustomization.Id">
 
     <div class="p-3 rounded-top row justify-content-around align-items-center @Model.ComponentCustomization.BgColor"
          style="min-height:68px">
-        <h5 class="mb-0 text-center text-white w-50">@Model.ComponentCustomization.RowName</h5>
+        <h5 class="mb-0 text-center text-white w-50">@Localizer[Model.ComponentCustomization.RowName]</h5>
 
         @if(Model.ComponentCustomization.HasTaskCreationButton is true)
         {
@@ -34,14 +36,14 @@
                                         {
                                             <form method="post" asp-page-handler="done" asp-route-taskId="@task.Id">
                                                 <button type="submit" class="dropdown-item">
-                                                    Done
+                                                    @Localizer["Complete"]
                                                 </button>
                                             </form>
                                         }
 
                                         <form method="post" asp-page-handler="delete" asp-route-taskId="@task.Id">
                                             <button type="submit" class="dropdown-item">
-                                                <b style="color:red;">Delete</b>
+                                                <b style="color:red;">@Localizer["Delete"]</b>
                                             </button>
                                         </form>
 

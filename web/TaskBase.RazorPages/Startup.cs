@@ -13,6 +13,9 @@ using TaskBase.Services;
 using TaskBase.Components;
 using TaskBase.Core.Interfaces;
 using TaskBase.Core.Facades;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Options;
 
 namespace TaskBase.RazorPages
 {
@@ -28,10 +31,28 @@ namespace TaskBase.RazorPages
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddDataAnnotationsLocalization();
+
             services.AddRazorPages();
+
+            services.AddPortableObjectLocalization(opt => { opt.ResourcesPath = "Resources"; });
 
             services.AddInfrastructure();
             services.AddTransient<ITaskFacade, TaskFacade>();
+        }
+
+        private RequestLocalizationOptions GetLocalizationOptions()
+        {
+            var supportedCultures = Configuration.GetSection("Cultures").GetChildren().ToList()
+            .Select(x => { return new CultureInfo(x.Key); }).ToList();
+
+            var options = new RequestLocalizationOptions();
+            options.SupportedCultures = supportedCultures;
+            options.SupportedUICultures = supportedCultures;
+
+            return options;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,13 +72,17 @@ namespace TaskBase.RazorPages
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseRequestLocalization(GetLocalizationOptions());
+
             app.UseRouting();
 
             app.UseAuthorization();
 
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
         }
     }
