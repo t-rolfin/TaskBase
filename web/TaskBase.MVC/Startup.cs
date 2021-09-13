@@ -5,9 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TaskBase.Core.Facades;
+using TaskBase.Core.Interfaces;
+using TaskBase.Services;
 
 namespace TaskBase.MVC
 {
@@ -23,8 +27,22 @@ namespace TaskBase.MVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddRazorOptions(options => { options.ViewLocationFormats.Add("/Views/{0}.cshtml"); })
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddDataAnnotationsLocalization();
+
+            services.AddPortableObjectLocalization(x => x.ResourcesPath = "Resources");
+
+            services.Configure((Action<RequestLocalizationOptions>)(x =>
+            {
+                GetCultures(x);
+            }));
+
+            services.AddInfrastructure();
+            services.AddTransient<ITaskFacade, TaskFacade>();
         }
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -42,6 +60,8 @@ namespace TaskBase.MVC
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseRequestLocalization();
+
             app.UseRouting();
 
             app.UseAuthorization();
@@ -52,6 +72,18 @@ namespace TaskBase.MVC
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private void GetCultures(RequestLocalizationOptions x)
+        {
+            var cultures = Configuration.GetSection("Cultures")
+                            .GetChildren()
+                            .ToDictionary(x => x.Key, y => y.Value)
+                            .Keys
+                            .ToArray();
+
+            x.AddSupportedCultures(cultures);
+            x.AddSupportedUICultures(cultures);
         }
     }
 }
