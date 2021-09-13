@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\TaskBase.RazorPages\log4net.config" Link="log4net.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OrchardCore.Localization.Core" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\TaskBase.Core\TaskBase.Core.csproj" />
+    <ProjectReference Include="..\..\src\TaskBase.Services\TaskBase.Services.csproj" />
+    <ProjectReference Include="..\TaskBase.Components\TaskBase.Components.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\bootstrap\" />
+  </ItemGroup>
+
+</Project>

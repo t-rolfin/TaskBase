@@ -1,15 +1,20 @@
 ﻿@model TaskBase.Components.Models.TaskRowModel
 
+@using Microsoft.AspNetCore.Antiforgery
+@using Microsoft.AspNetCore.Http
+
 @inject IViewLocalizer Localizer
 
-<div class="col-sm h-auto border mx-1 p-0 rounded overflow-hidden" style="max-height: 85vh; min-height:85vh" 
+@Html.AntiForgeryToken()
+
+<div class="col-sm h-auto border mx-1 p-0 rounded overflow-hidden" style="max-height: 85vh; min-height:85vh"
      id="@Model.ComponentCustomization.Id">
 
     <div class="p-3 rounded-top row justify-content-around align-items-center @Model.ComponentCustomization.BgColor"
          style="min-height:68px">
         <h5 class="mb-0 text-center text-white w-50">@Localizer[Model.ComponentCustomization.RowName]</h5>
 
-        @if(Model.ComponentCustomization.HasTaskCreationButton is true)
+        @if (Model.ComponentCustomization.HasTaskCreationButton is true)
         {
             @await Component.InvokeAsync("Modal")
         }
@@ -28,26 +33,29 @@
                             <td class="d-flex flex-row card-header">
                                 <h6 class="w-50">@task.TaskTitle</h6>
                                 <div class="dropdown w-50 d-flex flex-row justify-content-end">
+
                                     <div type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fas fa-ellipsis-v"></i>
                                     </div>
+
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        @if(task.TaskState != Core.Enums.TaskState.Completed)
+
+                                        @if (task.TaskState != Core.Enums.TaskState.Completed)
                                         {
-                                            <form method="post" asp-page-handler="done" asp-route-taskId="@task.Id">
+                                            <form method="post" action="/Tasks/Done" asp-antiforgery="true">
+                                                <input type="hidden" name="taskid" value="@task.Id" />
                                                 <button type="submit" class="dropdown-item">
                                                     @Localizer["Complete"]
                                                 </button>
                                             </form>
                                         }
 
-                                        <form method="post" asp-page-handler="delete" asp-route-taskId="@task.Id">
+                                        <form method="post" action="/Tasks/Delete" asp-antiforgery="true">
+                                            <input type="hidden" name="taskId" value="@task.Id" />
                                             <button type="submit" class="dropdown-item">
                                                 <b style="color:red;">@Localizer["Delete"]</b>
                                             </button>
                                         </form>
-
-
 
                                     </div>
                                 </div>
