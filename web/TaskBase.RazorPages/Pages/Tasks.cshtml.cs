@@ -44,7 +44,8 @@ namespace TaskBase.RazorPages.Pages
             ));
         }
 
-        public async Task<IActionResult> OnPostDeleteAsync(string taskId)
+        
+        public async Task<IActionResult> OnPostDeleteAsync([FromForm] string taskId)
         {
             var response = await _taskFacade.DeleteTaskAsync(Guid.Parse(taskId), default);
 
@@ -53,7 +54,7 @@ namespace TaskBase.RazorPages.Pages
             return RedirectPermanent("/Tasks");
         }
 
-        public async Task<IActionResult> OnPostDoneAsync(string taskId)
+        public async Task<IActionResult> OnPostDoneAsync([FromForm]string taskId)
         {
             var response = await _taskFacade.CloseTaskAsync(Guid.Parse(taskId), default);
 
