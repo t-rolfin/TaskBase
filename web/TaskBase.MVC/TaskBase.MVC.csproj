@@ -9,12 +9,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.9" />
     <PackageReference Include="OrchardCore.Localization.Core" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\TaskBase.Core\TaskBase.Core.csproj" />
-    <ProjectReference Include="..\..\src\TaskBase.Services\TaskBase.Services.csproj" />
+    <ProjectReference Include="..\..\src\TaskBase.Data\TaskBase.Data.csproj" />
     <ProjectReference Include="..\TaskBase.Components\TaskBase.Components.csproj" />
   </ItemGroup>
 

@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TaskBase.Core.Facades;
 using TaskBase.Core.Interfaces;
-using TaskBase.Services;
+using TaskBase.Data;
 
 namespace TaskBase.MVC
 {
@@ -39,7 +39,7 @@ namespace TaskBase.MVC
                 GetCultures(x);
             }));
 
-            services.AddInfrastructure();
+            services.AddInfrastructure(Configuration);
             services.AddTransient<ITaskFacade, TaskFacade>();
         }
 

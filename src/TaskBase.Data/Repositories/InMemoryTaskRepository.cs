@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TaskBase.Core.Interfaces;
-using TaskBase.Services.Exceptions;
+using TaskBase.Data.Exceptions;
 using CoreTask = TaskBase.Core.TaskAggregate.Task;
 
-namespace TaskBase.Services.Repositories
+namespace TaskBase.Data.Repositories
 {
     public class InMemoryTaskRepository : ITaskAsyncRepository
     {

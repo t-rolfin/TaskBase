@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TaskBase.Services.Repositories;
+using TaskBase.Data.Repositories;
 using TaskBase.Core.Interfaces;
+using TaskBase.Data.Utils;
+using Microsoft.Extensions.Configuration;
 
-namespace TaskBase.Services
+namespace TaskBase.Data
 {
     public static class DependencyInjection
     {
@@ -12,8 +14,13 @@ namespace TaskBase.Services
         /// </summary>
         /// <param name="services"></param>
         /// <returns>Collection of services.</returns>
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration Configuration)
         {
+            services.AddSingleton(x =>
+            {
+                return new ConnectionString("TaskDb", Configuration.GetConnectionString("TaskDb"));
+            });
+
             services.AddDbContext<TaskDbContext>();
             services.AddTransient<ITaskAsyncRepository, InMemoryTaskRepository>();
 
