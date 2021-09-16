@@ -53,7 +53,7 @@ namespace TaskBase.Data
                 {
                     RequiredLength = 4,
                 };
-
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789. _";
                 options.User.RequireUniqueEmail = true;
             });
 
