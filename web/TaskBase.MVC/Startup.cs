@@ -32,6 +32,8 @@ namespace TaskBase.MVC
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
 
+            services.AddRazorPages();
+
             services.AddPortableObjectLocalization(x => x.ResourcesPath = "Resources");
 
             services.Configure((Action<RequestLocalizationOptions>)(x =>
@@ -39,6 +41,7 @@ namespace TaskBase.MVC
                 GetCultures(x);
             }));
 
+            services.AddServices();
             services.AddInfrastructure(Configuration);
             services.AddTransient<ITaskFacade, TaskFacade>();
         }
@@ -64,6 +67,7 @@ namespace TaskBase.MVC
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -71,6 +75,7 @@ namespace TaskBase.MVC
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
         }
 
