@@ -3,6 +3,11 @@ using TaskBase.Data.Repositories;
 using TaskBase.Core.Interfaces;
 using TaskBase.Data.Utils;
 using Microsoft.Extensions.Configuration;
+using TaskBase.Data.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System;
+using Microsoft.AspNetCore.Http;
 
 namespace TaskBase.Data
 {
@@ -18,11 +23,53 @@ namespace TaskBase.Data
         {
             services.AddSingleton(x =>
             {
-                return new ConnectionString("TaskDb", Configuration.GetConnectionString("TaskDb"));
+                var connectionStrings = new ConnectionStrings();
+
+                connectionStrings
+                    .Add("TaskDb", Configuration.GetConnectionString("TaskDb"))
+                    .Add("IdentityDb", Configuration.GetConnectionString("IdentityDb"));
+
+                return connectionStrings;
             });
 
             services.AddDbContext<TaskDbContext>();
             services.AddTransient<ITaskAsyncRepository, InMemoryTaskRepository>();
+
+            return services;
+        }
+
+
+        public static IServiceCollection AddServices(this IServiceCollection services)
+        {
+            services.AddDbContext<IdentityContext>();
+
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<IdentityContext>()
+                .AddDefaultTokenProviders();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password = new PasswordOptions
+                {
+                    RequiredLength = 4,
+                };
+
+                options.User.RequireUniqueEmail = true;
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Identity/Account/Login";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+
+                options.Cookie = new CookieBuilder
+                {
+                    HttpOnly = true,
+                    Name = "auth_cookie"
+                };
+            });
 
             return services;
         }

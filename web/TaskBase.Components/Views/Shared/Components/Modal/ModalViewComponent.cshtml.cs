@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaskBase.Core.Interfaces;
 
-namespace TaskBase.Components.Pages.Components.Modal
+namespace TaskBase.Components.Views.Components.Modal
 {
     [ViewComponent(Name = "Modal")]
     public class ModalViewComponent : ViewComponent

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using TaskBase.Components.Models;
 using TaskBase.Core.Interfaces;
 
-namespace TaskBase.Components.Pages.Components.TaskRow
+namespace TaskBase.Components.Views.Components.TaskRow
 {
     public class TaskRowViewComponent : ViewComponent
     {

@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskBase.Components", "web\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskBase.MVC", "web\TaskBase.MVC\TaskBase.MVC.csproj", "{6E765991-D52B-4A3E-AC77-7AEE978F45FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskBase.Data", "src\TaskBase.Data\TaskBase.Data.csproj", "{9448B362-BFB8-4FF4-ADF3-8A96471B2CB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskBase.Data", "src\TaskBase.Data\TaskBase.Data.csproj", "{9448B362-BFB8-4FF4-ADF3-8A96471B2CB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

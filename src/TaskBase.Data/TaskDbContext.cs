@@ -12,9 +12,9 @@ namespace TaskBase.Data
 {
     public class TaskDbContext : DbContext
     {
-        readonly ConnectionString _connectionString;
+        readonly ConnectionStrings _connectionString;
 
-        public TaskDbContext(ConnectionString connectionString)
+        public TaskDbContext(ConnectionStrings connectionString)
             : base()
         {
             _connectionString = connectionString;
@@ -24,7 +24,7 @@ namespace TaskBase.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(_connectionString.Value);
+            optionsBuilder.UseSqlServer(_connectionString.GetConnectionString("TaskDb"));
             base.OnConfiguring(optionsBuilder);
         }
 

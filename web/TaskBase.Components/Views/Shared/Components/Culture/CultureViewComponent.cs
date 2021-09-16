@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 
-namespace TaskBase.Components.Pages.Components.Culture
+namespace TaskBase.Components.Views.Components.Culture
 {
     public class CultureViewComponent : ViewComponent
     {
