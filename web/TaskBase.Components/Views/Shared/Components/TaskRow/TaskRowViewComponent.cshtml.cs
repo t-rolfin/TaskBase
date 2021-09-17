@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaskBase.Components.Models;
+using TaskBase.Components.Services;
 using TaskBase.Core.Interfaces;
 
 namespace TaskBase.Components.Views.Components.TaskRow
@@ -13,15 +14,18 @@ namespace TaskBase.Components.Views.Components.TaskRow
     public class TaskRowViewComponent : ViewComponent
     {
         private readonly ITaskFacade _taskFacade;
+        private readonly IIdentityProvider _identityProvider;
 
-        public TaskRowViewComponent(ITaskFacade taskFacade)
+        public TaskRowViewComponent(ITaskFacade taskFacade, IIdentityProvider identityProvider)
         {
             _taskFacade = taskFacade;
+            _identityProvider = identityProvider;
         }
 
         public async Task<IViewComponentResult> InvokeAsync(TaskRowModel model)
         {
-            var tasks = await _taskFacade.GetTasksAsync();
+            var userId = _identityProvider.GetCurrentUserIdentity();
+            var tasks = await _taskFacade.GetTasksByUserIdAsync(Guid.Parse(userId));
 
             model.Tasks = tasks?.Where(x => x.TaskState == model.RowType)
                 .Select(x => {

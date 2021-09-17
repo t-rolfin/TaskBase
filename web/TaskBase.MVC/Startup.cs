@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TaskBase.Components.Services;
 using TaskBase.Core.Facades;
 using TaskBase.Core.Interfaces;
 using TaskBase.Data;
@@ -44,6 +45,7 @@ namespace TaskBase.MVC
             services.AddServices();
             services.AddInfrastructure(Configuration);
             services.AddTransient<ITaskFacade, TaskFacade>();
+            services.AddTransient<IIdentityProvider, IdentityProvider>();
         }
 
 

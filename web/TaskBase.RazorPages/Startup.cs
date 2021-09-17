@@ -9,7 +9,7 @@ using TaskBase.Data;
 using TaskBase.Core.Interfaces;
 using TaskBase.Core.Facades;
 using System.Globalization;
-
+using TaskBase.Components.Services;
 
 namespace TaskBase.RazorPages
 {
@@ -28,15 +28,16 @@ namespace TaskBase.RazorPages
             services.AddControllers().AddRazorOptions(options => { options.PageViewLocationFormats.Add("/Views/{0}.cshtml"); })
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
-
+            
             services.AddRazorPages();
             services.AddServices();
-            
+
 
             services.AddPortableObjectLocalization(opt => { opt.ResourcesPath = "Resources"; });
 
             services.AddInfrastructure(Configuration);
             services.AddTransient<ITaskFacade, TaskFacade>();
+            services.AddTransient<IIdentityProvider, IdentityProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
