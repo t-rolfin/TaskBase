@@ -14,6 +14,6 @@ namespace TaskBase.Core.Interfaces
         Task<T> UpdateAsync(T entity, CancellationToken cancellationToken = default);
         Task RemoveTask(T task, CancellationToken cancellationToken = default);
         Task<T> GetTaskAsync(I taskId);
-        Task<IEnumerable<T>> GetTasksAsync();
+        Task<IEnumerable<T>> GetTasksByUserAsync(Guid userId);
     }
 }

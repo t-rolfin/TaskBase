@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TaskBase.Core.Interfaces;
+using TaskBase.Core.TaskAggregate;
 
 namespace TaskBase.Core.Facades
 {
@@ -36,11 +37,12 @@ namespace TaskBase.Core.Facades
             }
         }
 
-        public async Task<TaskAggregate.Task> CreateTaskAsync(string title, string description, DateTime dueDate, CancellationToken cancellationToken)
+        public async Task<TaskAggregate.Task> CreateTaskAsync(string title, string description, DateTime dueDate, Guid userId, string userName, CancellationToken cancellationToken)
         {
             try
             {
-                var task = new TaskAggregate.Task(title, description, dueDate);
+                var user = new User(userId, userName);
+                var task = new TaskAggregate.Task(title, description, dueDate, user);
                 await _taskRepository.AddAsync(task, cancellationToken);
 
                 return task;
@@ -71,9 +73,9 @@ namespace TaskBase.Core.Facades
             return await _taskRepository.GetTaskAsync(taskId);
         }
 
-        public async Task<IEnumerable<TaskAggregate.Task>> GetTasksAsync()
+        public async Task<IEnumerable<TaskAggregate.Task>> GetTasksByUserIdAsync(Guid userId)
         {
-            return await _taskRepository.GetTasksAsync();
+            return await _taskRepository.GetTasksByUserAsync(userId);
         }
 
         public async Task<bool> SetTaskAsInProgressAsync(Guid taskId, CancellationToken cancellationToken)

@@ -12,7 +12,9 @@ namespace TaskBase.Core.TaskAggregate
 {
     public class Task : Entity<Guid>, IRootAggregate
     {
-        public Task(string title, string description, DateTime dueDate)
+        private Task() : base(Guid.NewGuid()) { }
+
+        public Task(string title, string description, DateTime dueDate, User assignTo)
             : base(Guid.NewGuid())
         {
             Title = Guard.Against.NullOrWhiteSpace(title, nameof(title));
@@ -20,6 +22,7 @@ namespace TaskBase.Core.TaskAggregate
             DueDate = dueDate;
             CreatedAt = DateTime.Now;
             TaskState = TaskState.New;
+            AssignTo = assignTo;
         }
 
         public string Title { get; init; }
@@ -28,6 +31,7 @@ namespace TaskBase.Core.TaskAggregate
         public DateTime CompletedAt { get; protected set; }
         public DateTime DueDate { get; protected set; }
         public TaskState TaskState { get; protected set; }
+        public User AssignTo { get; protected set; }
 
         public void StartWorking()
         {
