@@ -41,13 +41,19 @@ namespace TaskBase.Core.Facades
         {
             try
             {
-                var user = new User(userId, userName);
+                var user = await _taskRepository.GetUserById(userId);
+
+                if(user is null)
+                {
+                    user = new User(userId, userName);
+                }
+
                 var task = new TaskAggregate.Task(title, description, dueDate, user);
                 await _taskRepository.AddAsync(task, cancellationToken);
 
                 return task;
             }
-            catch
+            catch (Exception ex)
             {
                 return null;
             }

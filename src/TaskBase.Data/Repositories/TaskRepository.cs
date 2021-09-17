@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TaskBase.Core.Interfaces;
 using TaskBase.Data.Exceptions;
 using CoreTask = TaskBase.Core.TaskAggregate.Task;
+using CoreUser = TaskBase.Core.TaskAggregate.User;
 
 namespace TaskBase.Data.Repositories
 {
@@ -63,6 +64,11 @@ namespace TaskBase.Data.Repositories
             {
                 return _context.Tasks.Where(x => x.AssignTo.Id == userId).ToList();
             });
+        }
+
+        public async Task<Core.TaskAggregate.User> GetUserById(Guid userId)
+        {
+            return await _context.FindAsync<CoreUser>(userId);
         }
     }
 }
