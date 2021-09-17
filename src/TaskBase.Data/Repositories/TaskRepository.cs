@@ -11,11 +11,11 @@ using CoreTask = TaskBase.Core.TaskAggregate.Task;
 
 namespace TaskBase.Data.Repositories
 {
-    public class InMemoryTaskRepository : ITaskAsyncRepository
+    public class TaskRepository : ITaskAsyncRepository
     {
         private readonly TaskDbContext _context;
 
-        public InMemoryTaskRepository(TaskDbContext context)
+        public TaskRepository(TaskDbContext context)
         {
             _context = context;
         }
@@ -57,11 +57,11 @@ namespace TaskBase.Data.Repositories
                 return task;
         }
 
-        public async Task<IEnumerable<CoreTask>> GetTasksAsync()
+        public async Task<IEnumerable<CoreTask>> GetTasksByUserAsync(Guid userId)
         {
             return await Task.Factory.StartNew(() =>
             {
-                return _context.Tasks.ToList();
+                return _context.Tasks.Where(x => x.AssignTo.Id == userId).ToList();
             });
         }
     }
