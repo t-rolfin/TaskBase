@@ -39,7 +39,7 @@ namespace TaskBase.Data
         }
 
 
-        public static IServiceCollection AddServices(this IServiceCollection services)
+        public static IServiceCollection AddIdentity(this IServiceCollection services)
         {
             services.AddDbContext<IdentityContext>();
 

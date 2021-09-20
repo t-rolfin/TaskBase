@@ -42,7 +42,7 @@ namespace TaskBase.MVC
                 GetCultures(x);
             }));
 
-            services.AddServices();
+            services.AddIdentity();
             services.AddInfrastructure(Configuration);
             services.AddTransient<ITaskFacade, TaskFacade>();
             services.AddTransient<IIdentityProvider, IdentityProvider>();

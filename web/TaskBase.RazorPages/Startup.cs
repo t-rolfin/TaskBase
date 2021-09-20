@@ -30,8 +30,7 @@ namespace TaskBase.RazorPages
                 .AddDataAnnotationsLocalization();
             
             services.AddRazorPages();
-            services.AddServices();
-
+            services.AddIdentity();
 
             services.AddPortableObjectLocalization(opt => { opt.ResourcesPath = "Resources"; });
 
