@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,6 +12,7 @@ using TaskBase.Data.Identity;
 
 namespace TaskBase.Components.Areas.Identity.Pages.Account
 {
+    [Authorize(Roles = "Admin")]
     public class UsersModel : PageModel
     {
         private readonly UserManager<User> _userManager;
@@ -35,7 +37,8 @@ namespace TaskBase.Components.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostRemoveFromRole(Guid userId, string role)
         {
             var user = _userManager.Users.FirstOrDefault(x => x.Id == userId.ToString());
-            var result = await _userManager.RemoveFromRoleAsync(user, role);
+            await _userManager.RemoveFromRoleAsync(user, role);
+            await _userManager.UpdateSecurityStampAsync(user);
             
             return ViewComponent("RoleList", user);
         }
@@ -44,7 +47,7 @@ namespace TaskBase.Components.Areas.Identity.Pages.Account
         {
             var user = _userManager.Users.FirstOrDefault(x => x.Id == userId.ToString());
             var result = await _userManager.AddToRoleAsync(user, role);
-            _log.LogInformation(result.Succeeded.ToString());
+            await _userManager.UpdateSecurityStampAsync(user);
 
             return ViewComponent("RoleList", user);
         }

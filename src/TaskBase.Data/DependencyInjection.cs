@@ -57,6 +57,10 @@ namespace TaskBase.Data
                 options.User.RequireUniqueEmail = true;
             });
 
+            services.Configure<SecurityStampValidatorOptions>(options => {
+                options.ValidationInterval = TimeSpan.Zero;
+            });
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Identity/Account/Login";

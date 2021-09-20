@@ -15,7 +15,7 @@ using TaskBase.Core.TaskAggregate;
 
 namespace TaskBase.RazorPages.Pages
 {
-    [Authorize]
+    [Authorize(Roles = "Member")]
     public class TasksModel : PageModel
     {
         private readonly ITaskFacade _taskFacade;
