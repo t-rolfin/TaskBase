@@ -32,6 +32,10 @@ namespace TaskBase.RazorPages
             services.AddRazorPages();
             services.AddIdentity();
 
+            services.AddAuthorization(options => {
+                options.AddPolicy("Admin", x => x.RequireRole("Admin"));
+            });
+
             services.AddPortableObjectLocalization(opt => { opt.ResourcesPath = "Resources"; });
 
             services.AddInfrastructure(Configuration);

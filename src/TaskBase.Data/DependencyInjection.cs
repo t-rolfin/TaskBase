@@ -47,6 +47,7 @@ namespace TaskBase.Data
                 .AddEntityFrameworkStores<IdentityContext>()
                 .AddDefaultTokenProviders();
 
+
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password = new PasswordOptions

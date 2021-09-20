@@ -1,6 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using TaskBase.Data.Identity
+@using Microsoft.AspNetCore.Authorization
 
+@inject IAuthorizationService AuthorizationService
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
@@ -9,12 +11,21 @@
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="dropdown">
-            <div class="nav-link text-dark" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                @UserManager.GetUserName(User)
-            </div>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="/Identity/Account/Users">Users</a>
-            </div>
+            @if ((await AuthorizationService.AuthorizeAsync(User, "Admin")).Succeeded)
+            {
+                <div class="nav-link text-dark" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    @UserManager.GetUserName(User)
+                </div>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="/Identity/Account/Users">Users</a>
+                </div>
+            }
+            else
+            {
+                <div class="nav-link text-dark" type="button">
+                    @UserManager.GetUserName(User)
+                </div>
+            }
         </li>
         <li class="nav-item">
             <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
