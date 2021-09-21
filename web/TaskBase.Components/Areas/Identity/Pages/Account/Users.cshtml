@@ -3,36 +3,16 @@
 @model TaskBase.Components.Areas.Identity.Pages.Account.UsersModel
 
 <div class="container row justify-content-center">
-    @foreach (var member in Model._users)
+    @foreach (var member in Model.Users)
     {
         <div class="card m-3 w-25 bg-transparent p-0" style="min-width:350px">
             <div class="card-body row justify-content-around align-items-center">
                 <img class="border" style="border-radius:100%; width:50px; height:50px; overflow:hidden;" src="#" alt="Alternate Text" />
                 <h5 class="w-auto">@member.UserName</h5>
             </div>
-            <div class="card-footer p-0">
-                <form action="Users/AssignToRole" method="post" class="row"
-                      data-ajax="true" data-ajax-update="#@member.Id" data-ajax-mode="replace-with" asp-antiforgery="true">
-                    
-                    <input type="hidden" name="userId" value="@member.Id" />
 
-                    <select name="role" class="m-3" style="width:fit-content">
-                        @foreach (var item in Model._availableRoles)
-                        {
-                            <option value="@item">@item</option>
-                        }
-                    </select>
+            @await Component.InvokeAsync("UserRoles", (member.Id, member.AvailableRoles))
 
-                    <button type="submit" class="bg-transparent" style="border:0;width:fit-content;"><i class="fas fa-plus" ></i></button>
-
-                </form>
-
-                <div class="container row">
-
-                    @await Component.InvokeAsync("RoleList", member)
-
-                </div>
-            </div>
         </div>
     }
 </div>

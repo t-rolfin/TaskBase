@@ -1,0 +1,43 @@
+﻿@model (Guid userId, IList<string> roles, List<string> AvailableRoles)
+
+<div class="card-footer p-0" id="@Model.Item1">
+
+    @if (Model.AvailableRoles != null && Model.AvailableRoles.Count != 0)
+    {
+        <form action="Users/AssignToRole" method="post" class="row"
+              data-ajax="true" data-ajax-update="#@Model.userId" data-ajax-mode="replace-with" asp-antiforgery="true">
+
+            <input type="hidden" name="userId" value="@Model.userId" />
+
+            <select name="role" class="m-3" style="width:fit-content">
+                @foreach (var item in Model.AvailableRoles)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+
+            <button type="submit" class="bg-transparent" style="border:0;width:fit-content;"><i class="fas fa-plus"></i></button>
+
+        </form>
+    }
+
+    <div class="container row">
+
+        @foreach (var role in Model.roles)
+        {
+            <div class="row border align-items-center p-1 m-1 rounded" style="width:fit-content;">
+
+                <p class="w-auto p-0 m-0">@role</p>
+
+                <form class="w-auto bg-transparent" method="post" action="Users/RemoveFromRole" data-ajax="true" asp-antiforgery="true"
+                      data-ajax-update="#@Model.userId" data-ajax-mode="replace-with">
+                    <input type="hidden" name="userId" value="@Model.Item1" />
+                    <input type="hidden" name="role" value="@role" />
+                    <button type="submit" style="border:0;"><i class="fas fa-times w-auto"></i></button>
+                </form>
+
+            </div>
+        }
+
+    </div>
+</div>
