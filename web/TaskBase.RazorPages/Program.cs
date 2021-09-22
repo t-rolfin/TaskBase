@@ -24,6 +24,7 @@ namespace TaskBase.RazorPages
                 })
                 .ConfigureLogging(logBuilder => 
                 {
+                    logBuilder.ClearProviders();
                     logBuilder.AddLog4Net();
                 })
                 .UseConsoleLifetime();
