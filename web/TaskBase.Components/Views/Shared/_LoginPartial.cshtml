@@ -6,7 +6,7 @@
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
-<ul class="navbar-nav">
+<ul class="navbar-nav align-items-center">
 
     @if (SignInManager.IsSignedIn(User))
     {
@@ -16,6 +16,7 @@
                 <div class="nav-link text-dark" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     @UserManager.GetUserName(User)
                 </div>
+
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="/Identity/Account/Users">Manage Users</a>
                 </div>
@@ -27,6 +28,9 @@
                 </div>
             }
         </li>
+
+        <vc:avatar />
+
         <li class="nav-item">
             <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
                 <button id="logout" type="submit" class="nav-link btn btn-link text-dark"><i class="fas fa-sign-out-alt"></i></button>

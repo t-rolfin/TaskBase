@@ -76,7 +76,7 @@ namespace TaskBase.MVC.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = Input.UserName, Email = Input.Email };
+                var user = new User { UserName = Input.UserName, Email = Input.Email, AvatarUrl = "/Avatars/2facb1ab-4425-4507-8776-41ac13fca7ab.jpg" };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

@@ -40,9 +40,10 @@ namespace TaskBase.Components.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostRemoveFromRole(Guid userId, string role)
         {
             var user = _userManager.Users.FirstOrDefault(x => x.Id == userId.ToString());
-            await _userManager.RemoveFromRoleAsync(user, role);
+            var response = await _userManager.RemoveFromRoleAsync(user, role);
 
-            await _userManager.UpdateSecurityStampAsync(user);
+            if(response.Succeeded)
+                await _userManager.UpdateSecurityStampAsync(user);
 
             var availableRoles = await GetUserAvailableRoles(user);
 
@@ -54,9 +55,10 @@ namespace TaskBase.Components.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAssignToRole(Guid userId, string role)
         {
             var user = _userManager.Users.FirstOrDefault(x => x.Id == userId.ToString());
-            var result = await _userManager.AddToRoleAsync(user, role);
+            var response = await _userManager.AddToRoleAsync(user, role);
 
-            await _userManager.UpdateSecurityStampAsync(user);
+            if (response.Succeeded)
+                await _userManager.UpdateSecurityStampAsync(user);
 
             var availableRoles = await GetUserAvailableRoles(user);
 
@@ -67,8 +69,7 @@ namespace TaskBase.Components.Areas.Identity.Pages.Account
 
         async Task GetData()
         {
-            if (_users == null)
-                _users = new();
+            if (_users == null) _users = new();
 
             var users = await _userManager.Users.ToListAsync();
 
@@ -81,6 +82,7 @@ namespace TaskBase.Components.Areas.Identity.Pages.Account
                     new UserModel(
                         user.Id,
                         user.UserName,
+                        user.AvatarUrl,
                         userAvailableRoles
                         )
                     );

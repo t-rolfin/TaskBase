@@ -1,4 +1,10 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿function uploadAvatar() {
+    var inputElement = document.getElementById("upload_avatar");
+    inputElement.click();
+}
 
-// Write your JavaScript code.
+function callMethod() {
+    var form = document.getElementById("upload_avatar_form");
+    form.submit();
+    console.log("submited!");
+}

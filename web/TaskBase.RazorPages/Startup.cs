@@ -10,6 +10,7 @@ using TaskBase.Core.Interfaces;
 using TaskBase.Core.Facades;
 using System.Globalization;
 using TaskBase.Components.Services;
+using TaskBase.Data.Storage;
 
 namespace TaskBase.RazorPages
 {
@@ -41,6 +42,7 @@ namespace TaskBase.RazorPages
             services.AddInfrastructure(Configuration);
             services.AddTransient<ITaskFacade, TaskFacade>();
             services.AddTransient<IIdentityProvider, IdentityProvider>();
+            services.AddTransient<IImageStorage, ImageStorage>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
