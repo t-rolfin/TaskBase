@@ -39,13 +39,14 @@ namespace TaskBase.Data
         }
 
 
-        public static IServiceCollection AddServices(this IServiceCollection services)
+        public static IServiceCollection AddIdentity(this IServiceCollection services)
         {
             services.AddDbContext<IdentityContext>();
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<IdentityContext>()
                 .AddDefaultTokenProviders();
+
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -55,6 +56,10 @@ namespace TaskBase.Data
                 };
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789. _";
                 options.User.RequireUniqueEmail = true;
+            });
+
+            services.Configure<SecurityStampValidatorOptions>(options => {
+                options.ValidationInterval = TimeSpan.Zero;
             });
 
             services.ConfigureApplicationCookie(options =>

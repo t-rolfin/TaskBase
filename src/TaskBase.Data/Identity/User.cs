@@ -10,5 +10,10 @@ namespace TaskBase.Data.Identity
     public class User : IdentityUser
     {
         public User() : base() { }
+
+        public User(string userName, string avatarUrl) : base(userName)
+            => (AvatarUrl) = (avatarUrl);
+
+        public string AvatarUrl { get; set; }
     }
 }

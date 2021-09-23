@@ -10,6 +10,7 @@ using TaskBase.Core.Interfaces;
 using TaskBase.Core.Facades;
 using System.Globalization;
 using TaskBase.Components.Services;
+using TaskBase.Data.Storage;
 
 namespace TaskBase.RazorPages
 {
@@ -30,14 +31,18 @@ namespace TaskBase.RazorPages
                 .AddDataAnnotationsLocalization();
             
             services.AddRazorPages();
-            services.AddServices();
+            services.AddIdentity();
 
+            services.AddAuthorization(options => {
+                options.AddPolicy("Admin", x => x.RequireRole("Admin"));
+            });
 
             services.AddPortableObjectLocalization(opt => { opt.ResourcesPath = "Resources"; });
 
             services.AddInfrastructure(Configuration);
             services.AddTransient<ITaskFacade, TaskFacade>();
             services.AddTransient<IIdentityProvider, IdentityProvider>();
+            services.AddTransient<IImageStorage, ImageStorage>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

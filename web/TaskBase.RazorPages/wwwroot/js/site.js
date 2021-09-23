@@ -1,4 +1,11 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿$("#avatar-img").click(() => {
+    var inputElement = document.getElementById("upload_avatar");
+    inputElement.click();
+})
 
-// Write your JavaScript code.
+function submiteForm() {
+    var form = document.getElementById("upload_avatar_form");
+    var redirect = document.getElementById("redirectUrl");
+    redirect.value = location.href;
+    form.submit();
+}
