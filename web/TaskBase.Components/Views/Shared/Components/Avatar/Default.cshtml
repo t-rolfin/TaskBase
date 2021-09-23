@@ -1,8 +1,15 @@
 ﻿@model TaskBase.Components.Views.Shared.Components.Avatar.AvatarModel
 
-<div onclick="uploadAvatar()" class="nav-item border overflow-hidden" style="width: 50px; height: 50px; border-radius: 100%;">
-    <img style="width:100%; height:100%;" src="@Model.Value" alt="Avatar" />
-    <form id="upload_avatar_form" action="/Storage/UploadImage" enctype="multipart/form-data" method="post" asp-antiforgery="true">
-        <input id="upload_avatar" onchange="callMethod()" style="display:none" type="file" name="file" value="" />
+<div id="avatar-img" class="nav-item border overflow-hidden" style="width: 50px; height: 50px; border-radius: 100%;">
+    
+    <img style="width:100%; height:100%;" src="@(string.IsNullOrWhiteSpace(Model.Value) ? "/Avatars/avatar.jpg" : Model.Value)" alt="Avatar" />
+
+    <form id="upload_avatar_form" method="post" data-ajax="true" action="/Storage/UploadImage" data-ajax-method="post" 
+          data-ajax-mode="replace-with" data-ajax-update="#avatar-img" enctype="multipart/form-data" >
+
+        <input id="redirectUrl" type="hidden" name="redirectUrl" value="" />
+
+        <input id="upload_avatar" onchange="submiteForm()" style="display:none" type="file" name="file" value="" />
     </form>
+
 </div>

@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TaskBase.Components.Services;
+using TaskBase.Components.Views.Shared.Components.Avatar;
 using TaskBase.Data.Identity;
 using TaskBase.Data.Storage;
 
@@ -20,7 +21,6 @@ namespace TaskBase.RazorPages.Controllers
         readonly UserManager<User> _userManager;
         readonly IIdentityProvider _identityProvider;
 
-
         public StorageController(IImageStorage imageStorage, 
             UserManager<User> userManager, 
             IIdentityProvider identityProvider)
@@ -31,8 +31,11 @@ namespace TaskBase.RazorPages.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadImage(IFormFile file)
+        public async Task<IActionResult> UploadImage(IFormFile file, string redirectUrl)  
         {
+            if (file is null)
+                return ViewComponent("Avatar", new AvatarModel() { Value = null });
+
             using var stream = file.OpenReadStream();
             string fileExtension = Path.GetExtension(file.FileName);
             var url = await _imageStorage.UploadImage(stream, fileExtension);
@@ -42,7 +45,7 @@ namespace TaskBase.RazorPages.Controllers
             currentUser.AvatarUrl = url;
             await _userManager.UpdateAsync(currentUser);
 
-            return View("/");
+            return RedirectPermanent(string.IsNullOrWhiteSpace(redirectUrl) ? "/" : redirectUrl);
         }
     }
 }
