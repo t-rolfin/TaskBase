@@ -10,5 +10,8 @@ namespace TaskBase.Components.Models
     {
         public string Title { get; set; }
         public string Description { get; set; }
+
+
+        public Guid RowId { get; set; }
     }
 }

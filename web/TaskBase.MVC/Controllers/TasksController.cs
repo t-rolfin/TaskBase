@@ -44,12 +44,13 @@ namespace TaskBase.MVC.Controllers
             var tasks = await _taskFacade.GetTasksByUserIdAsync(userId);
 
             return ViewComponent("TaskRow", new TaskRowModel(
+                Guid.NewGuid(),
                 TaskState.New,
                 tasks.Select(x =>
                 {
                     return new TaskModel() { Id = x.Id, TaskTitle = x.Title, TaskDescription = x.Description, TaskState = x.TaskState };
                 }),
-                new TaskRowCustomizationModel(true, "Haha", "bg-info", "newTaskRow")
+                new TaskRowCustomization("newTaskRow", "To Do", "bg-info")
             ));
         }
 

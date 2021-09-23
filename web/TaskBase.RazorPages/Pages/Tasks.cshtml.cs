@@ -11,17 +11,16 @@ using TaskBase.Components.Models;
 using TaskBase.Components.Services;
 using TaskBase.Core.Enums;
 using TaskBase.Core.Interfaces;
-using TaskBase.Core.TaskAggregate;
+using BaseTask = TaskBase.Core.TaskAggregate.Task;
 
 namespace TaskBase.RazorPages.Pages
 {
     [Authorize(Roles = "Member")]
     public class TasksModel : PageModel
     {
-        private readonly ITaskFacade _taskFacade;
-        private readonly IIdentityProvider _identityProvider;
-        private static readonly ILog log = LogManager.GetLogger(typeof(TasksModel));
-
+        readonly ITaskFacade _taskFacade;
+        readonly IIdentityProvider _identityProvider;
+        readonly ILog log = LogManager.GetLogger(typeof(TasksModel));
 
         public TasksModel(ITaskFacade taskFacade, IIdentityProvider identityProvider)
         {
@@ -31,10 +30,12 @@ namespace TaskBase.RazorPages.Pages
 
         public void OnGet() { }
 
+
         public async Task<IActionResult> OnPostAsync(CreateTaskModel model)
         {
             var userId = Guid.Parse(_identityProvider.GetCurrentUserIdentity());
             var userName = _identityProvider.GetCurrentUserName();
+
             var response = await _taskFacade.CreateTaskAsync(
                 model.Title, 
                 model.Description, 
@@ -47,30 +48,27 @@ namespace TaskBase.RazorPages.Pages
             else
                 log.Error("An error occur at task creation process!");
 
-            var tasks = await _taskFacade.GetTasksByUserIdAsync(userId);
 
-            return ViewComponent("TaskRow", new TaskRowModel(
-                TaskState.New,
-                tasks.Select(x => { 
-                    return new TaskModel() { Id = x.Id, TaskTitle = x.Title, TaskDescription = x.Description, TaskState = x.TaskState }; 
-                }),
-                new TaskRowCustomizationModel(true, "To Do", "bg-info", "newTaskRow")
-            ));
+            return ViewComponent("Tasks");
         }
 
-        
-        public async Task<IActionResult> OnPostDeleteAsync([FromForm] string taskId)
+        public async Task<IActionResult> OnPostInProgressAsync(string taskId)
         {
             await _taskFacade.DeleteTaskAsync(Guid.Parse(taskId), default);
-
-            return RedirectPermanent("/Tasks");
+            return ViewComponent("Tasks");
         }
 
-        public async Task<IActionResult> OnPostDoneAsync([FromForm]string taskId)
+        public async Task<IActionResult> OnPostDeleteAsync(string taskId)
+        {
+            await _taskFacade.DeleteTaskAsync(Guid.Parse(taskId), default);
+            return ViewComponent("Tasks");
+        }
+
+        public async Task<IActionResult> OnPostDoneAsync(string taskId)
         {
             await _taskFacade.CloseTaskAsync(Guid.Parse(taskId), default);
-
-            return RedirectPermanent("/Tasks");
+            return ViewComponent("Tasks");
         }
+
     }
 }

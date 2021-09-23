@@ -1,0 +1,31 @@
+﻿@model List<TaskRowModel>
+
+@inject IViewLocalizer Localizer
+
+
+<div class="row w-100 rounded tabbable" id="tasks-container">
+
+    @foreach (var row in Model)
+    {
+
+        <div class="col-sm h-auto border mx-1 p-0 rounded overflow-hidden" style="max-height: 75vh; min-height:75vh"
+             id="@row.Customize.Id">
+
+            <div class="p-3 rounded-top row justify-content-around align-items-center @row.Customize.BgColor"
+                 style="min-height:68px">
+
+                <h5 class="mb-0 text-center text-white w-50">@Localizer[row.Customize.RowName]</h5>
+
+            </div>
+
+            <div class="p-3 w-auto overflow-auto">
+
+                <partial name="_TaskListPartial" model="row.Tasks.ToList()" />
+
+            </div>
+
+        </div>
+
+    }
+
+</div>

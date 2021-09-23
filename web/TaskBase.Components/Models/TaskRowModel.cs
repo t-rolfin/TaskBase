@@ -11,15 +11,17 @@ namespace TaskBase.Components.Models
     {
         public TaskRowModel() { }
 
-        public TaskRowModel(TaskState rowType, IEnumerable<TaskModel> tasks, TaskRowCustomizationModel componentCustomization)
+        public TaskRowModel(Guid id, TaskState rowType, IEnumerable<TaskModel> tasks, TaskRowCustomization customize)
         {
+            Id = id;
             RowType = rowType;
             Tasks = tasks;
-            ComponentCustomization = componentCustomization;
+            Customize = customize;
         }
 
+        public Guid Id { get; set; }
         public IEnumerable<TaskModel> Tasks { get; set; }
-        public TaskRowCustomizationModel ComponentCustomization { get; set; }
+        public TaskRowCustomization Customize { get; set; }
         public TaskState RowType { get; set; }
     }
 }

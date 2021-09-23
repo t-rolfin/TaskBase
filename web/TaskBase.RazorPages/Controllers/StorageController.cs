@@ -31,7 +31,7 @@ namespace TaskBase.RazorPages.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadImage(IFormFile file, string redirectUrl)  
+        public async Task<IActionResult> UploadImage(IFormFile file)  
         {
             if (file is null)
                 return ViewComponent("Avatar", new AvatarModel() { Value = null });
@@ -45,7 +45,7 @@ namespace TaskBase.RazorPages.Controllers
             currentUser.AvatarUrl = url;
             await _userManager.UpdateAsync(currentUser);
 
-            return RedirectPermanent(string.IsNullOrWhiteSpace(redirectUrl) ? "/" : redirectUrl);
+            return ViewComponent("Avatar", new AvatarModel() { Value = url });
         }
     }
 }

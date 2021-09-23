@@ -1,0 +1,67 @@
+﻿@model List<TaskModel>
+
+@inject IViewLocalizer Localizer
+
+<table class="container p-3 w-100 h-100">
+
+    <tbody class="connectedSortable p-3 ui-sortable">
+
+        @if (Model != null && Model.Count() != 0)
+        {
+
+            @foreach (var task in Model)
+            {
+                <tr class="card mb-3">
+                    <td class="d-flex flex-row card-header">
+                        <h6 class="w-50">@task.TaskTitle</h6>
+                    </td>
+                    <td class="card-body">
+                        <p>@task.TaskDescription</p>
+                    </td>
+                    <td class="card-footer row justify-content-center">
+
+                        @if (task.TaskState == Core.Enums.TaskState.New)
+                        {
+                            <form method="post" action="/Tasks/Done" data-ajax="true" asp-antiforgery="true" style="width:fit-content"
+                                  data-ajax-method="post" data-ajax-mode="replace-with" data-ajax-update="#tasks-container">
+
+                                <input type="hidden" name="taskid" value="@task.Id" />
+
+                                <button type="submit" class="dropdown-item" >
+                                    @Localizer["WorkTo"]
+                                </button>
+                            </form>
+                        }
+
+                        @if (task.TaskState != Core.Enums.TaskState.Completed)
+                        {
+                            <form method="post" action="/Tasks/Done" data-ajax="true" asp-antiforgery="true" style="width:fit-content"
+                                  data-ajax-method="post" data-ajax-mode="replace-with" data-ajax-update="#tasks-container">
+
+                                <input type="hidden" name="taskid" value="@task.Id" />
+
+                                <button type="submit" class="dropdown-item">
+                                    <b style="color:green;">@Localizer["Complete"]</b>
+                                </button>
+                            </form>
+                        }
+
+                        <form method="post" action="/Tasks/Delete" data-ajax="true" asp-antiforgery="true" style="width:fit-content"
+                              data-ajax-method="post" data-ajax-mode="replace-with" data-ajax-update="#tasks-container">
+
+                            <input type="hidden" name="taskId" value="@task.Id" />
+
+                            <button type="submit" class="dropdown-item">
+                                <b style="color:red;">@Localizer["Delete"]</b>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+
+        }
+
+    </tbody>
+
+</table>
+

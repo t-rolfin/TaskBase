@@ -1,6 +1,6 @@
 ﻿@model (Guid userId, IList<string> roles, List<string> AvailableRoles)
 
-<div class="card-footer p-0" id="@Model.Item1">
+<div class="card-footer p-0" id="@Model.userId">
 
     @if (Model.AvailableRoles != null && Model.AvailableRoles.Count != 0)
     {
