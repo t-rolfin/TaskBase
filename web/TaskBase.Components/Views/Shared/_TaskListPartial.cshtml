@@ -22,26 +22,26 @@
 
                         @if (task.TaskState == Core.Enums.TaskState.New)
                         {
-                            <form method="post" action="/Tasks/Done" data-ajax="true" asp-antiforgery="true" style="width:fit-content"
+                            <form method="post" action="/Tasks/InProgress" data-ajax="true" asp-antiforgery="true" style="width:fit-content"
                                   data-ajax-method="post" data-ajax-mode="replace-with" data-ajax-update="#tasks-container">
 
                                 <input type="hidden" name="taskid" value="@task.Id" />
 
-                                <button type="submit" class="dropdown-item" >
-                                    @Localizer["WorkTo"]
+                                <button type="submit" class="dropdown-item text-secundary" >
+                                    <b>@Localizer["WorkingOn"]</b>
                                 </button>
                             </form>
                         }
 
-                        @if (task.TaskState != Core.Enums.TaskState.Completed)
+                        @if (task.TaskState == Core.Enums.TaskState.InProgress)
                         {
                             <form method="post" action="/Tasks/Done" data-ajax="true" asp-antiforgery="true" style="width:fit-content"
                                   data-ajax-method="post" data-ajax-mode="replace-with" data-ajax-update="#tasks-container">
 
                                 <input type="hidden" name="taskid" value="@task.Id" />
 
-                                <button type="submit" class="dropdown-item">
-                                    <b style="color:green;">@Localizer["Complete"]</b>
+                                <button type="submit" class="dropdown-item text-success">
+                                    <b>@Localizer["Complete"]</b>
                                 </button>
                             </form>
                         }
@@ -51,8 +51,8 @@
 
                             <input type="hidden" name="taskId" value="@task.Id" />
 
-                            <button type="submit" class="dropdown-item">
-                                <b style="color:red;">@Localizer["Delete"]</b>
+                            <button type="submit" class="dropdown-item text-danger">
+                                <b>@Localizer["Delete"]</b>
                             </button>
                         </form>
                     </td>

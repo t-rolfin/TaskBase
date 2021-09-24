@@ -54,7 +54,7 @@ namespace TaskBase.RazorPages.Pages
 
         public async Task<IActionResult> OnPostInProgressAsync(string taskId)
         {
-            await _taskFacade.DeleteTaskAsync(Guid.Parse(taskId), default);
+            await _taskFacade.SetTaskAsInProgressAsync(Guid.Parse(taskId), default);
             return ViewComponent("Tasks");
         }
 
