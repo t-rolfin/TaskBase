@@ -17,5 +17,6 @@ namespace TaskBase.Core.Interfaces
         Task<bool> DeleteTaskAsync(Guid taskId, CancellationToken cancellationToken);
         Task<CoreTask> GetTaskDetailsAsync(Guid taskId);
         Task<IEnumerable<CoreTask>> GetTasksByUserIdAsync(Guid userId);
+        Task<Core.TaskAggregate.User> GetUserByNameAsync(string userName);
     }
 }

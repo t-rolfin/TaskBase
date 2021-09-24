@@ -41,7 +41,7 @@ namespace TaskBase.Core.Facades
         {
             try
             {
-                var user = await _taskRepository.GetUserById(userId);
+                var user = await _taskRepository.GetUserByIdAsync(userId);
 
                 if(user is null)
                 {
@@ -82,6 +82,11 @@ namespace TaskBase.Core.Facades
         public async Task<IEnumerable<TaskAggregate.Task>> GetTasksByUserIdAsync(Guid userId)
         {
             return await _taskRepository.GetTasksByUserAsync(userId);
+        }
+
+        public async Task<User> GetUserByNameAsync(string userName)
+        {
+            return await _taskRepository.GetUserByUserNameAsync(userName);
         }
 
         public async Task<bool> SetTaskAsInProgressAsync(Guid taskId, CancellationToken cancellationToken)

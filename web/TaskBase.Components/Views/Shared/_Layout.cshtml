@@ -63,7 +63,7 @@
         $("#culture-switcher").change(() => {
             $.get("/Culture/HandleCulture?culture=" + $("#culture-options").val() + "&redirectUri=" + location.href,
                 (response) => {
-                window.location.href = response;
+                    window.location.href = response;
                 }
             )
         });

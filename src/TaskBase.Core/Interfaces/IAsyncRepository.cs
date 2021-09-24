@@ -16,6 +16,7 @@ namespace TaskBase.Core.Interfaces
         System.Threading.Tasks.Task RemoveTask(T task, CancellationToken cancellationToken = default);
         Task<T> GetTaskAsync(I taskId);
         Task<IEnumerable<T>> GetTasksByUserAsync(Guid userId);
-        Task<User> GetUserById(Guid userId);
+        Task<User> GetUserByIdAsync(Guid userId);
+        Task<User> GetUserByUserNameAsync(string userName);
     }
 }

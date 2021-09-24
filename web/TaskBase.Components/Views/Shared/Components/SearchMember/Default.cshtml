@@ -1,0 +1,8 @@
+﻿@model List<UserModel>
+
+    @foreach (var user in Model)
+    {
+        <option>
+            @user.UserName
+        </option>
+    }

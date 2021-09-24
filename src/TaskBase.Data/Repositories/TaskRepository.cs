@@ -66,9 +66,14 @@ namespace TaskBase.Data.Repositories
             });
         }
 
-        public async Task<Core.TaskAggregate.User> GetUserById(Guid userId)
+        public async Task<Core.TaskAggregate.User> GetUserByIdAsync(Guid userId)
         {
             return await _context.FindAsync<CoreUser>(userId);
+        }
+
+        public async Task<Core.TaskAggregate.User> GetUserByUserNameAsync(string userName)
+        {
+            return await _context.Set<CoreUser>().Where(x => x.FullName == userName).FirstOrDefaultAsync();
         }
     }
 }

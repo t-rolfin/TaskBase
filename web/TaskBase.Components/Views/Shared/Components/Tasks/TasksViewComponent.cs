@@ -37,7 +37,8 @@ namespace TaskBase.Components.Views.Shared.Components.Tasks
                     Id = x.Id, 
                     TaskDescription = x.Description, 
                     TaskState = x.TaskState,    
-                    TaskTitle = x.Title 
+                    TaskTitle = x.Title,
+                    DueDate = x.DueDate
                 })
                 .ToList();
 

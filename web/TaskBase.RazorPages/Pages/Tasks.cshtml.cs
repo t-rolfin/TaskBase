@@ -33,14 +33,26 @@ namespace TaskBase.RazorPages.Pages
 
         public async Task<IActionResult> OnPostAsync(CreateTaskModel model)
         {
-            var userId = Guid.Parse(_identityProvider.GetCurrentUserIdentity());
-            var userName = _identityProvider.GetCurrentUserName();
+            Guid userId = default;
+            string userName = default;
+
+            if (string.IsNullOrWhiteSpace(model.AssignTo))
+            {
+                userId = Guid.Parse(_identityProvider.GetCurrentUserIdentity());
+                userName = _identityProvider.GetCurrentUserName();
+            }
+            else
+            {
+                var user = await _taskFacade.GetUserByNameAsync(model.AssignTo);
+                userId = user.Id;
+                userName = user.FullName;
+            }
 
             var response = await _taskFacade.CreateTaskAsync(
-                model.Title, 
-                model.Description, 
-                DateTime.Now.AddDays(3), 
-                userId, 
+                model.Title,
+                model.Description,
+                model.DueDate == default ? DateTime.Now : model.DueDate ,
+                userId,
                 userName, default);
 
             if (response is not null)

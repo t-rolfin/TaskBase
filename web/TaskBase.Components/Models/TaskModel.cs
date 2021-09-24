@@ -13,5 +13,6 @@ namespace TaskBase.Components.Models
         public string TaskTitle { get; set; }
         public string TaskDescription { get; set; }
         public TaskState TaskState { get; set; }
+        public DateTime DueDate { get; set; }
     }
 }
