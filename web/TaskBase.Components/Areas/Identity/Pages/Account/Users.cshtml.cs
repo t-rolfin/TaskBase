@@ -18,10 +18,12 @@ namespace TaskBase.Components.Areas.Identity.Pages.Account
     public class UsersModel : PageModel
     {
         List<UserModel> _users;
+        delegate Task<IdentityResult> RoleAction(User user, string role);
         
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<UsersModel> _log;
+
 
         public List<UserModel> Users { 
             get { return _users; }
@@ -35,39 +37,53 @@ namespace TaskBase.Components.Areas.Identity.Pages.Account
             _log = log;
         }
 
-        public async Task OnGetAsync() { await GetData(); }
+        public async Task OnGetAsync() { await FetchUsers(); }
 
         public async Task<IActionResult> OnPostRemoveFromRole(Guid userId, string role)
         {
-            var user = _userManager.Users.FirstOrDefault(x => x.Id == userId.ToString());
-            var response = await _userManager.RemoveFromRoleAsync(user, role);
+            (string, List<string>) response = await ChangeUserRoles(
+                    userId, role,
+                    (User user, string role) =>
+                    {
+                        return _userManager.RemoveFromRoleAsync(user, role);
+                    }
+                );
 
-            if(response.Succeeded)
-                await _userManager.UpdateSecurityStampAsync(user);
-
-            var availableRoles = await GetUserAvailableRoles(user);
-
-            _log.LogInformation($"The member {user.UserName} is not longer a/an {role}.");
-
-            return ViewComponent("UserRoles", (user.Id, availableRoles));
+            return ViewComponent("UserRoles", response);
         }
 
         public async Task<IActionResult> OnPostAssignToRole(Guid userId, string role)
         {
+            (string, List<string>) response = await ChangeUserRoles(
+                    userId, role,
+                    (User user, string role) => 
+                    {
+                        return  _userManager.AddToRoleAsync(user, role);
+                    }
+                );
+
+            return ViewComponent("UserRoles", response);
+        }
+
+
+        // private methods
+        async Task<(string UserId, List<string> AvailableRoles)> ChangeUserRoles(
+            Guid userId, string role, RoleAction roleAction)
+        {
             var user = _userManager.Users.FirstOrDefault(x => x.Id == userId.ToString());
-            var response = await _userManager.AddToRoleAsync(user, role);
+            var response = await roleAction.Invoke(user, role);
 
             if (response.Succeeded)
                 await _userManager.UpdateSecurityStampAsync(user);
 
             var availableRoles = await GetUserAvailableRoles(user);
 
-            _log.LogInformation($"The member {user.UserName} is now a/an {role}.");
+            _log.LogInformation($"{user.UserName} is now a/an {role}.");
 
-            return ViewComponent("UserRoles", (user.Id, availableRoles));
+            return (user.Id, availableRoles);
         }
 
-        async Task GetData()
+        async Task FetchUsers()
         {
             if (_users == null) _users = new();
 
