@@ -12,7 +12,7 @@ using TaskBase.Components.Views.Shared.Components.Avatar;
 using TaskBase.Data.Identity;
 using TaskBase.Data.Storage;
 
-namespace TaskBase.RazorPages.Controllers
+namespace TaskBase.Components.Controllers
 {
     [Route("[controller]/[action]")]
     public class StorageController : Controller

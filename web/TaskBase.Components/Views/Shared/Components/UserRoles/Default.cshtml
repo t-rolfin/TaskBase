@@ -1,5 +1,7 @@
 ﻿@model (Guid userId, IList<string> roles, List<string> AvailableRoles)
 
+@inject IViewLocalizer Localizer
+
 <div class="card-footer p-0" id="@Model.userId">
 
     @if (Model.AvailableRoles != null && Model.AvailableRoles.Count != 0)
@@ -12,7 +14,7 @@
             <select name="role" class="m-3" style="width:fit-content">
                 @foreach (var item in Model.AvailableRoles)
                 {
-                    <option value="@item">@item</option>
+                    <option value="@item">@Localizer[item]</option>
                 }
             </select>
 
@@ -27,7 +29,7 @@
         {
             <div class="row border align-items-center p-1 m-1 rounded" style="width:fit-content;">
 
-                <p class="w-auto p-0 m-0">@role</p>
+                <p class="w-auto p-0 m-0">@Localizer[role]</p>
 
                 <form class="w-auto bg-transparent" method="post" action="Users/RemoveFromRole" data-ajax="true" asp-antiforgery="true"
                       data-ajax-update="#@Model.userId" data-ajax-mode="replace-with">

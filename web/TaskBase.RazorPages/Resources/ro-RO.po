@@ -33,3 +33,9 @@ msgstr "Complet"
 
 msgid "Delete"
 msgstr "Șterge"
+
+msgid "Admin"
+msgstr "Administrator"
+
+msgid "Member"
+msgstr "Membru"

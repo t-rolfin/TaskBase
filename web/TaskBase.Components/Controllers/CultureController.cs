@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TaskBase.RazorPages.Controllers
+namespace TaskBase.Components.Controllers
 {
     [Route("[controller]/[action]")]
     public class CultureController : Controller
