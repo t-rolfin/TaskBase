@@ -17,17 +17,17 @@ namespace TaskBase.Components.Controllers
     [Route("[controller]/[action]")]
     public class StorageController : Controller
     {
+        readonly IIdentityProvider _identityProvider;
         readonly IImageStorage _imageStorage;
         readonly UserManager<User> _userManager;
-        readonly IIdentityProvider _identityProvider;
 
         public StorageController(IImageStorage imageStorage, 
             UserManager<User> userManager, 
             IIdentityProvider identityProvider)
         {
+            _identityProvider = identityProvider;
             _imageStorage = imageStorage;
             _userManager = userManager;
-            _identityProvider = identityProvider;
         }
 
         [HttpPost]
@@ -36,14 +36,21 @@ namespace TaskBase.Components.Controllers
             if (file is null)
                 return ViewComponent("Avatar", new AvatarModel() { Value = null });
 
+            var url = string.Empty;
+
             using var stream = file.OpenReadStream();
             string fileExtension = Path.GetExtension(file.FileName);
-            var url = await _imageStorage.UploadImage(stream, fileExtension);
 
             var currentUserId = _identityProvider.GetCurrentUserIdentity();
-            var currentUser = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == currentUserId);
-            currentUser.AvatarUrl = url;
-            await _userManager.UpdateAsync(currentUser);
+            var currentUserData = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == currentUserId);
+
+            if (string.IsNullOrWhiteSpace(currentUserData.AvatarUrl))
+                url = await _imageStorage.UploadImage(stream, fileExtension);
+            else
+                url = await _imageStorage.UpdateImage(currentUserData.AvatarUrl.Split("\\")[1], stream, fileExtension);
+
+            currentUserData.AvatarUrl = url;
+            await _userManager.UpdateAsync(currentUserData);
 
             return ViewComponent("Avatar", new AvatarModel() { Value = url });
         }
