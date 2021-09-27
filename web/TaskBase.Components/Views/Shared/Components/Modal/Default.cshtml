@@ -7,7 +7,7 @@
     }
 </style>
 
-<div class="row border rounded align-items-center mb-3 p-1 justify-content-around" style="font-size:1.1rem; width:130px;" data-bs-toggle="modal" data-bs-target="#createTaskModal">
+<div class="row border rounded align-items-center mb-3 p-1 justify-content-around" style="font-size:1.1rem; width:130px;" data-toggle="modal" data-target="#createTaskModal">
     <i style="width:fit-content;" class="fas fa-plus p-0"></i>
     <p style="width:fit-content;" class="p-0 m-0">New Task</p>
 </div>
@@ -15,12 +15,12 @@
 <div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">@Localizer["New Task"]</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-
             <div class="modal-body">
 
                 <form method="post" data-ajax="true" asp-controller="Tasks" data-ajax-method="post" data-ajax-mode="replace-with"
@@ -36,10 +36,10 @@
                         <textarea name="description" class="form-control" id="taskDescription"></textarea>
                     </div>
 
-                    
-                    <div class="row justify-content-around">
 
-                        <div class="mb-3 row w-50">
+                    <div class="d-flex flex-row justify-content-around align-items-center mb-3">
+
+                        <div class="d-flex flex-column">
                             <label for="taskDescription" class="form-label">@Localizer["Due Date"]</label>
                             <input type="date" name="dueDate" value="@DateTime.Now" class="form-control" />
                         </div>
@@ -47,11 +47,11 @@
                         @if ((await AuthorizationService.AuthorizeAsync(User, "Admin")).Succeeded)
                         {
 
-                            <div class="mb-3 row w-50">
+                            <div class="d-flex flex-column">
                                 <label for="taskDescription" class="form-label">@Localizer["Assign To"]</label>
                                 <div>
-                                    <input id="select-member" name="assignTo" autoComplete="on" list="suggestions" />
-                                    <datalist>
+                                    <input id="select-member" name="assignTo" autoComplete="on" list="members" />
+                                    <datalist id="members">
                                         <vc:search-member />
                                     </datalist>
                                 </div>
@@ -65,31 +65,6 @@
                 </form>
 
             </div>
-
         </div>
     </div>
 </div>
-
-<script defer>
-    function closeModal() {
-        $('#your-modal-id').modal('hide');
-        $('body').removeClass('modal-open');
-        $('.modal-backdrop').remove();
-
-        enableRows();
-    }
-
-    function enableRows() {
-        tabs = $(".tabbable");
-        $("tbody.connectedSortable")
-            .sortable({
-                connectWith: ".connectedSortable",
-                items: "> tr",
-                appendTo: $tabs,
-                helper: "clone",
-                zIndex: 999990,
-                start: function () { $tabs.addClass("dragging") },
-                stop: function () { $tabs.removeClass("dragging") }
-            }).disableSelection();
-    }
-</script>
