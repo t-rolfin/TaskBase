@@ -41,7 +41,7 @@
 
                         <div class="d-flex flex-column">
                             <label for="taskDescription" class="form-label">@Localizer["Due Date"]</label>
-                            <input type="date" name="dueDate" value="@DateTime.Now" class="form-control" />
+                            <input type="date" name="dueDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" />
                         </div>
 
                         @if ((await AuthorizationService.AuthorizeAsync(User, "Admin")).Succeeded)

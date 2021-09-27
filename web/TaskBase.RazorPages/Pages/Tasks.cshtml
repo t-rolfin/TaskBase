@@ -8,23 +8,3 @@
 <vc:modal />
 
 <vc:tasks />
-
-@section Scripts{
-    <script>
-
-        $(document).ready(() => {
-            $tabs = $(".tabbable");
-            $("tbody.connectedSortable")
-                .sortable({
-                    connectWith: ".connectedSortable",
-                    items: "> tr",
-                    appendTo: $tabs,
-                    helper: "clone",
-                    zIndex: 999990,
-                    start: function () { $tabs.addClass("dragging") },
-                    stop: function () { $tabs.removeClass("dragging") }
-                }).disableSelection();
-        });
-
-    </script>
-}

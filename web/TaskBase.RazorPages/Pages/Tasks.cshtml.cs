@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
@@ -31,54 +32,59 @@ namespace TaskBase.RazorPages.Pages
         public void OnGet() { }
 
 
-        public async Task<IActionResult> OnPostAsync(CreateTaskModel model)
+        public async Task<IActionResult> OnPostAsync(CreateTaskModel model, CancellationToken cancellationToken)
         {
-            Guid userId = default;
-            string userName = default;
-
-            if (string.IsNullOrWhiteSpace(model.AssignTo))
+            if (ModelState.IsValid)
             {
-                userId = Guid.Parse(_identityProvider.GetCurrentUserIdentity());
-                userName = _identityProvider.GetCurrentUserName();
+                Guid userId = default;
+                string userName = default;
+
+                if (string.IsNullOrWhiteSpace(model.AssignTo))
+                {
+                    userId = Guid.Parse(_identityProvider.GetCurrentUserIdentity());
+                    userName = _identityProvider.GetCurrentUserName();
+                }
+                else
+                {
+                    var user = await _taskFacade.GetUserByNameAsync(model.AssignTo);
+                    userId = user.Id;
+                    userName = user.FullName;
+                }
+
+                var response = await _taskFacade.CreateTaskAsync(
+                    model.Title,
+                    model.Description,
+                    model.DueDate == default ? DateTime.Now : model.DueDate,
+                    userId,
+                    userName,
+                    cancellationToken);
+
+                if (response is not null)
+                    log.Info("An new task was created!");
+                else
+                    log.Error("An error occur at task creation process!");
+
+                return ViewComponent("Tasks");
             }
-            else
-            {
-                var user = await _taskFacade.GetUserByNameAsync(model.AssignTo);
-                userId = user.Id;
-                userName = user.FullName;
-            }
-
-            var response = await _taskFacade.CreateTaskAsync(
-                model.Title,
-                model.Description,
-                model.DueDate == default ? DateTime.Now : model.DueDate ,
-                userId,
-                userName, default);
-
-            if (response is not null)
-                log.Info("An new task was created!");
-            else
-                log.Error("An error occur at task creation process!");
-
 
             return ViewComponent("Tasks");
         }
 
-        public async Task<IActionResult> OnPostInProgressAsync(string taskId)
+        public async Task<IActionResult> OnPostInProgressAsync(string taskId, CancellationToken cancellationToken)
         {
-            await _taskFacade.SetTaskAsInProgressAsync(Guid.Parse(taskId), default);
+            await _taskFacade.SetTaskAsInProgressAsync(Guid.Parse(taskId), cancellationToken);
             return ViewComponent("Tasks");
         }
 
-        public async Task<IActionResult> OnPostDeleteAsync(string taskId)
+        public async Task<IActionResult> OnPostDeleteAsync(string taskId, CancellationToken cancellationToken)
         {
-            await _taskFacade.DeleteTaskAsync(Guid.Parse(taskId), default);
+            await _taskFacade.DeleteTaskAsync(Guid.Parse(taskId), cancellationToken);
             return ViewComponent("Tasks");
         }
 
-        public async Task<IActionResult> OnPostDoneAsync(string taskId)
+        public async Task<IActionResult> OnPostDoneAsync(string taskId, CancellationToken cancellationToken)
         {
-            await _taskFacade.CloseTaskAsync(Guid.Parse(taskId), default);
+            await _taskFacade.CloseTaskAsync(Guid.Parse(taskId), cancellationToken);
             return ViewComponent("Tasks");
         }
 
