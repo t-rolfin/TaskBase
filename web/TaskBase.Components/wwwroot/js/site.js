@@ -22,7 +22,7 @@ function submiteForm() {
 }
 
 function closeModal() {
-    $('#your-modal-id').modal('hide');
+    $('#createTaskModal').modal('hide');
     $('body').removeClass('modal-open');
     $('.modal-backdrop').remove();
 }
