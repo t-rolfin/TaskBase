@@ -1,17 +1,22 @@
 ﻿using API.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using TaskBase.Data.Identity;
+using TaskBase.Data.Storage;
 
 namespace API.Controllers
 {
@@ -21,11 +26,19 @@ namespace API.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
+        readonly IImageStorage _imageStorage;
+        private IWebHostEnvironment _environment;
 
-        public AccountController(UserManager<User> userManager, IConfiguration configuration)
+        public AccountController(
+            UserManager<User> userManager,
+            IConfiguration configuration,
+            IImageStorage imageStorage,
+            IWebHostEnvironment environment)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _imageStorage = imageStorage;
+            _environment = environment;
         }
 
         [HttpPost("LogIn")]
@@ -77,6 +90,34 @@ namespace API.Controllers
             }
 
             return BadRequest(ModelState.Values.SelectMany(x => x.Errors));
+        }
+
+        [Authorize]
+        [HttpPost("ChangeAvatar")]
+        public async Task<IActionResult> UploadImage(IFormFile file)
+        {
+            if (file is null)
+                return BadRequest();
+
+            var url = string.Empty;
+
+            using var stream = file.OpenReadStream();
+            string fileExtension = Path.GetExtension(file.FileName);
+
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUserData = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == currentUserId);
+
+            var baseDirectory = _environment.ContentRootPath;
+
+            if (string.IsNullOrWhiteSpace(currentUserData.AvatarUrl))
+                url = await _imageStorage.UploadImage(stream, fileExtension, baseDirectory);
+            else
+                url = await _imageStorage.UpdateImage(currentUserData.AvatarUrl.Split("\\")[1], stream, fileExtension, baseDirectory);
+
+            currentUserData.AvatarUrl = url;
+            await _userManager.UpdateAsync(currentUserData);
+
+            return Created(url, null);
         }
 
         private async Task<UserProfileModel> GenerateJwtTokenForUser(User user)
