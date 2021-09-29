@@ -28,7 +28,7 @@ namespace API.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost]
+        [HttpPost("LogIn")]
         public async Task<IActionResult> LogIn(LoginModel loginModel)
         {
             if (ModelState.IsValid)
@@ -49,6 +49,34 @@ namespace API.Controllers
             }
 
             return BadRequest(ModelState.Values.Select(x => x.Errors).First().First().ErrorMessage);
+        }
+
+        [HttpPost("Register")]
+        public async Task<IActionResult> Register(RegisterModel registerModel)
+        {
+            if(ModelState.IsValid)
+            {
+               var result = await _userManager.CreateAsync(new User()
+                        {
+                            UserName = registerModel.UserName,
+                            Email = registerModel.Email
+                            
+                        }, registerModel.Password);
+
+                if (result.Succeeded)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                        ModelState.AddModelError(String.Empty, error.Description);
+
+                    return BadRequest(ModelState.Values.SelectMany(x => x.Errors));
+                }
+            }
+
+            return BadRequest(ModelState.Values.SelectMany(x => x.Errors));
         }
 
         private async Task<UserProfileModel> GenerateJwtTokenForUser(User user)
