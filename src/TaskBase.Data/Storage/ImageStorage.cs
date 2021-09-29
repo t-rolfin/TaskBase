@@ -22,32 +22,32 @@ namespace TaskBase.Data.Storage
             _environment = environment;
         }
 
-        public async Task<string> UpdateImage(string oldImageName, Stream stream, string imgExtension)
+        public async Task<string> UpdateImage(string oldImageName, Stream stream, string imgExtension, string rootPath = default)
         {
-            var filePath = Path.Combine(_environment.WebRootPath, UPLOAD_PATH, oldImageName);
+            var filePath = Path.Combine(rootPath == default ? _environment.WebRootPath : rootPath, UPLOAD_PATH, oldImageName);
             var response = string.Empty;
 
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
-                response = await UploadImage(stream, imgExtension);
+                response = await UploadImage(stream, imgExtension, rootPath);
             }
             else
             {
-                response = await UploadImage(stream, imgExtension);
+                response = await UploadImage(stream, imgExtension, rootPath);
             }
 
             return response;
         }
 
-        public async Task<string> UploadImage(Stream stream, string imgExtension)
+        public async Task<string> UploadImage(Stream stream, string imgExtension, string rootPath = default)
         {
             string fileName = null;
 
             if(allowExtensions.Any(x => x == imgExtension) && stream != null)
             {
                 fileName = Guid.NewGuid().ToString() + imgExtension;
-                string filePath = Path.Combine(_environment.WebRootPath, UPLOAD_PATH, fileName);
+                string filePath = Path.Combine(rootPath == default ? _environment.WebRootPath : rootPath, UPLOAD_PATH, fileName);
                 using var fileStream = new FileStream(filePath, FileMode.Create);
 
                 await stream.CopyToAsync(fileStream);

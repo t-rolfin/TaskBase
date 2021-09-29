@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System;
 using Microsoft.AspNetCore.Http;
+using TaskBase.Data.Storage;
 
 namespace TaskBase.Data
 {
@@ -34,6 +35,7 @@ namespace TaskBase.Data
 
             services.AddDbContext<TaskDbContext>();
             services.AddTransient<ITaskAsyncRepository, TaskRepository>();
+            services.AddTransient<IImageStorage, ImageStorage>();
 
             return services;
         }
