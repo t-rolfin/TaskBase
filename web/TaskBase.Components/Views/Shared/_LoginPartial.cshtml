@@ -2,44 +2,47 @@
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
-<ul class="navbar-nav align-items-center">
+<ul class="navbar-nav ">
 
     @if (SignInManager.IsSignedIn(User))
     {
-        <li class="dropdown">
+        <li class="dropdown d-flex align-items-center">
             @if ((await AuthorizationService.AuthorizeAsync(User, "Admin")).Succeeded)
             {
-                <div class="nav-link text-dark" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <div class="nav-link text-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     @UserManager.GetUserName(User)
                 </div>
 
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <div class="dropdown-menu bg-dark" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="/Identity/Account/Users">Manage Users</a>
+                    <div class="nav-item">
+                        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
+                            <button id="logout" type="submit" class="dropdown-item text-white">LogOut</button>
+                        </form>
+                    </div>
                 </div>
+
             }
             else
             {
-                <div class="nav-link text-dark" type="button">
+                <div class="nav-link text-white">
                     @UserManager.GetUserName(User)
                 </div>
             }
+
         </li>
 
         <vc:avatar />
 
-        <li class="nav-item">
-            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
-                <button id="logout" type="submit" class="nav-link btn btn-link text-dark"><i class="fas fa-sign-out-alt"></i></button>
-            </form>
-        </li>
-    }
-    else
-    {
-        <li class="nav-item">
-            <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
-        </li>
-    }
+        }
+        else
+        {
+            <li class="nav-item rounded" style="background-color: #383d3f">
+                <a class="nav-link" id="login" asp-area="Identity" asp-page="/Account/Login">LOGIN</a>
+            </li>
+
+            @*<li class="nav-item">
+                <a class="nav-link" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+            </li>*@
+        }
 </ul>

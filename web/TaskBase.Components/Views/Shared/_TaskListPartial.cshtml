@@ -20,14 +20,13 @@
 
             <div class="card mb-2" data-id="@task.Id">
 
-                <div class="card-header">
+                <div class="card-header bg-dark">
                     <div class="row justify-content-between">
                         <h6 class="w-50 limited-text" data-toggle="tooltip" data-placement="bottom" title="@task.TaskTitle">@task.TaskTitle</h6>
-                        <h6 class="" style="text-align:right; width:fit-content;">Due Date: @task.DueDate.ToShortDateString()</h6>
                     </div>
                 </div>
 
-                <div class="card-body">
+                <div class="card-body bg-dark">
                     <p>@task.TaskDescription</p>
                 </div>
 
