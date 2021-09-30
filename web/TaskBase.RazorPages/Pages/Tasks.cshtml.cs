@@ -31,7 +31,6 @@ namespace TaskBase.RazorPages.Pages
 
         public void OnGet() { }
 
-
         public async Task<IActionResult> OnPostAsync(CreateTaskModel model, CancellationToken cancellationToken)
         {
             if (ModelState.IsValid)
@@ -70,21 +69,19 @@ namespace TaskBase.RazorPages.Pages
             return ViewComponent("Tasks");
         }
 
-        public async Task<IActionResult> OnPostInProgressAsync(string taskId, CancellationToken cancellationToken)
+        public async Task OnPostChangeTaskState(Guid taskId, string newState, CancellationToken cancellationToken)
         {
-            await _taskFacade.SetTaskAsInProgressAsync(Guid.Parse(taskId), cancellationToken);
-            return ViewComponent("Tasks");
+            var isSuccess = Enum.TryParse(typeof(TaskState), newState, out object response);
+
+            if (isSuccess && response is not null)
+            {
+                await _taskFacade.ChangeTaskState(taskId, (TaskState)response , cancellationToken);
+            }
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(string taskId, CancellationToken cancellationToken)
         {
             await _taskFacade.DeleteTaskAsync(Guid.Parse(taskId), cancellationToken);
-            return ViewComponent("Tasks");
-        }
-
-        public async Task<IActionResult> OnPostDoneAsync(string taskId, CancellationToken cancellationToken)
-        {
-            await _taskFacade.CloseTaskAsync(Guid.Parse(taskId), cancellationToken);
             return ViewComponent("Tasks");
         }
 

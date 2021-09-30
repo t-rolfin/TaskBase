@@ -45,7 +45,7 @@ namespace TaskBase.MVC.Controllers
 
             return ViewComponent("TaskRow", new TaskRowModel(
                 Guid.NewGuid(),
-                TaskState.New,
+                TaskState.ToDo,
                 tasks.Select(x =>
                 {
                     return new TaskModel() { Id = x.Id, TaskTitle = x.Title, TaskDescription = x.Description, TaskState = x.TaskState };
@@ -66,7 +66,7 @@ namespace TaskBase.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Done(string taskId)
         {
-            await _taskFacade.CloseTaskAsync(Guid.Parse(taskId), default);
+            await _taskFacade.ChangeTaskState(Guid.Parse(taskId), TaskState.Done, default);
 
             return RedirectPermanent("/Tasks");
         }

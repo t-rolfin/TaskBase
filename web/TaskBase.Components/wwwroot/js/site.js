@@ -25,4 +25,31 @@ function closeModal() {
     $('#createTaskModal').modal('hide');
     $('body').removeClass('modal-open');
     $('.modal-backdrop').remove();
+
+    enableDragula();
+}
+
+const rowType = [
+    "New",
+    "InProgress",
+    "Completed"
+]
+
+$(document).ready(() => {
+    enableDragula();
+});
+
+function enableDragula() {
+    dragula([
+        document.querySelector("#ToDo"),
+        document.querySelector("#Doing"),
+        document.querySelector("#Done")
+    ]).on("drop", function (el, target, source) {
+
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        var taskid = el.dataset.id;
+        var newstate = target.id;
+
+        $.post("/Tasks/ChangeTaskState", { taskid, newstate, "__RequestVerificationToken": token });
+    });
 }

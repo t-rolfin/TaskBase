@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TaskBase.Core.Enums;
 using TaskBase.Core.Interfaces;
 using TaskBase.Core.TaskAggregate;
 
@@ -18,7 +19,7 @@ namespace TaskBase.Core.Facades
             _taskRepository = taskRepository ?? throw new ArgumentNullException("The TaskRepository from TaskFacade is null!");
         }
 
-        public async Task<bool> CloseTaskAsync(Guid taskId, CancellationToken cancellationToken)
+        public async Task<bool> ChangeTaskState(Guid taskId, TaskState taskState, CancellationToken cancellationToken)
         {
             try
             {
@@ -26,7 +27,7 @@ namespace TaskBase.Core.Facades
                 if (task == default)
                     return false;
 
-                task.CompleteTask();
+                task.ChangeTaskState(taskState);
                 await _taskRepository.UpdateAsync(task, cancellationToken);
 
                 return true;
@@ -87,22 +88,6 @@ namespace TaskBase.Core.Facades
         public async Task<User> GetUserByNameAsync(string userName)
         {
             return await _taskRepository.GetUserByUserNameAsync(userName);
-        }
-
-        public async Task<bool> SetTaskAsInProgressAsync(Guid taskId, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var task = await GetTaskDetailsAsync(taskId);
-                task.StartWorking();
-                await _taskRepository.UpdateAsync(task);
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
         }
     }
 }

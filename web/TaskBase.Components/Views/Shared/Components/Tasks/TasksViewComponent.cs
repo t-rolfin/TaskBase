@@ -51,22 +51,22 @@ namespace TaskBase.Components.Views.Shared.Components.Tasks
         {
             Rows.Add(new TaskRowModel(
                     Guid.NewGuid(),
-                    TaskState.New,
-                    Tasks.Where(x => x.TaskState == TaskState.New),
+                    TaskState.ToDo,
+                    Tasks.Where(x => x.TaskState == TaskState.ToDo),
                     new TaskRowCustomization("newTaskRow", "To Do", "bg-info")
                 ));
 
             Rows.Add(new TaskRowModel(
                     Guid.NewGuid(),
-                    TaskState.InProgress,
-                    Tasks.Where(x => x.TaskState == TaskState.InProgress),
-                    new TaskRowCustomization("inProggressTaskRow", "In Progress", "bg-secondary")
+                    TaskState.Doing,
+                    Tasks.Where(x => x.TaskState == TaskState.Doing),
+                    new TaskRowCustomization("inProggressTaskRow", "Doing", "bg-secondary")
                 ));
 
             Rows.Add(new TaskRowModel(
                     Guid.NewGuid(),
-                    TaskState.Completed,
-                    Tasks.Where(x => x.TaskState == TaskState.Completed),
+                    TaskState.Done,
+                    Tasks.Where(x => x.TaskState == TaskState.Done),
                     new TaskRowCustomization("completedTaskRow", "Done", "bg-success")
                 ));
 

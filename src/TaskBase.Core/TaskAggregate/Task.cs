@@ -21,7 +21,7 @@ namespace TaskBase.Core.TaskAggregate
             Description = description;
             DueDate = dueDate;
             CreatedAt = DateTime.Now;
-            TaskState = TaskState.New;
+            TaskState = TaskState.ToDo;
             AssignTo = assignTo;
         }
 
@@ -33,15 +33,10 @@ namespace TaskBase.Core.TaskAggregate
         public TaskState TaskState { get; protected set; }
         public User AssignTo { get; protected set; }
 
-        public void StartWorking()
+        public void ChangeTaskState(TaskState taskState)
         {
-            TaskState = TaskState.InProgress;
-        }
-
-        public void CompleteTask()
-        {
-            TaskState = TaskState.Completed;
-            CompletedAt = DateTime.Now;
+            if (taskState != TaskState)
+                this.TaskState = taskState;
         }
 
     }

@@ -3,29 +3,31 @@
 @inject IViewLocalizer Localizer
 
 
-<div class="row w-100 rounded tabbable" id="tasks-container">
+<div class="d-flex flex-row w-100 rounded tabbable" id="tasks-container">
 
     @foreach (var row in Model)
     {
 
-        <div class="col-sm h-auto border mx-1 p-0 rounded overflow-hidden" style="max-height: 75vh; min-height:75vh"
-             id="@row.Customize.Id">
+        <div class="d-flex flex-column h-auto border mr-2 p-0 rounded overflow-hidden" style="max-height: 75vh; min-height:75vh; min-width:355px;">
 
-            <div class="p-3 rounded-top row justify-content-around align-items-center @row.Customize.BgColor"
+            <div class="p-2 rounded-top row justify-content-around align-items-center @row.Customize.BgColor"
                  style="min-height:68px">
 
                 <h5 class="mb-0 text-center text-white w-50">@Localizer[row.Customize.RowName]</h5>
 
             </div>
 
-            <div class="p-3 w-auto overflow-auto">
+            <div class="p-2 w-100 overflow-auto h-100">
 
-                <partial name="_TaskListPartial" model="row.Tasks.ToList()" />
+                <partial name="_TaskListPartial" model="new KeyValuePair<string, List<TaskModel>>(row.RowType.ToString(), row.Tasks.ToList())" />
 
             </div>
 
         </div>
 
     }
+
+    <div class="d-flex flex-column h-auto mr-2 p-0 rounded overflow-hidden" style="max-height: 75vh; min-height:75vh; min-width:355px; border: 1px dashed blue">
+    </div>
 
 </div>

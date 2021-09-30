@@ -1,4 +1,4 @@
-﻿@model List<TaskModel>
+﻿@model KeyValuePair<string, List<TaskModel>>
 
 @inject IViewLocalizer Localizer
 
@@ -10,14 +10,15 @@
     }
 </style>
 
-<div class="container-flex h-100 w-100">
+<div class="container-flex h-auto w-100 " id="@Model.Key" style="min-height:100%;">
 
-    @if (Model != null && Model.Count() != 0)
+    @if (Model.Value.Count() != 0)
     {
 
-        @foreach (var task in Model)
+        @foreach (var task in Model.Value)
         {
-            <div class="card mb-3">
+
+            <div class="card mb-2" data-id="@task.Id">
 
                 <div class="card-header">
                     <div class="row justify-content-between">
@@ -30,38 +31,10 @@
                     <p>@task.TaskDescription</p>
                 </div>
 
-                <div class="card-footer">
+                @*<div class="card-footer">
                     <div class="row justify-content-center">
-
-
-                        @if (task.TaskState == Core.Enums.TaskState.New)
-                        {
-                            <form method="post" action="/Tasks/InProgress" data-ajax="true" asp-antiforgery="true" style="width:fit-content"
-                                  data-ajax-method="post" data-ajax-mode="replace-with" data-ajax-update="#tasks-container">
-
-                                <input type="hidden" name="taskid" value="@task.Id" />
-
-                                <button type="submit" class="dropdown-item text-secundary">
-                                    <b>@Localizer["WorkingOn"]</b>
-                                </button>
-                            </form>
-                        }
-
-                        @if (task.TaskState == Core.Enums.TaskState.InProgress)
-                        {
-                            <form method="post" action="/Tasks/Done" data-ajax="true" asp-antiforgery="true" style="width:fit-content"
-                                  data-ajax-method="post" data-ajax-mode="replace-with" data-ajax-update="#tasks-container">
-
-                                <input type="hidden" name="taskid" value="@task.Id" />
-
-                                <button type="submit" class="dropdown-item text-success">
-                                    <b>@Localizer["Complete"]</b>
-                                </button>
-                            </form>
-                        }
-
                         <form method="post" action="/Tasks/Delete" data-ajax="true" asp-antiforgery="true" style="width:fit-content"
-                              data-ajax-method="post" data-ajax-mode="replace-with" data-ajax-update="#tasks-container">
+                              data-ajax-method="post" data-ajax-mode="replace-with" data-ajax-update="#tasks-container" data-ajax-complete="enableDragula()">
 
                             <input type="hidden" name="taskId" value="@task.Id" />
 
@@ -70,7 +43,7 @@
                             </button>
                         </form>
                     </div>
-                </div>
+                </div>*@
 
             </div>
         }

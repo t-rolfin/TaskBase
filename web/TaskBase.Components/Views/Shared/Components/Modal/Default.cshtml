@@ -7,7 +7,7 @@
     }
 </style>
 
-<div class="row border rounded align-items-center mb-3 p-1 justify-content-around" style="font-size:1.1rem; width:130px;" data-toggle="modal" data-target="#createTaskModal">
+<div class="d-flex flex-row border rounded align-items-center mb-3 p-1 justify-content-around" style="font-size:1.1rem; width:130px;" data-toggle="modal" data-target="#createTaskModal">
     <i style="width:fit-content;" class="fas fa-plus p-0"></i>
     <p style="width:fit-content;" class="p-0 m-0">New Task</p>
 </div>
@@ -24,7 +24,7 @@
             <div class="modal-body">
 
                 <form method="post" data-ajax="true" asp-controller="Tasks" data-ajax-method="post" data-ajax-mode="replace-with"
-                      data-ajax-update="#tasks-container" data-ajax-complete="closeModal()">
+                      data-ajax-update="#tasks-container" data-ajax-success="closeModal()">
 
                     <div class="mb-3">
                         <label for="taskTitle" class="form-label">@Localizer["Title"]</label>

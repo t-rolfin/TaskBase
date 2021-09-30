@@ -5,6 +5,13 @@
     ViewData["Title"] = "My Tasks";
 }
 
-<vc:modal />
+@Html.AntiForgeryToken()
 
-<vc:tasks />
+<div class="overflow-auto pb-2">
+
+    <vc:modal />
+
+    <vc:tasks />
+
+</div>
+
