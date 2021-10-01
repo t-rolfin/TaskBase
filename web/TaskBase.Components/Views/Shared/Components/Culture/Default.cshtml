@@ -2,7 +2,7 @@
 
 <div>
     <form id="culture-switcher">
-        <select name="culture" id="culture-options" class="bg-dark mr-3">
+        <select name="culture" id="culture-options" class="bg-dark mr-3 p-1">
             @foreach (var culture in Model.SupportedCultures)
             {
                 <option value="@culture.Name" selected="@(Model.CurrentUICulture.Name == culture.Name)">@culture.ThreeLetterWindowsLanguageName</option>

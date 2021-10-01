@@ -1,5 +1,4 @@
-﻿@inject IViewLocalizer Localizer
-@{ IgnoreBody(); }
+﻿@{ IgnoreBody(); }
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,7 +11,7 @@
     <link href="~/_content/TaskBase.Components/lib/dragula/dragula.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-<body class="bg-dark w-100 vh-100" id="main-layout">
+<body class="bg-dark w-100 vh-100 text-white" id="main-layout">
 
     <div class="container-fluid overflow-hidden position-relative h-100" id="main-container">
 
@@ -28,25 +27,7 @@
                     </div>
                 </a>
 
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="navbar-collapse collapse d-md-inline-flex justify-content-between text-center" >
-
-                    <ul class="navbar-nav justify-self-center"  style="font-size:1.2rem">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/">@Localizer["Home"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Tasks">@Localizer["Tasks"]</a>
-                        </li>
-                    </ul>
-
-                    <partial name="_LoginPartial" />
-
-                </div>
+                <partial name="_LoginPartial" />
 
             </nav>
 

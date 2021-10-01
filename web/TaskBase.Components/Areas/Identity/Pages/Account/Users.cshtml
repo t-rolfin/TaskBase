@@ -1,12 +1,12 @@
 ﻿@page "{handler?}"
 @{
     ViewData["Title"] = "Users";
-    Layout = "_AuthLayout";
+    Layout = "_DashboardLayout";
 }
 
 @model TaskBase.Components.Areas.Identity.Pages.Account.UsersModel
 
-<div class="container-flex row justify-content-center">
+<div class="container-flex row justify-content-center text-white">
     @foreach (var member in Model.Users)
     {
         <div class="card m-3 w-25 bg-transparent p-0" style="max-width:350px; min-width:300px">

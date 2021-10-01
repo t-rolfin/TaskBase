@@ -8,17 +8,37 @@
     src: url('../fonts/VarelaRound-Regular.ttf') format('truetype');
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #202324 inset !important;
+    -webkit-text-fill-color: white;
+}
+
 #logo-container{
     font-family: Gaoel;
 }
 
-* {
+select{
+    color: white !important;
+    border-radius: 5px;
+}
+
+.modal-content, .card, button, span, i, p, h1, h2, h3, h4, h5, h6{
     color: white;
+}
+
+textarea{
+    min-height: 150px;
+}
+
+* {
     background: transparent;
     border-color: #383d3f !important;
 }
 
-#main-layout, #auth-layout {
+#main-layout, #auth-layout, #dashboard-layout {
     font-family: VarelaRound-Regular;
 }
 
@@ -55,7 +75,8 @@ a {
     height: 100%;
 }
 
-input{
+input {
+    color: white !important;
     background-color: transparent !important;
 }
 

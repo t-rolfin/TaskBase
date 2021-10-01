@@ -1,48 +1,60 @@
 ﻿@inject IAuthorizationService AuthorizationService
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
+@inject IViewLocalizer Localizer
 
-<ul class="navbar-nav ">
+
+<div class="navbar-nav d-flex flex-row align-items-center">
 
     @if (SignInManager.IsSignedIn(User))
     {
-        <li class="dropdown d-flex align-items-center">
-            @if ((await AuthorizationService.AuthorizeAsync(User, "Admin")).Succeeded)
-            {
-                <div class="nav-link text-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    @UserManager.GetUserName(User)
-                </div>
+        <div class="dropdown d-flex align-items-center">
 
-                <div class="dropdown-menu bg-dark" aria-labelledby="dropdownMenuButton">
+            <div class="nav-link text-white mr-3" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                @UserManager.GetUserName(User)
+            </div>
+
+            <div class="dropdown-menu bg-dark" aria-labelledby="dropdownMenuButton">
+
+                @if ((await AuthorizationService.AuthorizeAsync(User, "Admin")).Succeeded)
+                {
                     <a class="dropdown-item" href="/Identity/Account/Users">Manage Users</a>
-                    <div class="nav-item">
-                        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
-                            <button id="logout" type="submit" class="dropdown-item text-white">LogOut</button>
-                        </form>
-                    </div>
+                }
+
+                <div class="nav-item">
+                    <a class="dropdown-item" href="/Tasks">@Localizer["My Tasks"]</a>
                 </div>
 
-            }
-            else
-            {
-                <div class="nav-link text-white">
-                    @UserManager.GetUserName(User)
+                <div class="nav-item">
+                    <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
+                        <button id="logout" type="submit" class="dropdown-item text-white">LogOut</button>
+                    </form>
                 </div>
-            }
 
-        </li>
+            </div>
+
+        </div>
 
         <vc:avatar />
 
+    }
+    else
+    {
+        if (Context.Request.Path.Value.Contains("Login"))
+        {
+            <div class="mr-2">
+                Don't have an account?
+            </div>
+
+            <div class="nav-item rounded px-2" style="background-color: #383d3f">
+                <a class="nav-link" id="register" asp-area="Identity" asp-page="/Account/Register">Sign Up</a>
+            </div>
         }
         else
         {
-            <li class="nav-item rounded" style="background-color: #383d3f">
-                <a class="nav-link" id="login" asp-area="Identity" asp-page="/Account/Login">LOGIN</a>
-            </li>
-
-            @*<li class="nav-item">
-                <a class="nav-link" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
-            </li>*@
+            <div class="nav-item rounded px-2" style="background-color: #383d3f">
+                <a class="nav-link" id="login" asp-area="Identity" asp-page="/Account/Login">Log In</a>
+            </div>
         }
-</ul>
+    }
+</div>
