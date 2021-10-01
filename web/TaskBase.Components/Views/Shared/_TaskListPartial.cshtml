@@ -2,14 +2,6 @@
 
 @inject IViewLocalizer Localizer
 
-<style>
-    .limited-text {
-        display: block;
-        overflow: hidden;
-        white-space: nowrap;
-    }
-</style>
-
 <div class="container-flex h-auto w-100" id="@Model.Key" style="min-height:100%;">
 
     @if (Model.Value.Count() != 0)
@@ -20,29 +12,39 @@
 
             <div class="card mb-2" data-id="@task.Id">
 
-                <div class="card-header bg-dark">
-                    <div class="row justify-content-between">
-                        <h6 class="w-50 limited-text" data-toggle="tooltip" data-placement="bottom" title="@task.TaskTitle">@task.TaskTitle</h6>
+                <div class="card-header d-flex bg-dark justify-content-between p-2">
+
+                    <div class="w-auto" style="max-width:250px" data-toggle="tooltip" data-placement="bottom" title="@task.TaskTitle">
+                        <a href="#" class="p-0 m-0 h6 text-limit text-primary">@task.TaskTitle</a>
                     </div>
+
+                    <div class="dropdown dropright">
+
+                        <div id="task-menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-h px-2"></i>
+                        </div>
+
+                        <div class="dropdown-menu bg-dark text-center position-absolute" aria-labelledby="task-menu">
+
+                            <form method="post" action="/Tasks/Delete" data-ajax="true" asp-antiforgery="true" data-ajax-method="post"
+                                  data-ajax-mode="replace-with" data-ajax-update="#tasks-container" data-ajax-complete="enableDragula()"
+                                  class="w-auto">
+
+                                <input type="hidden" name="taskId" value="@task.Id" />
+
+                                <button type="submit" class="dropdown-item text-danger">@Localizer["Delete"]</button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
-                <div class="card-body bg-dark">
-                    <p>@task.TaskDescription</p>
+                <div class="card-body bg-dark p-2">
+                    <p class="m-0">@task.TaskDescription</p>
                 </div>
-
-                @*<div class="card-footer">
-                    <div class="row justify-content-center">
-                        <form method="post" action="/Tasks/Delete" data-ajax="true" asp-antiforgery="true" style="width:fit-content"
-                              data-ajax-method="post" data-ajax-mode="replace-with" data-ajax-update="#tasks-container" data-ajax-complete="enableDragula()">
-
-                            <input type="hidden" name="taskId" value="@task.Id" />
-
-                            <button type="submit" class="dropdown-item text-danger">
-                                <b>@Localizer["Delete"]</b>
-                            </button>
-                        </form>
-                    </div>
-                </div>*@
 
             </div>
         }

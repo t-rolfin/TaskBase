@@ -1,15 +1,10 @@
 ﻿@inject IAuthorizationService AuthorizationService
 @inject IViewLocalizer Localizer
 
-<style>
-    #select-member::-webkit-calendar-picker-indicator {
-        display: none !important;
-    }
-</style>
 
-<div class="d-flex flex-row border rounded align-items-center mb-3 p-1 justify-content-around" style="font-size:1.1rem; width:130px;" data-toggle="modal" data-target="#createTaskModal">
+<div class="d-flex flex-row border rounded align-items-center mb-3 p-1 justify-content-around" style="font-size:1.1rem; width:120px;" data-toggle="modal" data-target="#createTaskModal">
     <i class="fas fa-plus p-0 w-auto"></i>
-    <p class="p-0 m-0 w-auto">New Task</p>
+    <p class="p-0 m-0 w-auto">@Localizer["New"]</p>
 </div>
 
 <div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

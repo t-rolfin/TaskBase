@@ -18,7 +18,7 @@
 
                 @if ((await AuthorizationService.AuthorizeAsync(User, "Admin")).Succeeded)
                 {
-                    <a class="dropdown-item" href="/Identity/Account/Users">Manage Users</a>
+                    <a class="dropdown-item" href="/Identity/Account/Users">@Localizer["Users"]</a>
                 }
 
                 <div class="nav-item">

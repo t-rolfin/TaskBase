@@ -16,6 +16,18 @@ input:-webkit-autofill:active {
     -webkit-text-fill-color: white;
 }
 
+.text-limit {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+    -webkit-box-orient: vertical;
+}
+
+.mw-75{
+    max-width: 75% !important;
+}
+
 #logo-container{
     font-family: Gaoel;
 }
@@ -112,4 +124,8 @@ input {
 
 *::-webkit-scrollbar-thumb:hover {
   background: #303598;
+}
+
+#select-member::-webkit-calendar-picker-indicator {
+    display: none !important;
 }
