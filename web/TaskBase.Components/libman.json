@@ -34,6 +34,10 @@
         "dragula.css",
         "dragula.min.css"
       ]
+    },
+    {
+      "library": "autosize.js@5.0.1",
+      "destination": "wwwroot/lib/autosize.js/"
     }
   ]
 }

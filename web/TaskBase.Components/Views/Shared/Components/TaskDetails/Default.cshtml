@@ -1,0 +1,39 @@
+﻿@model TaskDetailsModel
+
+
+<div class="d-flex flex-column w-100" id="task-details">
+
+    <div class="d-flex w-auto m-2" style="font-size:1.1rem">
+        <from class="d-flex align-items-center w-100">
+            <input id="task-title" class="form-control text-white w-75 mr-3" type="text" name="name" value="@Model.Title" disabled />
+            
+            <div class="d-none align-items-center" id="save-title-edit">
+                <i onclick="toggleEdit('enable-title-edit','save-title-edit','task-title')" class="fas fa-times mr-2"></i>
+                <button type="submit" class="border-0" ><i class="far fa-save"></i></button>
+            </div>
+
+            <i onclick="toggleEdit('enable-title-edit','save-title-edit','task-title')" id="enable-title-edit" class="fas fa-edit"></i>
+        </from>
+    </div>
+
+    <div class="d-flex flex-column w-auto mt-2 m-2">
+        <form action="/" method="post">
+            <div class="d-flex float-right">
+                <div class="align-items-center d-none border-bottom" id="save-desc-edit">
+                    <i onclick="toggleEdit('enable-desc-edit', 'save-desc-edit', 'task-description')" class="fas fa-times mr-2"></i>
+                    <button type="submit" class="border-0"><i class="far fa-save"></i></button>
+                </div>
+
+                <i onclick="toggleEdit('enable-desc-edit', 'save-desc-edit', 'task-description')" id="enable-desc-edit" class="fas fa-edit"></i>
+            </div>
+
+            <textarea class="border bg-dark text-white w-100 p-2" disabled style="height:auto" id="task-description">@Model.Description</textarea>
+        </form>
+    </div>
+
+    <div class="d-flex p-2">
+        <h5>Notes</h5>
+        <div class="border-bottom"></div>
+    </div>
+
+</div>

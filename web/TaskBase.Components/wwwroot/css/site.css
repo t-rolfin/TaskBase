@@ -16,6 +16,14 @@ input:-webkit-autofill:active {
     -webkit-text-fill-color: white;
 }
 
+.show-details{
+    right: -24px !important;
+}
+
+.transition {
+    transition: 0.5s ease-in-out;
+}
+
 .text-limit {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -128,4 +136,16 @@ input {
 
 #select-member::-webkit-calendar-picker-indicator {
     display: none !important;
+}
+
+input:disabled{
+    border:none;
+}
+
+i:hover{
+    cursor: pointer;
+}
+
+textarea:disabled{
+    border: none !important;
 }

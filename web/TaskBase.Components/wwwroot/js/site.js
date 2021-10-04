@@ -53,3 +53,23 @@ function enableDragula() {
         $.post("/Tasks/ChangeTaskState", { taskid, newstate, "__RequestVerificationToken": token });
     });
 }
+
+function toggleEdit(enableEditId, saveEditId, toBeDisable) {
+    document.getElementById(toBeDisable).toggleAttribute("disabled");
+    $("#" + saveEditId).toggleClass("d-flex");
+    $("#" + enableEditId).toggleClass("d-none");
+}
+
+$(document).ready(() => autosize(document.querySelectorAll('textarea')));
+
+function autoTextarea() {
+    autosize(document.querySelectorAll('textarea'));
+}
+
+function openDetailsModal() {
+    $("#details-modal").addClass("show-details");
+}
+
+function closeDetailsModal() {
+    $("#details-modal").removeClass("show-details");
+}

@@ -85,5 +85,13 @@ namespace TaskBase.RazorPages.Pages
             return ViewComponent("Tasks");
         }
 
+        public async Task<IActionResult> OnGetTaskDetailsAsync(string taskId, CancellationToken cancellationToken)
+        {
+            var taskDetails = await _taskFacade.GetTaskDetailsAsync(Guid.Parse(taskId));
+            var taskDetailsModel = new TaskDetailsModel(taskDetails.Id.ToString(), taskDetails.Title, taskDetails.Description);
+
+            return ViewComponent("TaskDetails", taskDetailsModel);
+        }
+
     }
 }

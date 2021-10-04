@@ -11,7 +11,7 @@
     <link href="~/_content/TaskBase.Components/lib/dragula/dragula.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-<body class="bg-dark" id="dashboard-layout">
+<body class="bg-dark overflow-hidden" id="dashboard-layout">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-dark border-bottom box-shadow mb-3">
             <div class="container">
@@ -23,7 +23,7 @@
                         <p class="m-0 p-0">Base</p>
                     </div>
                 </a>
-                
+
                 <vc:culture />
 
                 <partial name="_LoginPartial" />
@@ -38,17 +38,12 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2021 - TaskBase - <a asp-area="" asp-page="/Privacy">Privacy</a>
-        </div>
-    </footer>
-
     <script src="~/_content/TaskBase.Components/lib/jquery/jquery.min.js"></script>
     <script src="~/_content/TaskBase.Components/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/_content/TaskBase.Components/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/_content/TaskBase.Components/lib/jqueryui/jquery-ui.min.js"></script>
     <script src="~/_content/TaskBase.Components/lib/dragula/dragula.min.js"></script>
+    <script src="~/_content/TaskBase.Components/lib/autosize.js/autosize.min.js"></script>
     <script src="~/_content/TaskBase.Components/js/site.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://kit.fontawesome.com/4c99a2880c.js" crossorigin="anonymous"></script>

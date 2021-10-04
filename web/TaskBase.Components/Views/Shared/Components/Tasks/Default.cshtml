@@ -3,12 +3,12 @@
 @inject IViewLocalizer Localizer
 
 
-<div class="d-flex flex-row w-100 rounded tabbable" id="tasks-container">
+<div class="d-flex flex-row overflow-hidden w-100 rounded tabbable" id="tasks-container">
 
     @foreach (var row in Model)
     {
 
-        <div class="d-flex flex-column h-auto border mr-2 p-0 rounded overflow-hidden" style="max-height: 75vh; min-height:75vh; min-width:355px;">
+        <div class="d-flex flex-column border mr-2 p-0 rounded overflow-hidden" style="height: 80vh; width:400px; min-width:400px">
 
             <div class="p-2 rounded-top bg-dark" >
 
