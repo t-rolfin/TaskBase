@@ -25,8 +25,8 @@ namespace TaskBase.Core.TaskAggregate
             AssignTo = assignTo;
         }
 
-        public string Title { get; init; }
-        public string Description { get; init; }
+        public string Title { get; protected set; }
+        public string Description { get; protected set; }
         public DateTime CreatedAt { get; init; }
         public DateTime CompletedAt { get; protected set; }
         public DateTime DueDate { get; protected set; }
@@ -37,6 +37,20 @@ namespace TaskBase.Core.TaskAggregate
         {
             if (taskState != TaskState)
                 this.TaskState = taskState;
+        }
+
+        public void EditDescription(string newDescription)
+        {
+            _ = string.IsNullOrWhiteSpace(newDescription)
+                ? throw new ArgumentNullException("The edited description must not be null or empty.")
+                : this.Description = newDescription;
+        }
+
+        public void EditTitle(string newTitle)
+        {
+            _ = string.IsNullOrWhiteSpace(newTitle)
+                ? throw new ArgumentNullException("The edited description must not be null or empty.")
+                : this.Title = newTitle;
         }
 
     }

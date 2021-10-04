@@ -18,5 +18,7 @@ namespace TaskBase.Core.Interfaces
         Task<CoreTask> GetTaskDetailsAsync(Guid taskId);
         Task<IEnumerable<CoreTask>> GetTasksByUserIdAsync(Guid userId);
         Task<Core.TaskAggregate.User> GetUserByNameAsync(string userName);
+        Task<bool> EditDescription(string taskId, string newDescription, CancellationToken cancellationToken);
+        Task<bool> EditTitle(string taskId, string newTitle, CancellationToken cancellationToken);
     }
 }

@@ -49,10 +49,6 @@ select{
     color: white;
 }
 
-textarea{
-    min-height: 150px;
-}
-
 * {
     background: transparent;
     border-color: #383d3f !important;

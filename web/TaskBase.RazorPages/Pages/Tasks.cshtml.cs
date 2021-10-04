@@ -93,5 +93,16 @@ namespace TaskBase.RazorPages.Pages
             return ViewComponent("TaskDetails", taskDetailsModel);
         }
 
+        public async Task<IActionResult> OnPostUpdateTaskDescriptionAsync(string taskId, string newDescription, CancellationToken cancellationToken)
+        {
+            var result = await _taskFacade.EditDescription(taskId, newDescription, cancellationToken);
+            return ViewComponent("Tasks");
+        }
+
+        public async Task<IActionResult> OnPostUpdateTaskTitleAsync(string taskId, string newTitle, CancellationToken cancellationToken)
+        {
+            var result = await _taskFacade.EditTitle(taskId, newTitle, cancellationToken);
+            return ViewComponent("Tasks");
+        }
     }
 }

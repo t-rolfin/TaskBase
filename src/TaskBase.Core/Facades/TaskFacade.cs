@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TaskBase.Core.Enums;
 using TaskBase.Core.Interfaces;
 using TaskBase.Core.TaskAggregate;
+using BaseTask = TaskBase.Core.TaskAggregate.Task;
 
 namespace TaskBase.Core.Facades
 {
@@ -89,5 +90,41 @@ namespace TaskBase.Core.Facades
         {
             return await _taskRepository.GetUserByUserNameAsync(userName);
         }
+
+        public async Task<bool> EditDescription(string taskId, string newDescription, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var taskDetails = await GetTaskDetailsAsync(Guid.Parse(taskId));
+                taskDetails.EditDescription(newDescription);
+
+                await _taskRepository.UpdateAsync(taskDetails, cancellationToken);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> EditTitle(string taskId, string newTitle, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var taskDetails = await GetTaskDetailsAsync(Guid.Parse(taskId));
+                taskDetails.EditTitle(newTitle);
+
+                await _taskRepository.UpdateAsync(taskDetails, cancellationToken);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+
     }
 }
