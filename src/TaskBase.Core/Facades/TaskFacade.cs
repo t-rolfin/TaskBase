@@ -91,7 +91,7 @@ namespace TaskBase.Core.Facades
             return await _taskRepository.GetUserByUserNameAsync(userName);
         }
 
-        public async Task<bool> EditDescription(string taskId, string newDescription, CancellationToken cancellationToken)
+        public async Task<bool> EditDescriptionAsync(string taskId, string newDescription, CancellationToken cancellationToken)
         {
             try
             {
@@ -108,7 +108,7 @@ namespace TaskBase.Core.Facades
             }
         }
 
-        public async Task<bool> EditTitle(string taskId, string newTitle, CancellationToken cancellationToken)
+        public async Task<bool> EditTitleAsync(string taskId, string newTitle, CancellationToken cancellationToken)
         {
             try
             {
@@ -125,6 +125,50 @@ namespace TaskBase.Core.Facades
             }
         }
 
+        public async Task<Note> CreateNoteAsync(string taskId, string noteContent, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var task = await _taskRepository.GetTaskAsync(Guid.Parse(taskId));
+                var note = task.CreateNote(noteContent);
 
+                await _taskRepository.UpdateAsync(task, cancellationToken);
+
+                return note;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<bool> EditNoteAsync(string taskId, string noteId, string newContent, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var task = await GetTaskDetailsAsync(Guid.Parse(taskId));
+                task.EditeNote(Guid.Parse(noteId), newContent);
+
+                await _taskRepository.UpdateAsync(task, cancellationToken);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<IEnumerable<Note>> GetTaskNotesAsync(string taskId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                return await _taskRepository.GetTaskNotesAsync(Guid.Parse(taskId), cancellationToken);
+            }
+            catch (Exception)
+            {
+                return new List<Note>();
+            }
+        }
     }
 }

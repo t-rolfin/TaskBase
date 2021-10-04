@@ -73,3 +73,52 @@ function openDetailsModal() {
 function closeDetailsModal() {
     $("#details-modal").removeClass("show-details");
 }
+
+function createNoteContainer(taskId) {
+    var notesContainer = $("#notes-container");
+    var generatedId = makeid(10);
+    var antiForgeryKey = $("input[name=__RequestVerificationToken]").val();
+
+    var note = `
+        <div class="d-flex flex-column border rounded p-2 mb-2" id="${generatedId}">
+
+            <form action="/Tasks/CreateNote" method="post" data-ajax="true" data-ajax-method="post" data-ajax-mode="replace-with"
+                data-ajax-update="#notes-container">
+
+                <input type="hidden" name="__RequestVerificationToken" value="${antiForgeryKey}" />
+                <input type="hidden" name="taskId" value="${taskId}" />
+                <textarea class="border rounded w-100 text-white" name="noteContent" id="note-content-${generatedId}"></textarea>
+
+                <div>
+                    <div class="d-flex float-right">
+                        <div class="align-items-center" id="save-note-${generatedId}">
+                            <i onclick="toggleEdit('enable-desc-edit', 'save-desc-edit', 'note-content-${generatedId}')" class="fas fa-times mr-2"></i>
+                            <button type="submit" class="border-0"><i class="far fa-save"></i></button>
+                        </div>
+
+                        <i onclick="toggleEdit('enable-desc-edit', 'save-desc-edit', 'note-content-${generatedId}')" 
+                            id="edit-note-${generatedId}" class="fas fa-edit d-none"></i>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    `;
+
+    notesContainer.prepend(note);
+
+    autosize(document.querySelectorAll('textarea'));
+}
+
+
+function makeid(length) {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() *
+            charactersLength));
+    }
+    return result;
+}

@@ -18,7 +18,10 @@ namespace TaskBase.Core.Interfaces
         Task<CoreTask> GetTaskDetailsAsync(Guid taskId);
         Task<IEnumerable<CoreTask>> GetTasksByUserIdAsync(Guid userId);
         Task<Core.TaskAggregate.User> GetUserByNameAsync(string userName);
-        Task<bool> EditDescription(string taskId, string newDescription, CancellationToken cancellationToken);
-        Task<bool> EditTitle(string taskId, string newTitle, CancellationToken cancellationToken);
+        Task<bool> EditDescriptionAsync(string taskId, string newDescription, CancellationToken cancellationToken);
+        Task<bool> EditTitleAsync(string taskId, string newTitle, CancellationToken cancellationToken);
+        Task<Note> CreateNoteAsync(string taskId, string noteContent, CancellationToken cancellationToken);
+        Task<bool> EditNoteAsync(string taskId, string noteId, string newContent, CancellationToken cancellationToken);
+        Task<IEnumerable<Note>> GetTaskNotesAsync(string taskId, CancellationToken cancellationToken);
     }
 }

@@ -12,6 +12,8 @@ namespace TaskBase.Core.TaskAggregate
 {
     public class Task : Entity<Guid>, IRootAggregate
     {
+        List<Note> _notes = new List<Note>();
+
         private Task() : base(Guid.NewGuid()) { }
 
         public Task(string title, string description, DateTime dueDate, User assignTo)
@@ -33,6 +35,9 @@ namespace TaskBase.Core.TaskAggregate
         public TaskState TaskState { get; protected set; }
         public User AssignTo { get; protected set; }
 
+        public IReadOnlyList<Note> Notes 
+            => _notes.AsReadOnly();
+
         public void ChangeTaskState(TaskState taskState)
         {
             if (taskState != TaskState)
@@ -53,5 +58,22 @@ namespace TaskBase.Core.TaskAggregate
                 : this.Title = newTitle;
         }
 
+        public Note CreateNote(string content)
+        {
+            Guard.Against.NullOrWhiteSpace(content, nameof(content), "Note content can not be null!");
+            var note = new Note(content, DateTime.Now);
+            _notes.Add(note);
+
+            return note;
+        }
+
+        public void EditeNote(Guid noteId, string newContent)
+        {
+            Guard.Against.NullOrWhiteSpace(newContent, nameof(newContent), "Note content can not be null!");
+            Guard.Against.NotFound(noteId.ToString(), _notes, "Id");
+
+            var note = _notes.First(x => x.Id == noteId);
+            note.Content = newContent;
+        }
     }
 }

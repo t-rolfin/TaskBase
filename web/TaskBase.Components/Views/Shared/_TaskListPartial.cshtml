@@ -17,6 +17,7 @@
                     <div class="w-auto" style="max-width:250px" data-toggle="tooltip" data-placement="bottom" title="@task.TaskTitle">
                         <form action="/Tasks/TaskDetails" method="get" data-ajax-method="get" data-ajax="true" data-ajax-success="openDetailsModal()"
                               data-ajax-mode="replace-with" data-ajax-update="#task-details" data-ajax-complete="autoTextarea()">
+
                             <input type="hidden" name="taskId" value="@task.Id" />
                             <button type="submit" class="p-0 m-0 h6 text-limit text-primary border-0">@task.TaskTitle</button>
                         </form>

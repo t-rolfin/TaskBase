@@ -10,6 +10,10 @@ namespace TaskBase.Data.EntityConfiguration
         {
             builder.ToTable("Tasks")
                 .HasIndex(x => x.Id);
+
+            builder.HasMany(x => x.Notes)
+                .WithOne()
+                .HasForeignKey("taskId");
         }
     }
 }
