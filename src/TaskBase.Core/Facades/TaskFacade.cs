@@ -102,7 +102,7 @@ namespace TaskBase.Core.Facades
 
                 return true;
             }
-            catch (Exception)
+            catch
             {
                 return false;
             }
@@ -119,7 +119,7 @@ namespace TaskBase.Core.Facades
 
                 return true;
             }
-            catch (Exception)
+            catch
             {
                 return false;
             }
@@ -136,7 +136,7 @@ namespace TaskBase.Core.Facades
 
                 return note;
             }
-            catch (Exception ex)
+            catch
             {
                 return null;
             }
@@ -146,14 +146,14 @@ namespace TaskBase.Core.Facades
         {
             try
             {
-                var task = await GetTaskDetailsAsync(Guid.Parse(taskId));
+                var task = await _taskRepository.GetTaskWithNotesAsync(Guid.Parse(taskId));
                 task.EditeNote(Guid.Parse(noteId), newContent);
 
                 await _taskRepository.UpdateAsync(task, cancellationToken);
 
                 return true;
             }
-            catch (Exception)
+            catch
             {
                 return false;
             }
@@ -165,9 +165,26 @@ namespace TaskBase.Core.Facades
             {
                 return await _taskRepository.GetTaskNotesAsync(Guid.Parse(taskId), cancellationToken);
             }
-            catch (Exception)
+            catch
             {
                 return new List<Note>();
+            }
+        }
+
+        public async Task<bool> EliminateNoteFromTaskAsync(string taskId, string noteId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var task = await _taskRepository.GetTaskWithNotesAsync(Guid.Parse(taskId));
+                task.EliminateNote(Guid.Parse(noteId));
+
+                await _taskRepository.UpdateAsync(task, cancellationToken);
+
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
     }

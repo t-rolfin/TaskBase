@@ -54,10 +54,16 @@ function enableDragula() {
     });
 }
 
-function toggleEdit(enableEditId, saveEditId, toBeDisable) {
+function toggleEdit(enableEditId, saveEditId, toBeDisable, hasExtraClass = false) {
     document.getElementById(toBeDisable).toggleAttribute("disabled");
     $("#" + saveEditId).toggleClass("d-flex");
     $("#" + enableEditId).toggleClass("d-none");
+
+    if (hasExtraClass)
+        $("#" + enableEditId).removeClass("d-flex");
+
+    if (!$("#" + enableEditId).hasClass("d-none") && hasExtraClass)
+        $("#" + enableEditId).addClass("d-flex");
 }
 
 $(document).ready(() => autosize(document.querySelectorAll('textarea')));
@@ -76,28 +82,29 @@ function closeDetailsModal() {
 
 function createNoteContainer(taskId) {
     var notesContainer = $("#notes-container");
-    var generatedId = makeid(10);
     var antiForgeryKey = $("input[name=__RequestVerificationToken]").val();
 
     var note = `
-        <div class="d-flex flex-column border rounded p-2 mb-2" id="${generatedId}">
+        <div class="d-flex flex-column border rounded p-2 mb-2" id="create-note">
 
             <form action="/Tasks/CreateNote" method="post" data-ajax="true" data-ajax-method="post" data-ajax-mode="replace-with"
-                data-ajax-update="#notes-container">
+                data-ajax-update="#notes-container" data-ajax-complete="autoTextarea()">
 
                 <input type="hidden" name="__RequestVerificationToken" value="${antiForgeryKey}" />
                 <input type="hidden" name="taskId" value="${taskId}" />
-                <textarea class="border rounded w-100 text-white" name="noteContent" id="note-content-${generatedId}"></textarea>
+                <textarea class="border rounded w-100 text-white" name="noteContent" id="note-content"></textarea>
 
                 <div>
                     <div class="d-flex float-right">
-                        <div class="align-items-center" id="save-note-${generatedId}">
-                            <i onclick="toggleEdit('enable-desc-edit', 'save-desc-edit', 'note-content-${generatedId}')" class="fas fa-times mr-2"></i>
-                            <button type="submit" class="border-0"><i class="far fa-save"></i></button>
+
+                        <div class="align-items-center" id="save-note">
+                            <i onclick="closeNoteCreation()" class="fas fa-times mr-2"></i>
+                            <button type="submit" class="border-0"><i class="fas fa-save"></i></button>
                         </div>
 
-                        <i onclick="toggleEdit('enable-desc-edit', 'save-desc-edit', 'note-content-${generatedId}')" 
-                            id="edit-note-${generatedId}" class="fas fa-edit d-none"></i>
+                        <i onclick="toggleEdit('enable-desc-edit', 'save-desc-edit', 'note-content')" 
+                            id="edit-note}" class="fas fa-edit d-none"></i>
+
                     </div>
                 </div>
 
@@ -111,14 +118,12 @@ function createNoteContainer(taskId) {
     autosize(document.querySelectorAll('textarea'));
 }
 
+function closeNoteCreation() {
+    var creationContainer = $("#create-note");
+    creationContainer.remove();
+}
 
-function makeid(length) {
-    var result = '';
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for (var i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() *
-            charactersLength));
-    }
-    return result;
+function removeNoteFromList(containerId){
+    var containerToBeDeleted = document.getElementById(containerId);
+    containerToBeDeleted.remove();
 }

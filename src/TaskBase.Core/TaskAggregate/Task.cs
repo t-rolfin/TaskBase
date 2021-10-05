@@ -74,6 +74,20 @@ namespace TaskBase.Core.TaskAggregate
 
             var note = _notes.First(x => x.Id == noteId);
             note.Content = newContent;
+
+            note.IsModified = true;
+            note.EntityStatus = EntityStatus.Modified;
+        }
+
+        public void EliminateNote(Guid noteId)
+        {
+            var note = _notes.FirstOrDefault(x => x.Id == noteId);
+
+            _ = note is default(Note)
+                ? throw new NotFoundException(noteId.ToString(), nameof(Note))
+                : note.EntityStatus = EntityStatus.Deleted;
+
+            note.IsModified = true;
         }
     }
 }

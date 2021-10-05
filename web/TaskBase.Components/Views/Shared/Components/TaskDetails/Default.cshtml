@@ -21,10 +21,10 @@
 
             <div class="d-none align-items-center" id="save-title-edit">
                 <i onclick="toggleEdit('enable-title-edit','save-title-edit','task-title')" class="fas fa-times mr-2"></i>
-                <button type="submit" class="border-0"><i class="far fa-save"></i></button>
+                <button type="submit" class="border-0"><i class="fas fa-save"></i></button>
             </div>
 
-            <i onclick="toggleEdit('enable-title-edit','save-title-edit','task-title')" id="enable-title-edit" class="fas fa-edit"></i>
+            <i onclick="toggleEdit('enable-title-edit','save-title-edit','task-title')" id="enable-title-edit" class="fas fa-pen"></i>
 
         </form>
     </div>
@@ -36,12 +36,12 @@
               data-ajax-success="toggleEdit('enable-desc-edit', 'save-desc-edit', 'task-description')">
 
             <div class="d-flex float-right">
-                <div class="align-items-center d-none border-bottom" id="save-desc-edit">
+                <div class="align-items-center d-none" id="save-desc-edit">
                     <i onclick="toggleEdit('enable-desc-edit', 'save-desc-edit', 'task-description')" class="fas fa-times mr-2"></i>
-                    <button type="submit" class="border-0"><i class="far fa-save"></i></button>
+                    <button type="submit" class="border-0"><i class="fas fa-save"></i></button>
                 </div>
 
-                <i onclick="toggleEdit('enable-desc-edit', 'save-desc-edit', 'task-description')" id="enable-desc-edit" class="fas fa-edit"></i>
+                <i onclick="toggleEdit('enable-desc-edit', 'save-desc-edit', 'task-description')" id="enable-desc-edit" class="fas fa-pen"></i>
             </div>
 
             @Html.AntiForgeryToken()
@@ -57,7 +57,9 @@
             <i onclick="createNoteContainer('@Model.Id')" class="fas fa-plus p-0 w-auto"></i>
         </div>
 
-        <vc:task-notes id-model="model" />
+        <div class="overflow-auto position-relative pr-2" style="height:540px">
+            <vc:task-notes id-model="model" />
+        </div>
 
     </div>
 

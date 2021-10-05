@@ -32,15 +32,15 @@ namespace TaskBase.Data.Repositories
 
         public async Task<CoreTask> UpdateAsync(CoreTask entity, CancellationToken cancellationToken = default)
         {
-            var oldTask = _context.Tasks.FirstOrDefault(x => x.Id == entity.Id);
+            var oldTask = _context.Tasks.Where(x => x.Id == entity.Id)
+                .Include(x => x.Notes)
+                .ToList();
 
             if (oldTask == default)
                 throw new TaskNotFoundException("The specified task wasn't found!");
             else
             {
-                foreach (var note in entity.Notes)
-                    _context.Entry(note).State = EntityState.Added;
-
+                CheckForModifiedNotes(entity);
                 _context.Tasks.Update(entity);
                 await _context.SaveChangesAsync(cancellationToken);
                 return await GetTaskAsync(entity.Id);
@@ -71,12 +71,12 @@ namespace TaskBase.Data.Repositories
             });
         }
 
-        public async Task<Core.TaskAggregate.User> GetUserByIdAsync(Guid userId)
+        public async Task<CoreUser> GetUserByIdAsync(Guid userId)
         {
             return await _context.FindAsync<CoreUser>(userId);
         }
 
-        public async Task<Core.TaskAggregate.User> GetUserByUserNameAsync(string userName)
+        public async Task<CoreUser> GetUserByUserNameAsync(string userName)
         {
             return await _context.Set<CoreUser>().Where(x => x.FullName == userName).FirstOrDefaultAsync();
         }
@@ -87,6 +87,43 @@ namespace TaskBase.Data.Repositories
                 .Include(x => x.Notes).FirstOrDefaultAsync(cancellationToken);
 
             return task.Notes;
+        }
+
+        public async Task<CoreTask> GetTaskWithNotesAsync(Guid taskId)
+        {
+            var task = await _context.Tasks.Where(x => x.Id == taskId)
+                .Include(x => x.Notes).FirstOrDefaultAsync();
+
+            if (task == default)
+                throw new TaskNotFoundException("The specified task doesn't exist!");
+            else
+                return task;
+        }
+
+        /// <summary>
+        /// Check every note from 'entity' if is modified and 
+        /// set EntityState as: Modified, Added, Removed or Unchanged.
+        /// </summary>
+        /// <param name="entity">Note entity received from database.</param>
+        private void CheckForModifiedNotes(CoreTask entity)
+        {
+            foreach (var note in entity.Notes)
+                if (note.IsModified)
+                    switch (note.EntityStatus)
+                    {
+                        case EntityStatus.Added:
+                            _context.Entry(note).State = EntityState.Added;
+                            break;
+                        case EntityStatus.Modified:
+                            _context.Entry(note).State = EntityState.Modified;
+                            break;
+                        case EntityStatus.Deleted:
+                            _context.Entry(note).State = EntityState.Deleted;
+                            break;
+                        default:
+                            _context.Entry(note).State = EntityState.Unchanged;
+                            break;
+                    }
         }
     }
 }

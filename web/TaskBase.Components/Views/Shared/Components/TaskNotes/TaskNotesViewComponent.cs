@@ -22,11 +22,11 @@ namespace TaskBase.Components.Views.Shared.Components.TaskNotes
         public async Task<IViewComponentResult> InvokeAsync(TaskNoteId idModel)
         {
             if (string.IsNullOrWhiteSpace(idModel.Id))
-                return View(new List<NoteModel>());
+                return View((Guid.NewGuid().ToString(), new List<NoteModel>()));
 
             var taskNotes = await _taskFacade.GetTaskNotesAsync(idModel.Id, default);
             var model = taskNotes.Select(x => new NoteModel(x.Id, x.Content, x.AddedAt)).OrderByDescending(x => x.CreatedAt).ToList();
-            return View(model);
+            return View((idModel.Id, model));
         }
     }
 }

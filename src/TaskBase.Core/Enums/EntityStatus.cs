@@ -9,6 +9,7 @@ namespace TaskBase.Core.Enums
     public enum EntityStatus
     {
         Added,
-        Modified
+        Modified,
+        Deleted
     }
 }

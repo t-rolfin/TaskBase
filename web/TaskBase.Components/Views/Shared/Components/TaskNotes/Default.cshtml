@@ -1,19 +1,61 @@
-﻿@model List<NoteModel>
+﻿@model (string TaskId, List<NoteModel> Notes)
 
-<div class="w-100" id="notes-container">
+<div class="w-100 h-auto" id="notes-container">
 
-    @if (Model is not null || Model.Count() != 0)
+    @if (Model.Notes is not null || Model.Notes.Count() != 0)
     {
-        foreach (var note in Model)
+        foreach (var note in Model.Notes)
         {
-            <div class="d-flex flex-column border mb-2">
+            var noteUID = Guid.NewGuid().ToString().Replace("-", "");
 
-                <div class="">
+            <div class="d-flex flex-column border mb-2 rounded" id="note-container-@noteUID">
+
+                <div class="d-flex flex-column">
+
+                    <form action="/Tasks/EditNote" method="post" data-ajax="true" data-ajax-method="post" 
+                          data-ajax-success="toggleEdit('remove-edit-@noteUID', 'editing-note-@noteUID', 'note-content-@noteUID', true)">
+
+                        @Html.AntiForgeryToken()
+
+                        <div class="text-white px-2 pt-2">
+                            <textarea class="border bg-dark text-white w-100 rounded"
+                                      name="newContent" disabled id="note-content-@noteUID">@note.Content</textarea>
+                        </div>
+
+                        <div class="align-items-center justify-content-around px-2 pb-2 pt-1 d-none" id="editing-note-@noteUID">
+
+                            <input type="hidden" name="noteId" value="@note.Id" />
+                            <input type="hidden" name="taskId" value="@Model.TaskId" />
+
+                            <i onclick="toggleEdit('remove-edit-@noteUID', 'editing-note-@noteUID', 'note-content-@noteUID', true)" class="fas fa-times"></i>
+
+                            <button class="border-0" type="submit">
+                                <i class="fas fa-save"></i>
+                            </button>
+
+                        </div>
+
+                    </form>
 
                 </div>
 
-                <div class="p-2 text-white">
-                    @note.Content
+                <div class="d-flex align-items-center justify-content-around p-2" id="remove-edit-@noteUID">
+
+                    <i onclick="toggleEdit('remove-edit-@noteUID', 'editing-note-@noteUID', 'note-content-@noteUID', true)" class="fas fa-pen"></i>
+
+                    <form action="/Tasks/RemoveNote" method="post" data-ajax="true" data-ajax-method="post" data-ajax-success="removeNoteFromList('note-container-@noteUID')">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" name="noteId" value="@note.Id" />
+                        <input type="hidden" name="taskId" value="@Model.TaskId" />
+
+                        <button class="border-0" type="submit">
+                            <i class="fas fa-trash"></i>
+                        </button>
+
+                    </form>
+
                 </div>
 
             </div>

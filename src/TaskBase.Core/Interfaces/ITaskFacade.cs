@@ -23,5 +23,6 @@ namespace TaskBase.Core.Interfaces
         Task<Note> CreateNoteAsync(string taskId, string noteContent, CancellationToken cancellationToken);
         Task<bool> EditNoteAsync(string taskId, string noteId, string newContent, CancellationToken cancellationToken);
         Task<IEnumerable<Note>> GetTaskNotesAsync(string taskId, CancellationToken cancellationToken);
+        Task<bool> EliminateNoteFromTaskAsync(string taskId, string noteId, CancellationToken cancellationToken);
     }
 }

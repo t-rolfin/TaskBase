@@ -17,6 +17,7 @@ namespace TaskBase.Data.EntityConfiguration
                 .HasKey(x => x.Id);
 
             builder.Ignore(x => x.EntityStatus);
+            builder.Ignore(x => x.IsModified);
         }
     }
 }

@@ -108,7 +108,22 @@ namespace TaskBase.RazorPages.Pages
         public async Task<IActionResult> OnPostCreateNoteAsync(string taskId, string noteContent, CancellationToken cancellationToken)
         {
             var response = await _taskFacade.CreateNoteAsync(taskId, noteContent, cancellationToken);
+
+            if (response != default)
+                log.Info($"An new note was added to the task: { taskId }");
+
             return ViewComponent("TaskNotes", new TaskNoteId(taskId));
+        }
+
+        public async Task OnPostRemoveNoteAsync(string taskId, string noteId, CancellationToken cancellationToken)
+        {
+            await _taskFacade.EliminateNoteFromTaskAsync(taskId, noteId, cancellationToken);
+        }
+
+        public async Task OnPostEditNoteAsync(string taskId, string noteId, string newContent, CancellationToken cancellationToken)
+        {
+            await _taskFacade.EditNoteAsync(taskId, noteId, newContent, cancellationToken);
+            log.Info($"The content of note:{ noteId } from task: { taskId } was changed!");
         }
     }
 }

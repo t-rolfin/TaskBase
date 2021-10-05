@@ -18,5 +18,6 @@ namespace TaskBase.Core.Interfaces
         Task<IEnumerable<T>> GetTasksByUserAsync(Guid userId);
         Task<User> GetUserByIdAsync(Guid userId);
         Task<User> GetUserByUserNameAsync(string userName);
+        Task<T> GetTaskWithNotesAsync(I taskId);
     }
 }

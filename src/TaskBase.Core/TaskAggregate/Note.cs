@@ -18,11 +18,13 @@ namespace TaskBase.Core.TaskAggregate
             Content = content;
             AddedAt = addedAt;
             EntityStatus = EntityStatus.Added;
+            IsModified = true;
         }
 
         public string Content { get; set; }
         public DateTime AddedAt { get; set; }
 
         public EntityStatus EntityStatus { get; set; }
+        public bool IsModified { get; set; }
     }
 }
