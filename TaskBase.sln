@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskBase.MVC", "web\TaskBas
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskBase.Data", "src\TaskBase.Data\TaskBase.Data.csproj", "{9448B362-BFB8-4FF4-ADF3-8A96471B2CB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskBase.SignalRHub", "src\TaskBase.SignalRHub\TaskBase.SignalRHub.csproj", "{0EC9A16E-32C7-4CFB-852E-E421ADC3F94C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskBase.SignalRHub", "src\TaskBase.SignalRHub\TaskBase.SignalRHub.csproj", "{0EC9A16E-32C7-4CFB-852E-E421ADC3F94C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
