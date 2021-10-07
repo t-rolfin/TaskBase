@@ -33,6 +33,7 @@ namespace TaskBase.Data
             });
 
             services.AddDbContext<TaskDbContext>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ITaskAsyncRepository, TaskRepository>();
 
             return services;
