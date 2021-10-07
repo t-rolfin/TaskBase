@@ -15,10 +15,10 @@ namespace TaskBase.MVC.Controllers
     public class TasksController : Controller
     {
 
-        private readonly ITaskFacade _taskFacade;
+        private readonly IFacade _taskFacade;
         private readonly IIdentityProvider _identityProvider;
 
-        public TasksController(ITaskFacade taskFacade, IIdentityProvider identityProvider)
+        public TasksController(IFacade taskFacade, IIdentityProvider identityProvider)
         {
             _taskFacade = taskFacade;
             _identityProvider = identityProvider;

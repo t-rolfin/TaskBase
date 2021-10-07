@@ -44,7 +44,7 @@ namespace TaskBase.MVC
 
             services.AddIdentity();
             services.AddInfrastructure(Configuration);
-            services.AddTransient<ITaskFacade, TaskFacade>();
+            services.AddTransient<IFacade, Facade>();
             services.AddTransient<IIdentityProvider, IdentityProvider>();
         }
 

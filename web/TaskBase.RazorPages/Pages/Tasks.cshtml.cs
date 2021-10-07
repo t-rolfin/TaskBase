@@ -19,11 +19,11 @@ namespace TaskBase.RazorPages.Pages
     [Authorize(Roles = "Member")]
     public class TasksModel : PageModel
     {
-        readonly ITaskFacade _taskFacade;
+        readonly IFacade _taskFacade;
         readonly IIdentityProvider _identityProvider;
         readonly ILog log = LogManager.GetLogger(typeof(TasksModel));
 
-        public TasksModel(ITaskFacade taskFacade, IIdentityProvider identityProvider)
+        public TasksModel(IFacade taskFacade, IIdentityProvider identityProvider)
         {
             _taskFacade = taskFacade;
             _identityProvider = identityProvider;
@@ -49,6 +49,8 @@ namespace TaskBase.RazorPages.Pages
                     userId = user.Id;
                     userName = user.FullName;
                 }
+
+                var cookie = HttpContext.Request.Cookies.Where(x => x.Key == "auth_cookie").First();
 
                 var response = await _taskFacade.CreateTaskAsync(
                     model.Title,

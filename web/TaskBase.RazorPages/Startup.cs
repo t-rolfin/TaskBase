@@ -23,29 +23,28 @@ namespace TaskBase.RazorPages
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers().AddRazorOptions(options => { options.PageViewLocationFormats.Add("/Views/{0}.cshtml"); })
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
-            
+
             services.AddRazorPages();
             services.AddIdentity();
 
             services.AddAuthorization(options => {
                 options.AddPolicy("Admin", x => x.RequireRole("Admin"));
             });
+            
 
             services.AddPortableObjectLocalization(opt => { opt.ResourcesPath = "Resources"; });
 
             services.AddInfrastructure(Configuration);
-            services.AddTransient<ITaskFacade, TaskFacade>();
+            services.AddTransient<IFacade, Facade>();
             services.AddTransient<IIdentityProvider, IdentityProvider>();
             services.AddTransient<IImageStorage, ImageStorage>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -55,7 +54,6 @@ namespace TaskBase.RazorPages
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 

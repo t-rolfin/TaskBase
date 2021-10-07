@@ -38,6 +38,10 @@
     {
       "library": "autosize.js@5.0.1",
       "destination": "wwwroot/lib/autosize.js/"
+    },
+    {
+      "library": "microsoft-signalr@5.0.10",
+      "destination": "wwwroot/lib/microsoft-signalr/"
     }
   ]
 }
