@@ -16,17 +16,19 @@
     }
   </a>
 
-  <div class="dropdown-menu bg-dark p-2" aria-labelledby="dropdownMenuLink" style="width: 300px; max-height: 500px">
+  <div class="dropdown-menu bg-dark py-2 pl-2 overflow-hidden" aria-labelledby="dropdownMenuLink" style="width: 300px; max-height: 500px">
 
-    <div class="mb-2">
+    <div class="mb-2" style="height: 24px">
         <h4 class="p-0 m-0">Notifications</h4>
     </div>
 
-    <div id="notifications-container">
+    <div class="overflow-auto pr-2" id="notifications-container" style="height: 458px">
 
         @if (Model.Notifications is null || Model.NotificationCount == 0)
         {
-            <p class="m-0 p-0">You don't have notifications!</p>
+            <div class="removenotification">
+                <p class="m-0 p-0">You don't have notifications!</p>
+            </div>
         }
         else
         {
