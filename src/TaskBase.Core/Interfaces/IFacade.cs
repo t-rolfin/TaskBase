@@ -7,10 +7,11 @@ using System.Linq;
 using System;
 using TaskBase.Core.TaskAggregate;
 using TaskBase.Core.Enums;
+using TaskBase.Core.NotificationAggregate;
 
 namespace TaskBase.Core.Interfaces
 {
-    public interface ITaskFacade
+    public interface IFacade
     {
         Task<CoreTask> CreateTaskAsync(string title, string description, DateTime dueDate, Guid userId, string userName, CancellationToken cancellationToken);
         Task<bool> ChangeTaskState(Guid taskId, TaskState taskState, CancellationToken cancellationToken);
@@ -24,5 +25,9 @@ namespace TaskBase.Core.Interfaces
         Task<bool> EditNoteAsync(string taskId, string noteId, string newContent, CancellationToken cancellationToken);
         Task<IEnumerable<Note>> GetTaskNotesAsync(string taskId, CancellationToken cancellationToken);
         Task<bool> EliminateNoteFromTaskAsync(string taskId, string noteId, CancellationToken cancellationToken);
+
+        Task<Notification> CreateNotificationAsync(Guid userId, string title, string description, CancellationToken cancellationToken);
+        Task<bool> RemoveNotification(Guid notificationId, CancellationToken cancellationToken);
+        Task<IEnumerable<Notification>> GetUserNotificationsAsync(Guid userId, CancellationToken cancellationToken);
     }
 }
