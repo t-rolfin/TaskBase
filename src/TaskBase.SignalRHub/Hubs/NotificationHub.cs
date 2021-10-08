@@ -29,7 +29,7 @@ namespace TaskBase.SignalRHub.Hubs
 
         public async Task SendMessage(NotificationModel notification)
         {
-            await Clients.Group(Context.User.Claims.First().Value)
+            await Clients.OthersInGroup(Context.User.Claims.First().Value)
                 .SendAsync("ReceiveNotification", notification);
         }
     }

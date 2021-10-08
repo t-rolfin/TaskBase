@@ -82,7 +82,7 @@ namespace TaskBase.Core.Facades
 
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
                 return false;
             }

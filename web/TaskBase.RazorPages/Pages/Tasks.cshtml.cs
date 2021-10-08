@@ -127,5 +127,12 @@ namespace TaskBase.RazorPages.Pages
             await _taskFacade.EditNoteAsync(taskId, noteId, newContent, cancellationToken);
             log.Info($"The content of note:{ noteId } from task: { taskId } was changed!");
         }
+
+        public async Task<IActionResult> OnPostRemoveNotificationAsync(Guid notificationId, CancellationToken cancellationToken)
+        {
+            var isSuccess = await _taskFacade.RemoveNotification(notificationId, cancellationToken);
+
+            return new JsonResult(isSuccess);
+        }
     }
 }
