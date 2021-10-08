@@ -13,7 +13,8 @@ namespace TaskBase.Data.EntityConfiguration
 
             builder.HasMany(x => x.Notes)
                 .WithOne()
-                .HasForeignKey("taskId");
+                .HasForeignKey("taskId")
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
