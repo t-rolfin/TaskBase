@@ -12,9 +12,9 @@ namespace TaskBase.Components.Views.Components.Modal
     [ViewComponent(Name = "Modal")]
     public class ModalViewComponent : ViewComponent
     {
-        private readonly ITaskFacade _taskFacade;
+        private readonly IFacade _taskFacade;
 
-        public ModalViewComponent(ITaskFacade taskFacade)
+        public ModalViewComponent(IFacade taskFacade)
         {
             _taskFacade = taskFacade;
         }

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using TaskBase.Core.Interfaces;
+using TaskBase.Core.NotificationAggregate;
 using TaskBase.Data.Utils;
 using CoreTask = TaskBase.Core.TaskAggregate.Task;
 
@@ -14,13 +16,10 @@ namespace TaskBase.Data
     {
         readonly ConnectionStrings _connectionString;
 
-        public TaskDbContext(ConnectionStrings connectionString)
-            : base()
+        public TaskDbContext(ConnectionStrings connectionString) : base()
         {
             _connectionString = connectionString;
         }
-
-        public DbSet<CoreTask> Tasks { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

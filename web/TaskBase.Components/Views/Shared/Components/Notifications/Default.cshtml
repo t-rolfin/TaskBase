@@ -1,0 +1,45 @@
+﻿@model NotificationsModel
+
+
+<div class="dropdown" style="font-size: 1.5rem">
+
+  <a class="bg-transparent border-0" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    
+    <i class="fas fa-bell"></i>
+
+    <div class="bg-danger d-flex justify-content-center align-items-center position-absolute" id="notification-counter-container" 
+        style="top: -15px; right: -15px; width: 20px; height: 20px; border-radius: 100%; font-size: 16px;">
+        <input class="w-100 h-100 p-0 m-0 text-center" value="@Model.NotificationCount" disabled id="notification-counter" />
+    </div>
+
+  </a>
+
+  <div class="dropdown-menu bg-dark py-2 pl-2 overflow-hidden notifications-container" aria-labelledby="dropdownMenuLink" style="width: 300px; max-height: 500px">
+
+    <div class="mb-2" style="height: 24px">
+        <h4 class="p-0 m-0">Notifications</h4>
+    </div>
+
+    <div class="overflow-auto pr-2" id="notifications-wrapper" style="height: 458px">
+
+        @foreach (var Notification in Model.Notifications)
+        {
+            <div class="card bg-dark mb-2" id="@Notification.Id">
+
+                <div class="card-header d-flex text-white p-0 m-0 align-items-center justify-content-between">
+                    <h5 class="p-0 m-1">@Notification.Title</h5>
+                    <i onclick="removeNotification('@Notification.Id')" class="fas fa-times mx-2 my-1"></i>
+                </div>
+
+                <div class="card-body px-1 py-0">
+                    <p>@Notification.Description</p>
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+    </div>
+
+</div>

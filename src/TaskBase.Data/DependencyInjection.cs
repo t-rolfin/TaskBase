@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System;
 using Microsoft.AspNetCore.Http;
+using TaskBase.Data.NotificationService;
 
 namespace TaskBase.Data
 {
@@ -33,11 +34,13 @@ namespace TaskBase.Data
             });
 
             services.AddDbContext<TaskDbContext>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ITaskAsyncRepository, TaskRepository>();
+            services.AddTransient<INotificationRepository, NotificationRepository>();
+            services.AddTransient<INotificationService, NotificationService.NotificationService>();
 
             return services;
         }
-
 
         public static IServiceCollection AddIdentity(this IServiceCollection services)
         {

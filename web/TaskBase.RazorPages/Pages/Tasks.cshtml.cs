@@ -1,32 +1,32 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 using TaskBase.Components.Models;
 using TaskBase.Components.Services;
 using TaskBase.Core.Enums;
 using TaskBase.Core.Interfaces;
-using BaseTask = TaskBase.Core.TaskAggregate.Task;
+using TaskBase.Data.NotificationService;
 
 namespace TaskBase.RazorPages.Pages
 {
     [Authorize(Roles = "Member")]
     public class TasksModel : PageModel
     {
-        readonly ITaskFacade _taskFacade;
+        readonly IFacade _taskFacade;
         readonly IIdentityProvider _identityProvider;
         readonly ILog log = LogManager.GetLogger(typeof(TasksModel));
+        readonly INotificationService _notificationService;
 
-        public TasksModel(ITaskFacade taskFacade, IIdentityProvider identityProvider)
+        public TasksModel(IFacade taskFacade, IIdentityProvider identityProvider, INotificationService notificationService)
         {
             _taskFacade = taskFacade;
             _identityProvider = identityProvider;
+            _notificationService = notificationService;
         }
 
         public void OnGet() { }
@@ -50,7 +50,7 @@ namespace TaskBase.RazorPages.Pages
                     userName = user.FullName;
                 }
 
-                var response = await _taskFacade.CreateTaskAsync(
+                var result = await _taskFacade.CreateTaskAsync(
                     model.Title,
                     model.Description,
                     model.DueDate == default ? DateTime.Now : model.DueDate,
@@ -58,10 +58,12 @@ namespace TaskBase.RazorPages.Pages
                     userName,
                     cancellationToken);
 
-                if (response is not null)
-                    log.Info("An new task was created!");
+                await _notificationService.Notify(userId, result.IsSuccess, result.MetaResult.Message);
+
+                if (result.IsSuccess)
+                    log.Info(result.MetaResult.Message);
                 else
-                    log.Error("An error occur at task creation process!");
+                    log.Info(result.MetaResult.Message);
 
                 return ViewComponent("Tasks");
             }
@@ -81,7 +83,10 @@ namespace TaskBase.RazorPages.Pages
 
         public async Task<IActionResult> OnPostDeleteAsync(string taskId, CancellationToken cancellationToken)
         {
-            await _taskFacade.DeleteTaskAsync(Guid.Parse(taskId), cancellationToken);
+            var result = await _taskFacade.DeleteTaskAsync(Guid.Parse(taskId), cancellationToken);
+
+            await _notificationService.Notify(Guid.Parse(_identityProvider.GetCurrentUserIdentity()), result.IsSuccess, result.MetaResult.Message);
+
             return ViewComponent("Tasks");
         }
 
@@ -124,6 +129,13 @@ namespace TaskBase.RazorPages.Pages
         {
             await _taskFacade.EditNoteAsync(taskId, noteId, newContent, cancellationToken);
             log.Info($"The content of note:{ noteId } from task: { taskId } was changed!");
+        }
+
+        public async Task<IActionResult> OnPostRemoveNotificationAsync(Guid notificationId, CancellationToken cancellationToken)
+        {
+            var isSuccess = await _taskFacade.RemoveNotification(notificationId, cancellationToken);
+
+            return new JsonResult(isSuccess);
         }
     }
 }

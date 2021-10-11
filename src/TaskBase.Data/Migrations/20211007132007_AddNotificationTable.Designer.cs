@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskBase.Data;
 
 namespace TaskBase.Data.Migrations
 {
     [DbContext(typeof(TaskDbContext))]
-    partial class TaskDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211007132007_AddNotificationTable")]
+    partial class AddNotificationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,8 +117,7 @@ namespace TaskBase.Data.Migrations
                 {
                     b.HasOne("TaskBase.Core.TaskAggregate.Task", null)
                         .WithMany("Notes")
-                        .HasForeignKey("taskId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("taskId");
                 });
 
             modelBuilder.Entity("TaskBase.Core.TaskAggregate.Task", b =>

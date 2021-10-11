@@ -1,15 +1,20 @@
 ﻿@page "{handler?}"
 @model TaskBase.RazorPages.Pages.TasksModel
 
+@using System.Security.Claims
+
 @{
     ViewData["Title"] = "My Tasks";
     Layout = "_DashboardLayout";
     var defaultModel = new TaskDetailsModel("", "", "");
+    var currentUserId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 }
 
 @Html.AntiForgeryToken()
 
 <div class="pb-2 position-relative" style="overflow:visible;">
+
+    <input type="hidden" name="__NameIdentifier" value="@currentUserId" />
 
     <vc:modal />
 

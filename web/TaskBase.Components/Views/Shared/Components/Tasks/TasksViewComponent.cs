@@ -15,13 +15,13 @@ namespace TaskBase.Components.Views.Shared.Components.Tasks
     public class TasksViewComponent : ViewComponent
     {
         readonly IIdentityProvider _identityProvider;
-        readonly ITaskFacade _taskFacade;
+        readonly IFacade _taskFacade;
 
         List<TaskModel> Tasks { get; set; } = new();
 
         public List<TaskRowModel> Rows { get; set; } = new();
 
-        public TasksViewComponent(IIdentityProvider identityProvider, ITaskFacade taskFacade)
+        public TasksViewComponent(IIdentityProvider identityProvider, IFacade taskFacade)
         {
             _identityProvider = identityProvider;
             _taskFacade = taskFacade;

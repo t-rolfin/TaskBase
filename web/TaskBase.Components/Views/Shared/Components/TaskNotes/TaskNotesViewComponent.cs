@@ -12,9 +12,9 @@ namespace TaskBase.Components.Views.Shared.Components.TaskNotes
     [ViewComponent( Name = "TaskNotes")]
     public class TaskNotesViewComponent : ViewComponent
     {
-        readonly ITaskFacade _taskFacade;
+        readonly IFacade _taskFacade;
 
-        public TaskNotesViewComponent(ITaskFacade taskFacade)
+        public TaskNotesViewComponent(IFacade taskFacade)
         {
             _taskFacade = taskFacade;
         }
