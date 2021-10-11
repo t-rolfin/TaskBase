@@ -10,6 +10,7 @@ using TaskBase.Core.TaskAggregate;
 using BaseTask = TaskBase.Core.TaskAggregate.Task;
 using Microsoft.AspNetCore.SignalR.Client;
 using TaskBase.Core.NotificationAggregate;
+using Rolfin.Result;
 
 namespace TaskBase.Core.Facades
 {
@@ -23,7 +24,7 @@ namespace TaskBase.Core.Facades
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException("The TaskRepository from TaskFacade is null!");
         }
 
-        public async Task<bool> ChangeTaskState(Guid taskId, TaskState taskState, CancellationToken cancellationToken)
+        public async Task<Result<bool>> ChangeTaskState(Guid taskId, TaskState taskState, CancellationToken cancellationToken)
         {
             try
             {
@@ -35,15 +36,15 @@ namespace TaskBase.Core.Facades
                 await _unitOfWork.Tasks.UpdateAsync(task, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return true;
+                return Result.Success(true).With($"The state of task was successfully change in to ${nameof(taskState)}");
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                return Result<bool>.Invalid().With(ex.Message);
             }
         }
 
-        public async Task<BaseTask> CreateTaskAsync(string title, string description, DateTime dueDate, Guid userId, string userName, CancellationToken cancellationToken)
+        public async Task<Result<BaseTask>> CreateTaskAsync(string title, string description, DateTime dueDate, Guid userId, string userName, CancellationToken cancellationToken)
         {
             try
             {
@@ -60,11 +61,11 @@ namespace TaskBase.Core.Facades
 
                 await Nofity(userId, title, "A new task was assign to you, refresh 'To Do' container to see the task.", cancellationToken);
 
-                return task;
+                return Result.Success(task).With("A new task was successfully created.");
             }
             catch (Exception ex)
             {
-                return null;
+                return Result<BaseTask>.Invalid().With(ex.Message);
             }
             finally
             {
@@ -72,7 +73,7 @@ namespace TaskBase.Core.Facades
             }
         }
 
-        public async Task<bool> DeleteTaskAsync(Guid taskId, CancellationToken cancellationToken)
+        public async Task<Result<bool>> DeleteTaskAsync(Guid taskId, CancellationToken cancellationToken)
         {
             try
             {
@@ -80,11 +81,11 @@ namespace TaskBase.Core.Facades
                 await _unitOfWork.Tasks.Remove(task);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return true;
+                return Result<bool>.Success().With("The task was removed!");
             }
             catch(Exception ex)
             {
-                return false;
+                return Result<bool>.Invalid().With(ex.Message);
             }
         }
 
@@ -103,7 +104,7 @@ namespace TaskBase.Core.Facades
             return await _unitOfWork.Tasks.GetUserByUserNameAsync(userName);
         }
 
-        public async Task<bool> EditDescriptionAsync(string taskId, string newDescription, CancellationToken cancellationToken)
+        public async Task<Result<bool>> EditDescriptionAsync(string taskId, string newDescription, CancellationToken cancellationToken)
         {
             try
             {
@@ -113,15 +114,15 @@ namespace TaskBase.Core.Facades
                 await _unitOfWork.Tasks.UpdateAsync(taskDetails, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return true;
+                return Result<bool>.Success().With("Description for the task was changed!");
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                return Result<bool>.Invalid().With(ex.Message);
             }
         }
 
-        public async Task<bool> EditTitleAsync(string taskId, string newTitle, CancellationToken cancellationToken)
+        public async Task<Result<bool>> EditTitleAsync(string taskId, string newTitle, CancellationToken cancellationToken)
         {
             try
             {
@@ -131,15 +132,15 @@ namespace TaskBase.Core.Facades
                 await _unitOfWork.Tasks.UpdateAsync(taskDetails, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return true;
+                return Result<bool>.Success().With("Title was updated!");
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                return Result<bool>.Invalid().With(ex.Message);
             }
         }
 
-        public async Task<Note> CreateNoteAsync(string taskId, string noteContent, CancellationToken cancellationToken)
+        public async Task<Result<Note>> CreateNoteAsync(string taskId, string noteContent, CancellationToken cancellationToken)
         {
             try
             {
@@ -149,15 +150,16 @@ namespace TaskBase.Core.Facades
                 await _unitOfWork.Tasks.UpdateAsync(task, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return note;
+                return Result<Note>.Success(note)
+                    .With($"A note was added to the task { task.Title.Take(10).ToString().PadRight(3, '.') }");
             }
-            catch
+            catch (Exception ex)
             {
-                return null;
+                return Result<Note>.Invalid().With(ex.Message);
             }
         }
 
-        public async Task<bool> EditNoteAsync(string taskId, string noteId, string newContent, CancellationToken cancellationToken)
+        public async Task<Result<bool>> EditNoteAsync(string taskId, string noteId, string newContent, CancellationToken cancellationToken)
         {
             try
             {
@@ -167,11 +169,11 @@ namespace TaskBase.Core.Facades
                 await _unitOfWork.Tasks.UpdateAsync(task, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return true;
+                return Result<bool>.Success().With($"The note was successfully updated.");
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                return Result<bool>.Invalid().With(ex.Message);
             }
         }
 
@@ -187,7 +189,7 @@ namespace TaskBase.Core.Facades
             }
         }
 
-        public async Task<bool> EliminateNoteFromTaskAsync(string taskId, string noteId, CancellationToken cancellationToken)
+        public async Task<Result<bool>> EliminateNoteFromTaskAsync(string taskId, string noteId, CancellationToken cancellationToken)
         {
             try
             {
@@ -197,17 +199,17 @@ namespace TaskBase.Core.Facades
 
                 await _unitOfWork.Tasks.UpdateAsync(task, cancellationToken);
 
-                return true;
+                return Result<bool>.Success().With($"The specified note was deleted!");
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                return Result<bool>.Invalid().With(ex.Message);
             }
         }
 
 
 
-        public async Task<Notification> CreateNotificationAsync(Guid userId, string title, string description, CancellationToken cancellationToken)
+        public async Task<Result<Notification>> CreateNotificationAsync(Guid userId, string title, string description, CancellationToken cancellationToken)
         {
             try
             {
@@ -215,15 +217,17 @@ namespace TaskBase.Core.Facades
                 await _unitOfWork.Notifications.AddAsync(notification);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return notification;
+                var assignedUser = await _unitOfWork.Tasks.GetUserByIdAsync(userId);
+
+                return Result<Notification>.Success(notification).With($"The task was assign to {assignedUser.FullName}.");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return null;
+                return Result<Notification>.Invalid().With(ex.Message);
             }
         }
 
-        public async Task<bool> RemoveNotification(Guid notificationId, CancellationToken cancellationToken)
+        public async Task<Result<bool>> RemoveNotification(Guid notificationId, CancellationToken cancellationToken)
         {
             try
             {
@@ -231,11 +235,11 @@ namespace TaskBase.Core.Facades
                 await _unitOfWork.Notifications.Remove(notification);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return true;
+                return Result<bool>.Success().With("The notification was deleted.");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return false;
+                return Result<bool>.Invalid().With(ex.Message);
             }
         }
 
@@ -245,7 +249,7 @@ namespace TaskBase.Core.Facades
         }
 
         /// <summary>
-        /// 
+        /// Create a connection with SignalR Hub and send a notification to it.
         /// </summary>
         /// <param name="userId">Is the ID of user that will be nitified.</param>
         /// <param name="title"></param>
@@ -266,7 +270,7 @@ namespace TaskBase.Core.Facades
 
                 var notification = await CreateNotificationAsync(userId, title, description, cancellationToken);
 
-                await _hubConnection.InvokeAsync("SendMessage", notification);
+                await _hubConnection.InvokeAsync("SendMessage", notification.Value);
             }
             catch (Exception ex)
             {
