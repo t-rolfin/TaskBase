@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TaskBase.Application\TaskBase.Application.csproj" />
     <ProjectReference Include="..\TaskBase.Core\TaskBase.Core.csproj" />
   </ItemGroup>
 

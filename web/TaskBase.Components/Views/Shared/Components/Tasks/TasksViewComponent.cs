@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskBase.Application.Services;
 using TaskBase.Components.Models;
 using TaskBase.Components.Services;
 using TaskBase.Core.Enums;
@@ -14,14 +15,14 @@ namespace TaskBase.Components.Views.Shared.Components.Tasks
     [ViewComponent(Name = "Tasks")]
     public class TasksViewComponent : ViewComponent
     {
-        readonly IIdentityProvider _identityProvider;
+        readonly IIdentityService _identityProvider;
         readonly IFacade _taskFacade;
 
         List<TaskModel> Tasks { get; set; } = new();
 
         public List<TaskRowModel> Rows { get; set; } = new();
 
-        public TasksViewComponent(IIdentityProvider identityProvider, IFacade taskFacade)
+        public TasksViewComponent(IIdentityService identityProvider, IFacade taskFacade)
         {
             _identityProvider = identityProvider;
             _taskFacade = taskFacade;
@@ -30,7 +31,7 @@ namespace TaskBase.Components.Views.Shared.Components.Tasks
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var currentUserId = _identityProvider.GetCurrentUserIdentity();
-            var tasks = await _taskFacade.GetTasksByUserIdAsync(Guid.Parse(currentUserId));
+            var tasks = await _taskFacade.GetTasksByUserIdAsync(currentUserId);
 
             this.Tasks = tasks.Select(x => 
                 new TaskModel() { 

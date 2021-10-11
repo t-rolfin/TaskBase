@@ -37,7 +37,6 @@ namespace TaskBase.Data
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ITaskAsyncRepository, TaskRepository>();
             services.AddTransient<INotificationRepository, NotificationRepository>();
-            services.AddTransient<INotificationService, NotificationService.NotificationService>();
 
             return services;
         }

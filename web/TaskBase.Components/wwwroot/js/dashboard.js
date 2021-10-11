@@ -83,7 +83,7 @@ function PageNotification(message, isSuccess) {
 
     pageNotifications.prepend(notification);
 
-    $(".alert").delay(2000).slideUp(200, function () {
+    $(".alert").delay(4000).slideUp(200, function () {
         $(this).alert('close');
     });
 }

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace TaskBase.Components.Services
+namespace TaskBase.Application.Services
 {
-    public interface IIdentityProvider
+    public interface IIdentityService
     {
-        string GetCurrentUserIdentity();
+        Guid GetCurrentUserIdentity();
         string GetCurrentUserName();
     }
 }

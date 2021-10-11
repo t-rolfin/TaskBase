@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace TaskBase.Data.NotificationService
+namespace TaskBase.Application.Services
 {
     public interface INotificationService
     {

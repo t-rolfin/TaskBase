@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TaskBase.Application.Services;
 using TaskBase.Components.Models;
 using TaskBase.Components.Services;
 using TaskBase.Core.Enums;
@@ -16,9 +17,9 @@ namespace TaskBase.MVC.Controllers
     {
 
         private readonly IFacade _taskFacade;
-        private readonly IIdentityProvider _identityProvider;
+        private readonly IIdentityService _identityProvider;
 
-        public TasksController(IFacade taskFacade, IIdentityProvider identityProvider)
+        public TasksController(IFacade taskFacade, IIdentityService identityProvider)
         {
             _taskFacade = taskFacade;
             _identityProvider = identityProvider;

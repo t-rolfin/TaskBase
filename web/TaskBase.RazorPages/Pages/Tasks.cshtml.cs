@@ -11,6 +11,15 @@ using TaskBase.Components.Services;
 using TaskBase.Core.Enums;
 using TaskBase.Core.Interfaces;
 using TaskBase.Data.NotificationService;
+using MediatR;
+using TaskBase.Application.Commands.CreateTask;
+using TaskBase.Application.Commands.ChangeTaskState;
+using TaskBase.Application.Commands.DeleteTask;
+using TaskBase.Application.Commands.UpdateTask;
+using TaskBase.Application.Commands.CreateNote;
+using TaskBase.Application.Commands.EliminateNote;
+using TaskBase.Application.Commands.EditNote;
+using TaskBase.Application.Commands.RemoveNotification;
 
 namespace TaskBase.RazorPages.Pages
 {
@@ -18,55 +27,20 @@ namespace TaskBase.RazorPages.Pages
     public class TasksModel : PageModel
     {
         readonly IFacade _taskFacade;
-        readonly IIdentityProvider _identityProvider;
-        readonly ILog log = LogManager.GetLogger(typeof(TasksModel));
-        readonly INotificationService _notificationService;
+        readonly IMediator _mediator;
 
-        public TasksModel(IFacade taskFacade, IIdentityProvider identityProvider, INotificationService notificationService)
+        public TasksModel(IMediator mediator, IFacade facade)
         {
-            _taskFacade = taskFacade;
-            _identityProvider = identityProvider;
-            _notificationService = notificationService;
+            _mediator = mediator;
+            _taskFacade = facade;
         }
 
         public void OnGet() { }
 
         public async Task<IActionResult> OnPostAsync(CreateTaskModel model, CancellationToken cancellationToken)
         {
-            if (ModelState.IsValid)
-            {
-                Guid userId = default;
-                string userName = default;
-
-                if (string.IsNullOrWhiteSpace(model.AssignTo))
-                {
-                    userId = Guid.Parse(_identityProvider.GetCurrentUserIdentity());
-                    userName = _identityProvider.GetCurrentUserName();
-                }
-                else
-                {
-                    var user = await _taskFacade.GetUserByNameAsync(model.AssignTo);
-                    userId = user.Id;
-                    userName = user.FullName;
-                }
-
-                var result = await _taskFacade.CreateTaskAsync(
-                    model.Title,
-                    model.Description,
-                    model.DueDate == default ? DateTime.Now : model.DueDate,
-                    userId,
-                    userName,
-                    cancellationToken);
-
-                await _notificationService.Notify(userId, result.IsSuccess, result.MetaResult.Message);
-
-                if (result.IsSuccess)
-                    log.Info(result.MetaResult.Message);
-                else
-                    log.Info(result.MetaResult.Message);
-
-                return ViewComponent("Tasks");
-            }
+            CreateTaskCommand command = new(model.Title, model.Description, model.DueDate, model.AssignTo);
+            var result = await _mediator.Send(command, cancellationToken);
 
             return ViewComponent("Tasks");
         }
@@ -77,16 +51,15 @@ namespace TaskBase.RazorPages.Pages
 
             if (isSuccess && response is not null)
             {
-                await _taskFacade.ChangeTaskState(taskId, (TaskState)response , cancellationToken);
+                ChangeTaskStateCommand command = new(taskId, (TaskState)Enum.Parse(typeof(TaskState), newState));
+                await _mediator.Send(command, cancellationToken);
             }
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(string taskId, CancellationToken cancellationToken)
         {
-            var result = await _taskFacade.DeleteTaskAsync(Guid.Parse(taskId), cancellationToken);
-
-            await _notificationService.Notify(Guid.Parse(_identityProvider.GetCurrentUserIdentity()), result.IsSuccess, result.MetaResult.Message);
-
+            DeleteTaskCommand command = new(Guid.Parse(taskId));
+            var result = await _mediator.Send(command, cancellationToken);
             return ViewComponent("Tasks");
         }
 
@@ -100,42 +73,44 @@ namespace TaskBase.RazorPages.Pages
 
         public async Task<IActionResult> OnPostUpdateTaskDescriptionAsync(string taskId, string newDescription, CancellationToken cancellationToken)
         {
-            var result = await _taskFacade.EditDescriptionAsync(taskId, newDescription, cancellationToken);
+            UpdateTaskCommand command = new(Guid.Parse(taskId), "", newDescription); 
+            var result = await _mediator.Send(command, cancellationToken);
             return ViewComponent("Tasks");
         }
 
         public async Task<IActionResult> OnPostUpdateTaskTitleAsync(string taskId, string newTitle, CancellationToken cancellationToken)
         {
-            var result = await _taskFacade.EditTitleAsync(taskId, newTitle, cancellationToken);
+            UpdateTaskCommand command = new(Guid.Parse(taskId), newTitle, "");
+            var result = await _mediator.Send(command, cancellationToken);
             return ViewComponent("Tasks");
         }
     
         public async Task<IActionResult> OnPostCreateNoteAsync(string taskId, string noteContent, CancellationToken cancellationToken)
         {
-            var response = await _taskFacade.CreateNoteAsync(taskId, noteContent, cancellationToken);
-
-            if (response != default)
-                log.Info($"An new note was added to the task: { taskId }");
+            CreateNoteCommand command = new(Guid.Parse(taskId), noteContent, DateTime.Now);
+            var result = await _mediator.Send(command, cancellationToken);
 
             return ViewComponent("TaskNotes", new TaskNoteId(taskId));
         }
 
         public async Task OnPostRemoveNoteAsync(string taskId, string noteId, CancellationToken cancellationToken)
         {
-            await _taskFacade.EliminateNoteFromTaskAsync(taskId, noteId, cancellationToken);
+            EliminateNoteCommand command = new(Guid.Parse(taskId), Guid.Parse(noteId));
+            await _mediator.Send(command, cancellationToken);
         }
 
         public async Task OnPostEditNoteAsync(string taskId, string noteId, string newContent, CancellationToken cancellationToken)
         {
-            await _taskFacade.EditNoteAsync(taskId, noteId, newContent, cancellationToken);
-            log.Info($"The content of note:{ noteId } from task: { taskId } was changed!");
+            EditNoteCommand command = new(Guid.Parse(taskId), Guid.Parse(noteId), newContent);
+            var result = await _mediator.Send(command, cancellationToken);
         }
 
         public async Task<IActionResult> OnPostRemoveNotificationAsync(Guid notificationId, CancellationToken cancellationToken)
         {
-            var isSuccess = await _taskFacade.RemoveNotification(notificationId, cancellationToken);
+            RemoveNotificationCommand command = new(notificationId);
+            var result = await _mediator.Send(command, cancellationToken);
 
-            return new JsonResult(isSuccess);
+            return new JsonResult(result.IsSuccess);
         }
     }
 }
