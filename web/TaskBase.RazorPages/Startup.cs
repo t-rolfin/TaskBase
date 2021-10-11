@@ -11,6 +11,7 @@ using TaskBase.Core.Facades;
 using System.Globalization;
 using TaskBase.Components.Services;
 using TaskBase.Data.Storage;
+using TaskBase.RazorPages.Services;
 
 namespace TaskBase.RazorPages
 {
@@ -35,7 +36,6 @@ namespace TaskBase.RazorPages
             services.AddAuthorization(options => {
                 options.AddPolicy("Admin", x => x.RequireRole("Admin"));
             });
-            
 
             services.AddPortableObjectLocalization(opt => { opt.ResourcesPath = "Resources"; });
 

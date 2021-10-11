@@ -16,7 +16,6 @@ namespace TaskBase.SignalRHub.Hubs
     {
         public override async Task OnConnectedAsync()
         {
-            var ss = Context.Features.Get<IHttpTransportFeature>().TransportType.ToString();
             await Groups.AddToGroupAsync(Context.ConnectionId, Context.User.Claims.First().Value);
             await base.OnConnectedAsync();
         }
@@ -31,6 +30,12 @@ namespace TaskBase.SignalRHub.Hubs
         {
             await Clients.OthersInGroup(Context.User.Claims.First().Value)
                 .SendAsync("ReceiveNotification", notification);
+        }
+
+        public async Task PageNotification(PageNotificationModel pageNotification)
+        {
+            await Clients.Group(pageNotification.UserId.ToString())
+                .SendAsync("RecievePageNotification", pageNotification);
         }
     }
 }

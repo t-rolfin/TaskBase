@@ -41,10 +41,13 @@ connection.on("ReceiveNotification", function (notification) {
     notificationContainer.prepend(notification);
 });
 
+connection.on("RecievePageNotification", function (notification) {
+    PageNotification(notification.message, notification.isSuccess);
+});
+
 $(".notifications-container").on("click", function (e) {
     e.stopPropagation();
 });
-
 
 function removeNotification(notificationId) {
 
@@ -62,23 +65,25 @@ function removeNotification(notificationId) {
             });
 
             event.stopPropagation();
+            PageNotification("The notification was successfully deleted.", isSuccess)
         } else {
-            var pageNotifications = $("#page-notifications");
+            PageNotification("The notification couldn't be deleted.", isSuccess)
+        }
+    })
+}
 
-            var notification = `
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                  <strong>Holy guacamole!</strong> You should check in on some of those fields below.
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true" style="color: black;"><i class="fas fa-times"></i></span>
-                  </button>
+function PageNotification(message, isSuccess) {
+    var pageNotifications = $("#page-notifications");
+
+    var notification = `
+                <div class="alert ${ isSuccess ? 'alert-success' : 'alert-warning' } alert-dismissible fade show" role="alert">
+                  ${message}
                 </div>
              `;
 
-            pageNotifications.prepend(notification);
+    pageNotifications.prepend(notification);
 
-            $(".alert").delay(2000).slideUp(200, function () {
-                $(this).alert('close');
-            });
-        }
-    })
+    $(".alert").delay(2000).slideUp(200, function () {
+        $(this).alert('close');
+    });
 }
