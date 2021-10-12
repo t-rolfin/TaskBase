@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using TaskBase.Application.Services;
 
@@ -11,29 +12,52 @@ namespace TaskBase.Data.NotificationService
     {
         private HubConnection _hubConnection;
 
-        public async Task Notify(Guid userId, bool isSuccess, string message)
+        public async Task Notify(Guid userId, bool isSuccess, string message, CancellationToken cancellationToken)
         {
             try
             {
-                _hubConnection = new HubConnectionBuilder()
-                    .WithUrl(new Uri("https://localhost:5004/notificationhub"), x =>
-                    {
-                        x.AccessTokenProvider = () => Task.FromResult(userId.ToString());
-                    }).Build();
+                await CreateHubConnection(userId.ToString());
 
-                await _hubConnection.StartAsync();
-
-                await _hubConnection.InvokeAsync("PageNotification", new PageNotificationModel(isSuccess, message, userId));
+                await _hubConnection.InvokeAsync(
+                    "PageNotification",
+                    new PageNotificationModel(isSuccess, message, userId),
+                    cancellationToken
+                    );
             }
             catch (Exception)
             {
                 throw;
             }
-            finally
+        }
+
+        public async Task PersistentNotification(Guid id, Guid userId, bool isSuccess, string description, string title, CancellationToken cancellationToken)
+        {
+            try
             {
-                await _hubConnection.StopAsync();
-                await _hubConnection.DisposeAsync();
+                await CreateHubConnection(userId.ToString());
+                await _hubConnection.InvokeAsync(
+                    "PersistenceNotification",
+                    new NotificationModel(id, title, description),
+                    cancellationToken
+                    );
             }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        async Task CreateHubConnection(string groupName)
+        {
+            _hubConnection = new HubConnectionBuilder()
+                .WithUrl(new Uri("https://localhost:5004/notificationhub"), x =>
+                {
+                    x.AccessTokenProvider = () => Task.FromResult(groupName);
+                }).Build();
+
+            await _hubConnection.StartAsync();
+
+            await Task.CompletedTask;
         }
     }
 }

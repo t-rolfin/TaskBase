@@ -39,7 +39,7 @@ namespace TaskBase.Application.Commands.DeleteTask
                 await _notificationService.Notify(
                     _identityService.GetCurrentUserIdentity(),
                     true,
-                    $"The task was removed.");
+                    $"The task was removed.", cancellationToken);
 
                 return Result<bool>.Success().With("The task was removed");
             }
@@ -48,7 +48,7 @@ namespace TaskBase.Application.Commands.DeleteTask
                 await _notificationService.Notify(
                     _identityService.GetCurrentUserIdentity(),
                     true,
-                    ex.Message);
+                    ex.Message, cancellationToken);
 
                 return Result<bool>.Invalid().With(ex.Message);
             }

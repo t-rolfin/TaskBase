@@ -26,7 +26,7 @@ namespace TaskBase.SignalRHub.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async Task SendMessage(NotificationModel notification)
+        public async Task PersistenceNotification(NotificationModel notification)
         {
             await Clients.OthersInGroup(Context.User.Claims.First().Value)
                 .SendAsync("ReceiveNotification", notification);
