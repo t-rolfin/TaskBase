@@ -11,7 +11,9 @@ using TaskBase.Core.Facades;
 using System.Globalization;
 using TaskBase.Components.Services;
 using TaskBase.Data.Storage;
-using TaskBase.RazorPages.Services;
+using TaskBase.Application;
+using TaskBase.Application.Services;
+using TaskBase.Data.NotificationService;
 
 namespace TaskBase.RazorPages
 {
@@ -40,8 +42,10 @@ namespace TaskBase.RazorPages
             services.AddPortableObjectLocalization(opt => { opt.ResourcesPath = "Resources"; });
 
             services.AddInfrastructure(Configuration);
+            services.AddApplication();
             services.AddTransient<IFacade, Facade>();
-            services.AddTransient<IIdentityProvider, IdentityProvider>();
+            services.AddTransient<IIdentityService, IdentityProvider>();
+            services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<IImageStorage, ImageStorage>();
         }
 

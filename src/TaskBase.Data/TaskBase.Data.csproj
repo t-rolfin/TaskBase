@@ -16,9 +16,11 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.13.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TaskBase.Application\TaskBase.Application.csproj" />
     <ProjectReference Include="..\TaskBase.Core\TaskBase.Core.csproj" />
   </ItemGroup>
 

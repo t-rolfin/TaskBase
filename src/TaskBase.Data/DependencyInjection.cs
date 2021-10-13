@@ -37,7 +37,6 @@ namespace TaskBase.Data
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ITaskAsyncRepository, TaskRepository>();
             services.AddTransient<INotificationRepository, NotificationRepository>();
-            services.AddTransient<INotificationService, NotificationService.NotificationService>();
 
             return services;
         }
@@ -50,7 +49,6 @@ namespace TaskBase.Data
                 .AddEntityFrameworkStores<IdentityContext>()
                 .AddDefaultTokenProviders();
 
-
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password = new PasswordOptions
@@ -61,23 +59,20 @@ namespace TaskBase.Data
                 options.User.RequireUniqueEmail = true;
             });
 
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Identity/Account/Login";
+                    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                    options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                });
+
             services.Configure<SecurityStampValidatorOptions>(options => {
                 options.ValidationInterval = TimeSpan.Zero;
             });
 
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.LoginPath = "/Identity/Account/Login";
-                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-                options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
-
-                options.Cookie = new CookieBuilder
-                {
-                    HttpOnly = true,
-                    Name = "auth_cookie"
-                };
-            });
+            services.AddTransient<IAuthTokenFactory, AuthTokenFactory>();
 
             return services;
         }

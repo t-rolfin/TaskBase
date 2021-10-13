@@ -67,7 +67,12 @@ namespace TaskBase.Data.Repositories
 
         public async Task<CoreUser> GetUserByIdAsync(Guid userId)
         {
-            return await _context.FindAsync<CoreUser>(userId);
+            var user = await _context.FindAsync<CoreUser>(userId);
+            
+            if (user is null)
+                throw new UserNotFoundException("Searched user wasn't found.");
+
+            return user;
         }
 
         public async Task<CoreUser> GetUserByUserNameAsync(string userName)

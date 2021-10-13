@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TaskBase.Application.Services;
 using TaskBase.Components.Models;
 using TaskBase.Components.Services;
 using TaskBase.Core.Interfaces;
@@ -15,9 +16,9 @@ namespace TaskBase.Components.Views.Shared.Components.Notifications
     public class NotificationsViewComponent : ViewComponent
     {
         readonly IFacade _facade;
-        readonly IIdentityProvider _identityProvider;
+        readonly IIdentityService _identityProvider;
 
-        public NotificationsViewComponent(IFacade facade, IIdentityProvider identityProvider)
+        public NotificationsViewComponent(IFacade facade, IIdentityService identityProvider)
         {
             _facade = facade;
             _identityProvider = identityProvider;
@@ -26,7 +27,7 @@ namespace TaskBase.Components.Views.Shared.Components.Notifications
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var currentUserId = _identityProvider.GetCurrentUserIdentity();
-            var userNotifications = await _facade.GetUserNotificationsAsync(Guid.Parse(currentUserId), default(CancellationToken));
+            var userNotifications = await _facade.GetUserNotificationsAsync(currentUserId, default(CancellationToken));
             var notifications = userNotifications.Select(x =>
             {
                 return new NotificationModel(x.Id, x.Title, x.Description);

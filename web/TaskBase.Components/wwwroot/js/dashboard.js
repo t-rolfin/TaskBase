@@ -1,7 +1,13 @@
-﻿const connection = new signalR.HubConnectionBuilder()
+﻿function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+const connection = new signalR.HubConnectionBuilder()
     .withUrl("https://localhost:5004/notificationhub",
         {
-            accessTokenFactory: () => $("input[name='__NameIdentifier']").val(),
+            accessTokenFactory: () => getCookie("jwt_token"),
             transport: signalR.HttpTransportType.LongPolling
         })
     .configureLogging(signalR.LogLevel.Information)
@@ -9,7 +15,6 @@
 
 async function start() {
     await connection.start()
-        .then(() => console.log("Connection started"))
         .catch(e => console.log(e));
 };
 
@@ -83,7 +88,7 @@ function PageNotification(message, isSuccess) {
 
     pageNotifications.prepend(notification);
 
-    $(".alert").delay(2000).slideUp(200, function () {
+    $(".alert").delay(4000).slideUp(200, function () {
         $(this).alert('close');
     });
 }
