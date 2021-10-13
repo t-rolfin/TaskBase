@@ -2,32 +2,33 @@
 
 @inject IViewLocalizer Localizer
 
-<div class="card-footer p-0" id="@Model.userId">
+<div class="card-footer p-1" id="@Model.userId">
 
     @if (Model.AvailableRoles != null && Model.AvailableRoles.Count != 0)
     {
-        <form action="Users/AssignToRole" method="post" class="row"
+        <form action="Users/AssignToRole" method="post" class="d-flex m-1"
               data-ajax="true" data-ajax-update="#@Model.userId" data-ajax-mode="replace-with" asp-antiforgery="true">
 
             <input type="hidden" name="userId" value="@Model.userId" />
 
-            <select name="role" class="m-3" style="width:fit-content">
+            <select name="role" class="mr-2 w-auto bg-dark p-1 rounded">
                 @foreach (var item in Model.AvailableRoles)
                 {
                     <option value="@item">@Localizer[item]</option>
                 }
             </select>
 
-            <button type="submit" class="bg-transparent" style="border:0;width:fit-content;"><i class="fas fa-plus"></i></button>
+            <button type="submit" class="bg-transparent border-0 w-auto" ><i class="fas fa-plus"></i></button>
 
         </form>
     }
 
-    <div class="container row">
+
+    <div class="container d-flex p-0 mx-1">
 
         @foreach (var role in Model.roles)
         {
-            <div class="row border align-items-center p-1 m-1 rounded" style="width:fit-content;">
+            <div class="d-flex border align-items-center p-1 mr-1 my-1 rounded w-auto">
 
                 <p class="w-auto p-0 m-0">@Localizer[role]</p>
 
@@ -35,7 +36,7 @@
                       data-ajax-update="#@Model.userId" data-ajax-mode="replace-with">
                     <input type="hidden" name="userId" value="@Model.Item1" />
                     <input type="hidden" name="role" value="@role" />
-                    <button type="submit" style="border:0;"><i class="fas fa-times w-auto"></i></button>
+                    <button type="submit" class="border-0"><i class="fas fa-times w-auto"></i></button>
                 </form>
 
             </div>

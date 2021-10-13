@@ -1,39 +1,34 @@
 ﻿@inject IAuthorizationService AuthorizationService
 @inject IViewLocalizer Localizer
 
-<style>
-    #select-member::-webkit-calendar-picker-indicator {
-        display: none !important;
-    }
-</style>
 
-<div class="row border rounded align-items-center mb-3 p-1 justify-content-around" style="font-size:1.1rem; width:130px;" data-toggle="modal" data-target="#createTaskModal">
-    <i style="width:fit-content;" class="fas fa-plus p-0"></i>
-    <p style="width:fit-content;" class="p-0 m-0">New Task</p>
+<div class="d-flex flex-row border rounded align-items-center mb-3 p-1 justify-content-around" style="font-size:1.1rem; width:120px;" data-toggle="modal" data-target="#createTaskModal">
+    <i class="fas fa-plus p-0 w-auto"></i>
+    <p class="p-0 m-0 w-auto">@Localizer["New"]</p>
 </div>
 
 <div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-dark">
                 <h5 class="modal-title" id="exampleModalLabel">@Localizer["New Task"]</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body bg-dark">
 
                 <form method="post" data-ajax="true" asp-controller="Tasks" data-ajax-method="post" data-ajax-mode="replace-with"
-                      data-ajax-update="#tasks-container" data-ajax-complete="closeModal()">
+                      data-ajax-update="#tasks-container" data-ajax-success="closeModal()">
 
                     <div class="mb-3">
                         <label for="taskTitle" class="form-label">@Localizer["Title"]</label>
-                        <input type="text" name="title" class="form-control" id="taskTitle" aria-describedby="taskTitleHelp">
+                        <input type="text" name="title" class="form-control text-white" id="taskTitle" aria-describedby="taskTitleHelp">
                     </div>
 
                     <div class="mb-3">
                         <label for="taskDescription" class="form-label">@Localizer["Description"]</label>
-                        <textarea name="description" class="form-control" id="taskDescription"></textarea>
+                        <textarea name="description" class="form-control text-white bg-dark" id="taskDescription"></textarea>
                     </div>
 
 
@@ -41,7 +36,7 @@
 
                         <div class="d-flex flex-column">
                             <label for="taskDescription" class="form-label">@Localizer["Due Date"]</label>
-                            <input type="date" name="dueDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" />
+                            <input type="date" name="dueDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control text-white" />
                         </div>
 
                         @if ((await AuthorizationService.AuthorizeAsync(User, "Admin")).Succeeded)
@@ -50,7 +45,7 @@
                             <div class="d-flex flex-column">
                                 <label for="taskDescription" class="form-label">@Localizer["Assign To"]</label>
                                 <div>
-                                    <input id="select-member" name="assignTo" autoComplete="on" list="members" />
+                                    <input id="select-member" name="assignTo" autoComplete="on" list="members" class="form-control text-white" />
                                     <datalist id="members">
                                         <vc:search-member />
                                     </datalist>
@@ -60,7 +55,7 @@
 
                     </div>
 
-                    <button type="submit" class="btn btn-primary">@Localizer["Create"]</button>
+                    <button type="submit" class="btn btn-primary w-100">@Localizer["Create"]</button>
 
                 </form>
 

@@ -1,4 +1,4 @@
-﻿@inject IViewLocalizer Localizer
+﻿@{ IgnoreBody(); }
 
 <!DOCTYPE html>
 <html lang="en">
@@ -8,42 +8,52 @@
     <title>@ViewData["Title"] - TaskBase</title>
     <link href="~/_content/TaskBase.Components/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/_content/TaskBase.Components/css/site.css" rel="stylesheet" />
+    <link href="~/_content/TaskBase.Components/lib/dragula/dragula.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">TaskBase</a>
+<body class="bg-dark w-100 vh-100 text-white" id="main-layout">
 
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+    <div class="container-fluid overflow-hidden position-relative h-100" id="main-container">
 
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="/">@Localizer["Home"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="/Tasks">@Localizer["Tasks"]</a>
-                        </li>
-                    </ul>
-                </div>
+        <div class="container d-flex h-auto py-4 align-items-center m-auto">
+            
+            <nav class="navbar navbar-expand-md navbar-toggleable-sm bg-transparent w-100 justify-content-between">
 
-                <vc:culture />
+                <a class="align-items-center position-relative navbar-brand d-flex flex-row text-white" asp-area="" asp-page="/Index" id="logo-container">
+                    <img style="width:55px" src="~/_content/TaskBase.Components/logo/50_base_color.svg" />
+                    <div class="ml-2 mt-2 m-0">
+                        <h6 class="m-0 p-0">Task</h6>
+                        <h6 class="m-0 p-0">Base</h6>
+                    </div>
+                </a>
 
                 <partial name="_LoginPartial" />
 
-            </div>
-        </nav>
-    </header>
+            </nav>
 
-    <div class="container">
-        <main role="main" class="">
-            @RenderBody()
-        </main>
+        </div>
+
+        <div class="container row h-50 align-items-center m-auto">
+
+            <div class="col-12 col-md-6">
+
+                <h2>Be organized with TaskBase</h2>
+
+                <p class="w-75 mb-4" style="font-size: 0.9rem;">
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                    Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                </p>
+
+                <div class="nav-item join-btn p-2 rounded text-center">
+                    <a style="font-size: 1.1rem" asp-area="Identity" asp-page="/Account/Register">Start for FREE</a>
+                </div>
+
+            </div>
+
+            <div id="to-do-container" class="col-6 d-none d-md-flex"></div>
+
+        </div>
+
     </div>
 
     <footer class="border-top footer text-muted">
@@ -56,6 +66,7 @@
     <script src="~/_content/TaskBase.Components/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/_content/TaskBase.Components/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/_content/TaskBase.Components/lib/jqueryui/jquery-ui.min.js"></script>
+    <script src="~/_content/TaskBase.Components/lib/dragula/dragula.min.js"></script>
     <script src="~/_content/TaskBase.Components/js/site.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://kit.fontawesome.com/4c99a2880c.js" crossorigin="anonymous"></script>

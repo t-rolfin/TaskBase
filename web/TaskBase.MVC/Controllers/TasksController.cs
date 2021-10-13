@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TaskBase.Application.Services;
 using TaskBase.Components.Models;
 using TaskBase.Components.Services;
 using TaskBase.Core.Enums;
@@ -15,10 +16,10 @@ namespace TaskBase.MVC.Controllers
     public class TasksController : Controller
     {
 
-        private readonly ITaskFacade _taskFacade;
-        private readonly IIdentityProvider _identityProvider;
+        private readonly IFacade _taskFacade;
+        private readonly IIdentityService _identityProvider;
 
-        public TasksController(ITaskFacade taskFacade, IIdentityProvider identityProvider)
+        public TasksController(IFacade taskFacade, IIdentityService identityProvider)
         {
             _taskFacade = taskFacade;
             _identityProvider = identityProvider;
@@ -32,7 +33,7 @@ namespace TaskBase.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(CreateTaskModel model)
         {
-            var userId = Guid.Parse(_identityProvider.GetCurrentUserIdentity());
+            var userId = _identityProvider.GetCurrentUserIdentity();
             var userName = _identityProvider.GetCurrentUserName();
             var response = await _taskFacade.CreateTaskAsync(
                 model.Title, 
@@ -45,7 +46,7 @@ namespace TaskBase.MVC.Controllers
 
             return ViewComponent("TaskRow", new TaskRowModel(
                 Guid.NewGuid(),
-                TaskState.New,
+                TaskState.ToDo,
                 tasks.Select(x =>
                 {
                     return new TaskModel() { Id = x.Id, TaskTitle = x.Title, TaskDescription = x.Description, TaskState = x.TaskState };
@@ -57,7 +58,7 @@ namespace TaskBase.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(string taskId)
         {
-            var userId = Guid.Parse(_identityProvider.GetCurrentUserIdentity());
+            var userId = _identityProvider.GetCurrentUserIdentity();
             await _taskFacade.DeleteTaskAsync(Guid.Parse(taskId), default);
 
             return RedirectPermanent("/Tasks");
@@ -66,7 +67,7 @@ namespace TaskBase.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Done(string taskId)
         {
-            await _taskFacade.CloseTaskAsync(Guid.Parse(taskId), default);
+            await _taskFacade.ChangeTaskState(Guid.Parse(taskId), TaskState.Done, default);
 
             return RedirectPermanent("/Tasks");
         }

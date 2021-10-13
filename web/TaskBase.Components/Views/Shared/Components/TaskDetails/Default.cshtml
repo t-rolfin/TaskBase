@@ -1,0 +1,66 @@
+﻿@model TaskDetailsModel
+
+@{ 
+    TaskNoteId model = Model is null
+        ? new TaskNoteId("")
+        : new TaskNoteId(Model.Id);
+}
+
+<div class="d-flex flex-column w-100" id="task-details">
+
+    <div class="d-flex flex-row w-auto m-2" style="font-size:1.1rem">
+        <form action="/Tasks/UpdateTaskTitle" method="post" data-ajax="true" data-ajax-method="post"
+              data-ajax-mode="replace-with" data-ajax-update="#tasks-container"
+              data-ajax-complete="enableDragula()"
+              data-ajax-success="toggleEdit('enable-title-edit','save-title-edit','task-title')"
+              class="d-flex w-100 align-items-center">
+
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="taskId" value="@Model.Id" />
+            <input id="task-title" class="form-control text-white w-75 mr-3 p-2" type="text" name="newTitle" value="@Model.Title" disabled />
+
+            <div class="d-none align-items-center" id="save-title-edit">
+                <i onclick="toggleEdit('enable-title-edit','save-title-edit','task-title')" class="fas fa-times mr-2"></i>
+                <button type="submit" class="border-0"><i class="fas fa-save"></i></button>
+            </div>
+
+            <i onclick="toggleEdit('enable-title-edit','save-title-edit','task-title')" id="enable-title-edit" class="fas fa-pen"></i>
+
+        </form>
+    </div>
+
+    <div class="d-flex flex-column w-auto mt-2 m-2">
+        <form action="/Tasks/UpdateTaskDescription" method="post" data-ajax="true" data-ajax-method="post"
+              data-ajax-mode="replace-with" data-ajax-update="#tasks-container"
+              data-ajax-complete="enableDragula()"
+              data-ajax-success="toggleEdit('enable-desc-edit', 'save-desc-edit', 'task-description')">
+
+            <div class="d-flex float-right">
+                <div class="align-items-center d-none" id="save-desc-edit">
+                    <i onclick="toggleEdit('enable-desc-edit', 'save-desc-edit', 'task-description')" class="fas fa-times mr-2"></i>
+                    <button type="submit" class="border-0"><i class="fas fa-save"></i></button>
+                </div>
+
+                <i onclick="toggleEdit('enable-desc-edit', 'save-desc-edit', 'task-description')" id="enable-desc-edit" class="fas fa-pen"></i>
+            </div>
+
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="taskId" value="@Model.Id" />
+            <textarea class="border bg-dark text-white w-100 p-2 rounded" name="newDescription" disabled id="task-description">@Model.Description</textarea>
+        </form>
+    </div>
+
+    <div class="d-flex flex-column p-3">
+
+        <div class="d-flex align-items-center mb-4">
+            <h5 class="p-0 m-0 w-25">Notes</h5>
+            <i onclick="createNoteContainer('@Model.Id')" class="fas fa-plus p-0 w-auto"></i>
+        </div>
+
+        <div class="overflow-auto position-relative pr-2" style="height:540px">
+            <vc:task-notes id-model="model" />
+        </div>
+
+    </div>
+
+</div>

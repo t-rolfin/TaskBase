@@ -19,6 +19,48 @@ namespace TaskBase.Data.Migrations
                 .HasAnnotation("ProductVersion", "5.0.9")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("TaskBase.Core.NotificationAggregate.Notification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("TaskBase.Core.TaskAggregate.Note", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("AddedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("taskId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("taskId");
+
+                    b.ToTable("Notes");
+                });
+
             modelBuilder.Entity("TaskBase.Core.TaskAggregate.Task", b =>
                 {
                     b.Property<Guid>("Id")
@@ -69,6 +111,14 @@ namespace TaskBase.Data.Migrations
                     b.ToTable("users");
                 });
 
+            modelBuilder.Entity("TaskBase.Core.TaskAggregate.Note", b =>
+                {
+                    b.HasOne("TaskBase.Core.TaskAggregate.Task", null)
+                        .WithMany("Notes")
+                        .HasForeignKey("taskId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("TaskBase.Core.TaskAggregate.Task", b =>
                 {
                     b.HasOne("TaskBase.Core.TaskAggregate.User", "AssignTo")
@@ -76,6 +126,11 @@ namespace TaskBase.Data.Migrations
                         .HasForeignKey("AssignToId");
 
                     b.Navigation("AssignTo");
+                });
+
+            modelBuilder.Entity("TaskBase.Core.TaskAggregate.Task", b =>
+                {
+                    b.Navigation("Notes");
                 });
 #pragma warning restore 612, 618
         }

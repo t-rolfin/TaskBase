@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System;
 using Microsoft.AspNetCore.Http;
-using TaskBase.Data.Storage;
+using TaskBase.Data.NotificationService;
 
 namespace TaskBase.Data
 {
@@ -34,12 +34,12 @@ namespace TaskBase.Data
             });
 
             services.AddDbContext<TaskDbContext>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ITaskAsyncRepository, TaskRepository>();
-            services.AddTransient<IImageStorage, ImageStorage>();
+            services.AddTransient<INotificationRepository, NotificationRepository>();
 
             return services;
         }
-
 
         public static IServiceCollection AddIdentity(this IServiceCollection services)
         {
@@ -48,7 +48,6 @@ namespace TaskBase.Data
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<IdentityContext>()
                 .AddDefaultTokenProviders();
-
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -60,23 +59,20 @@ namespace TaskBase.Data
                 options.User.RequireUniqueEmail = true;
             });
 
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Identity/Account/Login";
+                    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                    options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                });
+
             services.Configure<SecurityStampValidatorOptions>(options => {
                 options.ValidationInterval = TimeSpan.Zero;
             });
 
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.LoginPath = "/Identity/Account/Login";
-                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-                options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
-
-                options.Cookie = new CookieBuilder
-                {
-                    HttpOnly = true,
-                    Name = "auth_cookie"
-                };
-            });
+            services.AddTransient<IAuthTokenFactory, AuthTokenFactory>();
 
             return services;
         }

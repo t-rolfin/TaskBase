@@ -21,6 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
+	<PackageReference Include="MediatR" Version="9.0.0" />
+	<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.10" />
     <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.9" />
@@ -39,6 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\TaskBase.Application\TaskBase.Application.csproj" />
     <ProjectReference Include="..\..\src\TaskBase.Core\TaskBase.Core.csproj" />
     <ProjectReference Include="..\..\src\TaskBase.Data\TaskBase.Data.csproj" />
     <ProjectReference Include="..\TaskBase.Components\TaskBase.Components.csproj" />

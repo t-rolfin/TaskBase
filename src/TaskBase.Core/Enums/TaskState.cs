@@ -8,8 +8,8 @@ namespace TaskBase.Core.Enums
 {
     public enum TaskState
     {
-        New,
-        InProgress,
-        Completed
+        ToDo,
+        Doing,
+        Done
     }
 }

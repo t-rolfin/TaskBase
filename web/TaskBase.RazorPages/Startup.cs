@@ -11,6 +11,9 @@ using TaskBase.Core.Facades;
 using System.Globalization;
 using TaskBase.Components.Services;
 using TaskBase.Data.Storage;
+using TaskBase.Application;
+using TaskBase.Application.Services;
+using TaskBase.Data.NotificationService;
 
 namespace TaskBase.RazorPages
 {
@@ -23,13 +26,12 @@ namespace TaskBase.RazorPages
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers().AddRazorOptions(options => { options.PageViewLocationFormats.Add("/Views/{0}.cshtml"); })
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
-            
+
             services.AddRazorPages();
             services.AddIdentity();
 
@@ -40,12 +42,13 @@ namespace TaskBase.RazorPages
             services.AddPortableObjectLocalization(opt => { opt.ResourcesPath = "Resources"; });
 
             services.AddInfrastructure(Configuration);
-            services.AddTransient<ITaskFacade, TaskFacade>();
-            services.AddTransient<IIdentityProvider, IdentityProvider>();
+            services.AddApplication();
+            services.AddTransient<IFacade, Facade>();
+            services.AddTransient<IIdentityService, IdentityProvider>();
+            services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<IImageStorage, ImageStorage>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -55,7 +58,6 @@ namespace TaskBase.RazorPages
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 

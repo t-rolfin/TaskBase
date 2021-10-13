@@ -1,19 +1,16 @@
-﻿msgid "Welcome!"
-msgstr "Bun venit!"
-
-msgid "Home"
+﻿msgid "Home"
 msgstr "Acasă"
 
 msgid "To Do"
 msgstr "De Făcut"
 
-msgid "In Progress"
+msgid "Doing"
 msgstr "În Lucru"
 
 msgid "Done"
-msgstr "Terminate"
+msgstr "Finalizate"
 
-msgid "Tasks"
+msgid "My Tasks"
 msgstr "Sarcini"
 
 msgid "New Task"
@@ -39,3 +36,9 @@ msgstr "Administrator"
 
 msgid "Member"
 msgstr "Membru"
+
+msgid "Users"
+msgstr "Utilizatori"
+
+msgid "New"
+msgstr "Creează"

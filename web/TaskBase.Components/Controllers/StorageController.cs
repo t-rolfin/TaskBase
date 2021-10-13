@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using TaskBase.Application.Services;
 using TaskBase.Components.Services;
 using TaskBase.Components.Views.Shared.Components.Avatar;
 using TaskBase.Data.Identity;
@@ -17,13 +18,13 @@ namespace TaskBase.Components.Controllers
     [Route("[controller]/[action]")]
     public class StorageController : Controller
     {
-        readonly IIdentityProvider _identityProvider;
+        readonly IIdentityService _identityProvider;
         readonly IImageStorage _imageStorage;
         readonly UserManager<User> _userManager;
 
         public StorageController(IImageStorage imageStorage, 
             UserManager<User> userManager, 
-            IIdentityProvider identityProvider)
+            IIdentityService identityProvider)
         {
             _identityProvider = identityProvider;
             _imageStorage = imageStorage;
@@ -42,7 +43,7 @@ namespace TaskBase.Components.Controllers
             string fileExtension = Path.GetExtension(file.FileName);
 
             var currentUserId = _identityProvider.GetCurrentUserIdentity();
-            var currentUserData = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == currentUserId);
+            var currentUserData = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == currentUserId.ToString());
 
             if (string.IsNullOrWhiteSpace(currentUserData.AvatarUrl))
                 url = await _imageStorage.UploadImage(stream, fileExtension);

@@ -1,92 +1,130 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 using TaskBase.Components.Models;
 using TaskBase.Components.Services;
 using TaskBase.Core.Enums;
 using TaskBase.Core.Interfaces;
-using BaseTask = TaskBase.Core.TaskAggregate.Task;
+using TaskBase.Data.NotificationService;
+using MediatR;
+using TaskBase.Application.Commands.CreateTask;
+using TaskBase.Application.Commands.ChangeTaskState;
+using TaskBase.Application.Commands.DeleteTask;
+using TaskBase.Application.Commands.UpdateTask;
+using TaskBase.Application.Commands.CreateNote;
+using TaskBase.Application.Commands.EliminateNote;
+using TaskBase.Application.Commands.EditNote;
+using TaskBase.Application.Commands.RemoveNotification;
+using TaskBase.Data.Identity;
+using TaskBase.Application.Services;
 
 namespace TaskBase.RazorPages.Pages
 {
     [Authorize(Roles = "Member")]
     public class TasksModel : PageModel
     {
-        readonly ITaskFacade _taskFacade;
-        readonly IIdentityProvider _identityProvider;
-        readonly ILog log = LogManager.GetLogger(typeof(TasksModel));
+        readonly IFacade _taskFacade;
+        readonly IMediator _mediator;
+        readonly IAuthTokenFactory _tokenFactory;
+        readonly IIdentityService _identityService;
 
-        public TasksModel(ITaskFacade taskFacade, IIdentityProvider identityProvider)
+        public TasksModel(IMediator mediator,
+            IFacade facade,
+            IAuthTokenFactory tokenFactory,
+            IIdentityService identityService
+            )
         {
-            _taskFacade = taskFacade;
-            _identityProvider = identityProvider;
+            _mediator = mediator;
+            _taskFacade = facade;
+            _tokenFactory = tokenFactory;
+            _identityService = identityService;
         }
 
-        public void OnGet() { }
-
+        public async Task OnGetAsync() 
+        {
+            var token = await _tokenFactory.GetToken(_identityService.GetCurrentUserIdentity());
+            HttpContext.Response.Cookies.Append("jwt_token", token); 
+        }
 
         public async Task<IActionResult> OnPostAsync(CreateTaskModel model, CancellationToken cancellationToken)
         {
-            if (ModelState.IsValid)
-            {
-                Guid userId = default;
-                string userName = default;
-
-                if (string.IsNullOrWhiteSpace(model.AssignTo))
-                {
-                    userId = Guid.Parse(_identityProvider.GetCurrentUserIdentity());
-                    userName = _identityProvider.GetCurrentUserName();
-                }
-                else
-                {
-                    var user = await _taskFacade.GetUserByNameAsync(model.AssignTo);
-                    userId = user.Id;
-                    userName = user.FullName;
-                }
-
-                var response = await _taskFacade.CreateTaskAsync(
-                    model.Title,
-                    model.Description,
-                    model.DueDate == default ? DateTime.Now : model.DueDate,
-                    userId,
-                    userName,
-                    cancellationToken);
-
-                if (response is not null)
-                    log.Info("An new task was created!");
-                else
-                    log.Error("An error occur at task creation process!");
-
-                return ViewComponent("Tasks");
-            }
+            CreateTaskCommand command = new(model.Title, model.Description, model.DueDate, model.AssignTo);
+            var result = await _mediator.Send(command, cancellationToken);
 
             return ViewComponent("Tasks");
         }
 
-        public async Task<IActionResult> OnPostInProgressAsync(string taskId, CancellationToken cancellationToken)
+        public async Task OnPostChangeTaskState(Guid taskId, string newState, CancellationToken cancellationToken)
         {
-            await _taskFacade.SetTaskAsInProgressAsync(Guid.Parse(taskId), cancellationToken);
-            return ViewComponent("Tasks");
+            var isSuccess = Enum.TryParse(typeof(TaskState), newState, out object response);
+
+            if (isSuccess && response is not null)
+            {
+                ChangeTaskStateCommand command = new(taskId, (TaskState)Enum.Parse(typeof(TaskState), newState));
+                await _mediator.Send(command, cancellationToken);
+            }
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(string taskId, CancellationToken cancellationToken)
         {
-            await _taskFacade.DeleteTaskAsync(Guid.Parse(taskId), cancellationToken);
+            DeleteTaskCommand command = new(Guid.Parse(taskId));
+            var result = await _mediator.Send(command, cancellationToken);
             return ViewComponent("Tasks");
         }
 
-        public async Task<IActionResult> OnPostDoneAsync(string taskId, CancellationToken cancellationToken)
+        public async Task<IActionResult> OnGetTaskDetailsAsync(string taskId, CancellationToken cancellationToken)
         {
-            await _taskFacade.CloseTaskAsync(Guid.Parse(taskId), cancellationToken);
+            var taskDetails = await _taskFacade.GetTaskDetailsAsync(Guid.Parse(taskId));
+            var taskDetailsModel = new TaskDetailsModel(taskDetails.Id.ToString(), taskDetails.Title, taskDetails.Description);
+
+            return ViewComponent("TaskDetails", taskDetailsModel);
+        }
+
+        public async Task<IActionResult> OnPostUpdateTaskDescriptionAsync(string taskId, string newDescription, CancellationToken cancellationToken)
+        {
+            UpdateTaskCommand command = new(Guid.Parse(taskId), "", newDescription); 
+            var result = await _mediator.Send(command, cancellationToken);
             return ViewComponent("Tasks");
         }
 
+        public async Task<IActionResult> OnPostUpdateTaskTitleAsync(string taskId, string newTitle, CancellationToken cancellationToken)
+        {
+            UpdateTaskCommand command = new(Guid.Parse(taskId), newTitle, "");
+            var result = await _mediator.Send(command, cancellationToken);
+            return ViewComponent("Tasks");
+        }
+    
+        public async Task<IActionResult> OnPostCreateNoteAsync(string taskId, string noteContent, CancellationToken cancellationToken)
+        {
+            CreateNoteCommand command = new(Guid.Parse(taskId), noteContent, DateTime.Now);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return ViewComponent("TaskNotes", new TaskNoteId(taskId));
+        }
+
+        public async Task OnPostRemoveNoteAsync(string taskId, string noteId, CancellationToken cancellationToken)
+        {
+            EliminateNoteCommand command = new(Guid.Parse(taskId), Guid.Parse(noteId));
+            await _mediator.Send(command, cancellationToken);
+        }
+
+        public async Task OnPostEditNoteAsync(string taskId, string noteId, string newContent, CancellationToken cancellationToken)
+        {
+            EditNoteCommand command = new(Guid.Parse(taskId), Guid.Parse(noteId), newContent);
+            var result = await _mediator.Send(command, cancellationToken);
+        }
+
+        public async Task<IActionResult> OnPostRemoveNotificationAsync(Guid notificationId, CancellationToken cancellationToken)
+        {
+            RemoveNotificationCommand command = new(notificationId);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return new JsonResult(result.IsSuccess);
+        }
     }
 }
