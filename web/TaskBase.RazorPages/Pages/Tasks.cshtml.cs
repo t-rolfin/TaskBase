@@ -20,6 +20,8 @@ using TaskBase.Application.Commands.CreateNote;
 using TaskBase.Application.Commands.EliminateNote;
 using TaskBase.Application.Commands.EditNote;
 using TaskBase.Application.Commands.RemoveNotification;
+using TaskBase.Data.Identity;
+using TaskBase.Application.Services;
 
 namespace TaskBase.RazorPages.Pages
 {
@@ -28,14 +30,26 @@ namespace TaskBase.RazorPages.Pages
     {
         readonly IFacade _taskFacade;
         readonly IMediator _mediator;
+        readonly IAuthTokenFactory _tokenFactory;
+        readonly IIdentityService _identityService;
 
-        public TasksModel(IMediator mediator, IFacade facade)
+        public TasksModel(IMediator mediator,
+            IFacade facade,
+            IAuthTokenFactory tokenFactory,
+            IIdentityService identityService
+            )
         {
             _mediator = mediator;
             _taskFacade = facade;
+            _tokenFactory = tokenFactory;
+            _identityService = identityService;
         }
 
-        public void OnGet() { }
+        public async Task OnGetAsync() 
+        {
+            var token = await _tokenFactory.GetToken(_identityService.GetCurrentUserIdentity());
+            HttpContext.Response.Cookies.Append("jwt_token", token); 
+        }
 
         public async Task<IActionResult> OnPostAsync(CreateTaskModel model, CancellationToken cancellationToken)
         {

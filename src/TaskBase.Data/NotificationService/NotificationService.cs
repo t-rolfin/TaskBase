@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TaskBase.Application.Services;
+using TaskBase.Data.Identity;
 
 namespace TaskBase.Data.NotificationService
 {
@@ -15,11 +16,16 @@ namespace TaskBase.Data.NotificationService
         private HubConnection _hubConnection;
         readonly IConfiguration _configuration;
         readonly ILogger<NotificationService> _logger;
+        readonly IAuthTokenFactory _tokenFactory;
 
-        public NotificationService(IConfiguration configuration, ILogger<NotificationService> logger)
+        public NotificationService(IConfiguration configuration,
+            ILogger<NotificationService> logger,
+            IAuthTokenFactory tokenFactory
+            )
         {
             _configuration = configuration;
             _logger = logger;
+            _tokenFactory = tokenFactory;
         }
 
         public async Task Notify(Guid userId, bool isSuccess, string message, CancellationToken cancellationToken)
@@ -57,17 +63,18 @@ namespace TaskBase.Data.NotificationService
             }
         }
 
-        async Task CreateHubConnection(string groupName)
+        async Task CreateHubConnection(string userId)
         {
+            var accessToken = await _tokenFactory.GetToken(Guid.Parse(userId));
+
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl(new Uri(_configuration["SignalR:Url"]), x =>
+                .WithUrl(new Uri(_configuration["SignalR:HubUrl"]), x =>
                 {
-                    x.AccessTokenProvider = () => Task.FromResult(groupName);
-                }).Build();
+                    x.AccessTokenProvider = () => Task.FromResult(accessToken);
+                })
+                .Build();
 
             await _hubConnection.StartAsync();
-
-            await Task.CompletedTask;
         }
 
         public void Dispose()

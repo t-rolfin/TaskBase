@@ -1,7 +1,13 @@
-﻿const connection = new signalR.HubConnectionBuilder()
+﻿function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+const connection = new signalR.HubConnectionBuilder()
     .withUrl("https://localhost:5004/notificationhub",
         {
-            accessTokenFactory: () => $("input[name='__NameIdentifier']").val(),
+            accessTokenFactory: () => getCookie("jwt_token"),
             transport: signalR.HttpTransportType.LongPolling
         })
     .configureLogging(signalR.LogLevel.Information)
@@ -9,7 +15,6 @@
 
 async function start() {
     await connection.start()
-        .then(() => console.log("Connection started"))
         .catch(e => console.log(e));
 };
 
