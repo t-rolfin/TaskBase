@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +13,14 @@ namespace TaskBase.Data.NotificationService
     public class NotificationService : INotificationService
     {
         private HubConnection _hubConnection;
+        readonly IConfiguration _configuration;
+        readonly ILogger<NotificationService> _logger;
+
+        public NotificationService(IConfiguration configuration, ILogger<NotificationService> logger)
+        {
+            _configuration = configuration;
+            _logger = logger;
+        }
 
         public async Task Notify(Guid userId, bool isSuccess, string message, CancellationToken cancellationToken)
         {
@@ -24,9 +34,9 @@ namespace TaskBase.Data.NotificationService
                     cancellationToken
                     );
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex.Message);
             }
         }
 
@@ -41,16 +51,16 @@ namespace TaskBase.Data.NotificationService
                     cancellationToken
                     );
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex.Message);
             }
         }
 
         async Task CreateHubConnection(string groupName)
         {
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl(new Uri("https://localhost:5004/notificationhub"), x =>
+                .WithUrl(new Uri(_configuration["SignalR:Url"]), x =>
                 {
                     x.AccessTokenProvider = () => Task.FromResult(groupName);
                 }).Build();
@@ -58,6 +68,12 @@ namespace TaskBase.Data.NotificationService
             await _hubConnection.StartAsync();
 
             await Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            _hubConnection.StopAsync();
+            _hubConnection.DisposeAsync();
         }
     }
 }
