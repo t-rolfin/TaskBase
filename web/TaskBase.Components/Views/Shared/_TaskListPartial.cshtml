@@ -51,6 +51,11 @@
                     <p class="m-0">@task.TaskDescription</p>
                 </div>
 
+                <div class="card-footer d-flex bg-dark p-2 m-0">
+                    <span class="badge badge-secondary mr-2 m-0 h4">@task.PriorityLevel.DisplayName</span>
+                    <span class="badge badge-secondary m-0 h4">@task.DueDate.ToShortDateString()</span>
+                </div>
+
             </div>
         }
 

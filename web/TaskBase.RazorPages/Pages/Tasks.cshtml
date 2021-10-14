@@ -1,6 +1,8 @@
 ﻿@page "{handler?}"
 @model TaskBase.RazorPages.Pages.TasksModel
 
+@using TaskBase.Core.TaskAggregate
+
 @using TaskBase.Data.Identity
 
 @inject IAuthTokenFactory tokenFactory 
@@ -10,7 +12,7 @@
 @{
     ViewData["Title"] = "My Tasks";
     Layout = "_DashboardLayout";
-    var defaultModel = new TaskDetailsModel("", "", "");
+    var defaultModel = new TaskDetailsModel("", "", "", new PriorityLevelModel(PriorityLevel.Low.Value, PriorityLevel.Low.DisplayName), "");
 }
 
 @Html.AntiForgeryToken()

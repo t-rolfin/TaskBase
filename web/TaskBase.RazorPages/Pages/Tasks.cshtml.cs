@@ -20,6 +20,7 @@ using TaskBase.Application.Commands.CreateNote;
 using TaskBase.Application.Commands.EliminateNote;
 using TaskBase.Application.Commands.EditNote;
 using TaskBase.Application.Commands.RemoveNotification;
+using PriorityLevel = TaskBase.Core.TaskAggregate.PriorityLevel;
 using TaskBase.Data.Identity;
 using TaskBase.Application.Services;
 
@@ -53,7 +54,7 @@ namespace TaskBase.RazorPages.Pages
 
         public async Task<IActionResult> OnPostAsync(CreateTaskModel model, CancellationToken cancellationToken)
         {
-            CreateTaskCommand command = new(model.Title, model.Description, model.DueDate, model.AssignTo);
+            CreateTaskCommand command = new(model.Title, model.Description, model.DueDate, model.AssignTo, model.PriorityLevel);
             var result = await _mediator.Send(command, cancellationToken);
 
             return ViewComponent("Tasks");
@@ -80,7 +81,13 @@ namespace TaskBase.RazorPages.Pages
         public async Task<IActionResult> OnGetTaskDetailsAsync(string taskId, CancellationToken cancellationToken)
         {
             var taskDetails = await _taskFacade.GetTaskDetailsAsync(Guid.Parse(taskId));
-            var taskDetailsModel = new TaskDetailsModel(taskDetails.Id.ToString(), taskDetails.Title, taskDetails.Description);
+            var taskDetailsModel = new TaskDetailsModel(
+                taskDetails.Id.ToString(),
+                taskDetails.Title,
+                taskDetails.Description,
+                new PriorityLevelModel(taskDetails.PriorityLevel.Value, taskDetails.PriorityLevel.DisplayName),
+                taskDetails.DueDate.ToShortDateString()
+                );
 
             return ViewComponent("TaskDetails", taskDetailsModel);
         }

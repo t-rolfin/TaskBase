@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskBase.Core.TaskAggregate;
 
 namespace TaskBase.Components.Models
 {
@@ -17,6 +18,7 @@ namespace TaskBase.Components.Models
 
         public DateTime DueDate { get; set; }
         public string AssignTo { get; set; }
+        public int PriorityLevel { get; set; }
 
     }
 }

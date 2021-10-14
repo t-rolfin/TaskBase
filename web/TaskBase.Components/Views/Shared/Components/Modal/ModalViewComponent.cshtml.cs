@@ -12,13 +12,6 @@ namespace TaskBase.Components.Views.Components.Modal
     [ViewComponent(Name = "Modal")]
     public class ModalViewComponent : ViewComponent
     {
-        private readonly IFacade _taskFacade;
-
-        public ModalViewComponent(IFacade taskFacade)
-        {
-            _taskFacade = taskFacade;
-        }
-
         public async Task<IViewComponentResult> InvokeAsync()
         {
             return await Task.Factory.StartNew(() =>

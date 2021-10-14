@@ -11,6 +11,7 @@ using TaskBase.Data.Exceptions;
 using CoreTask = TaskBase.Core.TaskAggregate.Task;
 using CoreUser = TaskBase.Core.TaskAggregate.User;
 using CoreNote = TaskBase.Core.TaskAggregate.Note;
+using CorePriorityLevel = TaskBase.Core.TaskAggregate.PriorityLevel;
 
 namespace TaskBase.Data.Repositories
 {
@@ -49,7 +50,8 @@ namespace TaskBase.Data.Repositories
 
         public async Task<CoreTask> GetTaskAsync(Guid taskId)
         {
-            var task = await dbSet.Where(x => x.Id == taskId).FirstOrDefaultAsync();
+            var task = await dbSet.Where(x => x.Id == taskId).Include(x => x.PriorityLevel)
+                .FirstOrDefaultAsync();
 
             if (task == default)
                 throw new TaskNotFoundException("The specified task doesn't exist!");
@@ -61,7 +63,8 @@ namespace TaskBase.Data.Repositories
         {
             return await Task.Factory.StartNew(() =>
             {
-                return dbSet.Where(x => x.AssignTo.Id == userId).ToList();
+                return dbSet.Where(x => x.AssignTo.Id == userId)
+                .Include(x => x.PriorityLevel).ToList();
             });
         }
 
@@ -98,6 +101,17 @@ namespace TaskBase.Data.Repositories
             else
                 return task;
         }
+
+        public async Task<CorePriorityLevel> GetPriorityLevelAsync(int value)
+        {
+            var priorityLevel = await _context.Set<CorePriorityLevel>().FirstOrDefaultAsync(x => x.Value == value);
+
+            if (priorityLevel == default)
+                throw new PriorityLevelNotFoundException("The specified priority level wasn't found.");
+
+            return priorityLevel;
+        }
+
 
         /// <summary>
         /// Check every note from 'entity' if is modified and 

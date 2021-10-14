@@ -44,7 +44,13 @@ namespace TaskBase.Application.Commands.CreateTask
                     isPersistentNotification = true;
                 }
 
-                var task = new CoreTask(request.Title, request.Description, request.DueDate, user);
+                var priorityLevel = await _unitOfWork.Tasks.GetPriorityLevelAsync(request.PriorityLevel);
+
+                var task = new CoreTask(request.Title, 
+                    request.Description, request.DueDate, 
+                    priorityLevel,
+                    user);
+
                 await _unitOfWork.Tasks.AddAsync(task, cancellationToken);
 
                 if(isPersistentNotification)

@@ -9,6 +9,7 @@ using TaskBase.Components.Models;
 using TaskBase.Components.Services;
 using TaskBase.Core.Enums;
 using TaskBase.Core.Interfaces;
+using TaskBase.Core.TaskAggregate;
 
 namespace TaskBase.Components.Views.Shared.Components.Tasks
 {
@@ -39,7 +40,8 @@ namespace TaskBase.Components.Views.Shared.Components.Tasks
                     TaskDescription = x.Description, 
                     TaskState = x.TaskState,    
                     TaskTitle = x.Title,
-                    DueDate = x.DueDate
+                    DueDate = x.DueDate,
+                    PriorityLevel = new PriorityLevelModel(x.PriorityLevel.Value, x.PriorityLevel.DisplayName)
                 })
                 .ToList();
 
@@ -53,21 +55,21 @@ namespace TaskBase.Components.Views.Shared.Components.Tasks
             Rows.Add(new TaskRowModel(
                     Guid.NewGuid(),
                     TaskState.ToDo,
-                    Tasks.Where(x => x.TaskState == TaskState.ToDo),
+                    Tasks.Where(x => x.TaskState == TaskState.ToDo).OrderByDescending(x => x.PriorityLevel.key),
                     new TaskRowCustomization("newTaskRow", "To Do", "bg-info")
                 ));
 
             Rows.Add(new TaskRowModel(
                     Guid.NewGuid(),
                     TaskState.Doing,
-                    Tasks.Where(x => x.TaskState == TaskState.Doing),
+                    Tasks.Where(x => x.TaskState == TaskState.Doing).OrderByDescending(x => x.PriorityLevel.key),
                     new TaskRowCustomization("inProggressTaskRow", "Doing", "bg-secondary")
                 ));
 
             Rows.Add(new TaskRowModel(
                     Guid.NewGuid(),
                     TaskState.Done,
-                    Tasks.Where(x => x.TaskState == TaskState.Done),
+                    Tasks.Where(x => x.TaskState == TaskState.Done).OrderByDescending(x => x.PriorityLevel.key),
                     new TaskRowCustomization("completedTaskRow", "Done", "bg-success")
                 ));
 

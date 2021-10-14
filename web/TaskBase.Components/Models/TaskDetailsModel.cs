@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace TaskBase.Components.Models
 {
-    public record TaskDetailsModel(string Id, string Title, string Description);
+    public record TaskDetailsModel(string Id, string Title, string Description, PriorityLevelModel PriorityLevel, string DueDate);
 }

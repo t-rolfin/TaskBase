@@ -14,5 +14,8 @@ namespace TaskBase.Components.Models
         public string TaskDescription { get; set; }
         public TaskState TaskState { get; set; }
         public DateTime DueDate { get; set; }
+        public PriorityLevelModel PriorityLevel { get; set; }
     }
+
+    public record PriorityLevelModel(int key, string DisplayName);
 }
