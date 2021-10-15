@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskBase.Application.Models;
 using TaskBase.Application.Services;
 using TaskBase.Components.Models;
 using TaskBase.Components.Services;
@@ -17,34 +18,22 @@ namespace TaskBase.Components.Views.Shared.Components.Tasks
     public class TasksViewComponent : ViewComponent
     {
         readonly IIdentityService _identityProvider;
-        readonly IFacade _taskFacade;
+        readonly IQueryRepository _queryRepository;
 
         List<TaskModel> Tasks { get; set; } = new();
 
         public List<TaskRowModel> Rows { get; set; } = new();
 
-        public TasksViewComponent(IIdentityService identityProvider, IFacade taskFacade)
+        public TasksViewComponent(IIdentityService identityProvider, IQueryRepository queryRepository)
         {
             _identityProvider = identityProvider;
-            _taskFacade = taskFacade;
+            _queryRepository = queryRepository;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var currentUserId = _identityProvider.GetCurrentUserIdentity();
-            var tasks = await _taskFacade.GetTasksByUserIdAsync(currentUserId);
-
-            this.Tasks = tasks.Select(x => 
-                new TaskModel() { 
-                    Id = x.Id, 
-                    TaskDescription = x.Description, 
-                    TaskState = x.TaskState,    
-                    TaskTitle = x.Title,
-                    DueDate = x.DueDate,
-                    PriorityLevel = new PriorityLevelModel(x.PriorityLevel.Value, x.PriorityLevel.DisplayName)
-                })
-                .ToList();
-
+            this.Tasks = (await _queryRepository.GetTasksByUserIdAsync(currentUserId)).ToList();
             GenerateRows();
 
             return View(Rows);
@@ -55,21 +44,21 @@ namespace TaskBase.Components.Views.Shared.Components.Tasks
             Rows.Add(new TaskRowModel(
                     Guid.NewGuid(),
                     TaskState.ToDo,
-                    Tasks.Where(x => x.TaskState == TaskState.ToDo).OrderByDescending(x => x.PriorityLevel.key),
+                    Tasks.Where(x => x.TaskState == TaskState.ToDo).OrderByDescending(x => x.PriorityLevel.Id),
                     new TaskRowCustomization("newTaskRow", "To Do", "bg-info")
                 ));
 
             Rows.Add(new TaskRowModel(
                     Guid.NewGuid(),
                     TaskState.Doing,
-                    Tasks.Where(x => x.TaskState == TaskState.Doing).OrderByDescending(x => x.PriorityLevel.key),
+                    Tasks.Where(x => x.TaskState == TaskState.Doing).OrderByDescending(x => x.PriorityLevel.Id),
                     new TaskRowCustomization("inProggressTaskRow", "Doing", "bg-secondary")
                 ));
 
             Rows.Add(new TaskRowModel(
                     Guid.NewGuid(),
                     TaskState.Done,
-                    Tasks.Where(x => x.TaskState == TaskState.Done).OrderByDescending(x => x.PriorityLevel.key),
+                    Tasks.Where(x => x.TaskState == TaskState.Done).OrderByDescending(x => x.PriorityLevel.Id),
                     new TaskRowCustomization("completedTaskRow", "Done", "bg-success")
                 ));
 

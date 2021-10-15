@@ -12,7 +12,6 @@
 @{
     ViewData["Title"] = "My Tasks";
     Layout = "_DashboardLayout";
-    var defaultModel = new TaskDetailsModel("", "", "", new PriorityLevelModel(PriorityLevel.Low.Value, PriorityLevel.Low.DisplayName), "");
 }
 
 @Html.AntiForgeryToken()
@@ -29,7 +28,7 @@
         </div>
 
         <div>
-            <vc:task-details model="defaultModel" />
+            <vc:task-details task-id="Guid.Empty" />
         </div>
 
     </div>

@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TaskBase.Data;
 using TaskBase.Core.Interfaces;
-using TaskBase.Core.Facades;
 using System.Globalization;
 using TaskBase.Components.Services;
 using TaskBase.Data.Storage;
@@ -43,7 +42,6 @@ namespace TaskBase.RazorPages
 
             services.AddInfrastructure(Configuration);
             services.AddApplication();
-            services.AddTransient<IFacade, Facade>();
             services.AddTransient<IIdentityService, IdentityProvider>();
             services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<IImageStorage, ImageStorage>();

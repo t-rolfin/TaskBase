@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskBase.Application.Models;
 using TaskBase.Core.Enums;
 
 namespace TaskBase.Components.Models

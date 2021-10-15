@@ -29,19 +29,16 @@ namespace TaskBase.RazorPages.Pages
     [Authorize(Roles = "Member")]
     public class TasksModel : PageModel
     {
-        readonly IFacade _taskFacade;
         readonly IMediator _mediator;
         readonly IAuthTokenFactory _tokenFactory;
         readonly IIdentityService _identityService;
 
         public TasksModel(IMediator mediator,
-            IFacade facade,
             IAuthTokenFactory tokenFactory,
             IIdentityService identityService
             )
         {
             _mediator = mediator;
-            _taskFacade = facade;
             _tokenFactory = tokenFactory;
             _identityService = identityService;
         }
@@ -80,16 +77,7 @@ namespace TaskBase.RazorPages.Pages
 
         public async Task<IActionResult> OnGetTaskDetailsAsync(string taskId, CancellationToken cancellationToken)
         {
-            var taskDetails = await _taskFacade.GetTaskDetailsAsync(Guid.Parse(taskId));
-            var taskDetailsModel = new TaskDetailsModel(
-                taskDetails.Id.ToString(),
-                taskDetails.Title,
-                taskDetails.Description,
-                new PriorityLevelModel(taskDetails.PriorityLevel.Value, taskDetails.PriorityLevel.DisplayName),
-                taskDetails.DueDate.ToShortDateString()
-                );
-
-            return ViewComponent("TaskDetails", taskDetailsModel);
+            return await Task.FromResult(ViewComponent("TaskDetails", Guid.Parse(taskId)));
         }
 
         public async Task<IActionResult> OnPostUpdateTaskDescriptionAsync(string taskId, string newDescription, CancellationToken cancellationToken)
@@ -111,7 +99,7 @@ namespace TaskBase.RazorPages.Pages
             CreateNoteCommand command = new(Guid.Parse(taskId), noteContent, DateTime.Now);
             var result = await _mediator.Send(command, cancellationToken);
 
-            return ViewComponent("TaskNotes", new TaskNoteId(taskId));
+            return ViewComponent("TaskNotes", Guid.Parse(taskId));
         }
 
         public async Task OnPostRemoveNoteAsync(string taskId, string noteId, CancellationToken cancellationToken)

@@ -1,9 +1,9 @@
-﻿@model TaskDetailsModel
+﻿@model TaskModel
 
 @{ 
     TaskNoteId model = Model is null
         ? new TaskNoteId("")
-        : new TaskNoteId(Model.Id);
+        : new TaskNoteId(Model.Id.ToString());
 }
 
 <div class="d-flex flex-column w-100" id="task-details">
@@ -64,7 +64,7 @@
         </div>
 
         <div class="overflow-auto position-relative pr-2" style="height:540px">
-            <vc:task-notes id-model="model" />
+            <vc:task-notes task-id="@Model.Id" />
         </div>
 
     </div>

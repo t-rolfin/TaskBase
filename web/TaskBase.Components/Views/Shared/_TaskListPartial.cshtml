@@ -14,12 +14,12 @@
 
                 <div class="card-header d-flex bg-dark justify-content-between p-2">
 
-                    <div class="w-auto" style="max-width:250px" data-toggle="tooltip" data-placement="bottom" title="@task.TaskTitle">
+                    <div class="w-auto" style="max-width:250px" data-toggle="tooltip" data-placement="bottom" title="@task.Title">
                         <form action="/Tasks/TaskDetails" method="get" data-ajax-method="get" data-ajax="true" data-ajax-success="openDetailsModal()"
                               data-ajax-mode="replace-with" data-ajax-update="#task-details" data-ajax-complete="autoTextarea()">
 
                             <input type="hidden" name="taskId" value="@task.Id" />
-                            <button type="submit" class="p-0 m-0 h6 text-limit text-primary border-0">@task.TaskTitle</button>
+                            <button type="submit" class="p-0 m-0 h6 text-limit text-primary border-0">@task.Title</button>
                         </form>
                     </div>
 
@@ -48,7 +48,7 @@
                 </div>
 
                 <div class="card-body bg-dark p-2">
-                    <p class="m-0">@task.TaskDescription</p>
+                    <p class="m-0">@task.Description</p>
                 </div>
 
                 <div class="card-footer d-flex bg-dark p-2 m-0">

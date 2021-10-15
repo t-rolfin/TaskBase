@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using System;
 using Microsoft.AspNetCore.Http;
 using TaskBase.Data.NotificationService;
+using TaskBase.Application.Services;
 
 namespace TaskBase.Data
 {
@@ -37,6 +38,7 @@ namespace TaskBase.Data
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ITaskAsyncRepository, TaskRepository>();
             services.AddTransient<INotificationRepository, NotificationRepository>();
+            services.AddTransient<IQueryRepository, QueryRepository>();
 
             return services;
         }
