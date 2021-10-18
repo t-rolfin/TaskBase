@@ -9,5 +9,6 @@ using TaskBase.Core.TaskAggregate;
 
 namespace TaskBase.Application.Commands.CreateNote
 {
-    public record CreateNoteCommand(Guid TaskId, string Content, DateTime CreatedAt) : IRequest<Result<Note>>;
+    public record CreateNoteCommand(Guid TaskId, string Content, DateTime CreatedAt) 
+        : IRequest<Result<Note>>;
 }

@@ -11,7 +11,7 @@ using TaskBase.Application.Services;
 using TaskBase.Core.Interfaces;
 using TaskBase.Core.TaskAggregate;
 
-namespace TaskBase.Application.Commands.SetLowPriorityLevel
+namespace TaskBase.Application.Commands.SetPriorityLevel
 {
     public class SetPriorityLevelCommandHandler : IRequestHandler<SetPriorityLevelCommand, Result<bool>>
     {

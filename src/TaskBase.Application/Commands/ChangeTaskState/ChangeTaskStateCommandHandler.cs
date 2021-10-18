@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Rolfin.Result;
-using TaskBase.Core.Enums;
 using TaskBase.Core.Interfaces;
 
 namespace TaskBase.Application.Commands.ChangeTaskState
@@ -38,6 +37,4 @@ namespace TaskBase.Application.Commands.ChangeTaskState
             }
         }
     }
-
-    public record ChangeTaskStateCommand(Guid TaskId, TaskState TaskState) : IRequest<Result<bool>>;
 }
