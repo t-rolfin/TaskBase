@@ -12,8 +12,8 @@ using CoreTask = TaskBase.Core.TaskAggregate.Task;
 namespace TaskBase.Application.Commands.CreateTask
 {
     public record CreateTaskCommand(
-            [Required] string Title, 
-            [Required] string Description, 
+            string Title, 
+            string Description, 
             DateTime DueDate, 
             string AssignTo, 
             int PriorityLevel
