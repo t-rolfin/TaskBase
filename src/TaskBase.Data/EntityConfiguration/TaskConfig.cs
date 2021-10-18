@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using TaskBase.Core.TaskAggregate;
 using CoreTask = TaskBase.Core.TaskAggregate.Task;
 
 namespace TaskBase.Data.EntityConfiguration
@@ -15,6 +16,10 @@ namespace TaskBase.Data.EntityConfiguration
                 .WithOne()
                 .HasForeignKey("taskId")
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(x => x.PriorityLevel)
+                .WithMany()
+                .HasForeignKey("priorityLevelId");
         }
     }
 }

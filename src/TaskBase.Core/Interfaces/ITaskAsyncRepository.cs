@@ -17,5 +17,6 @@ namespace TaskBase.Core.Interfaces
         Task<User> GetUserByIdAsync(Guid userId);
         Task<User> GetUserByUserNameAsync(string userName);
         Task<CoreTask> GetTaskWithNotesAsync(Guid taskId);
+        Task<PriorityLevel> GetPriorityLevelAsync(int value);
     }
 }

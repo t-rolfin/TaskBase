@@ -27,6 +27,12 @@ namespace TaskBase.Core.TaskAggregate
             AssignTo = assignTo;
         }
 
+        public Task(string title, string description, DateTime dueDate, PriorityLevel priorityLevel, User assignTo)
+            : this(title, description, dueDate, assignTo)
+        {
+            PriorityLevel = priorityLevel;
+        }
+
         public string Title { get; protected set; }
         public string Description { get; protected set; }
         public DateTime CreatedAt { get; init; }
@@ -34,6 +40,7 @@ namespace TaskBase.Core.TaskAggregate
         public DateTime DueDate { get; protected set; }
         public TaskState TaskState { get; protected set; }
         public User AssignTo { get; protected set; }
+        public PriorityLevel PriorityLevel { get; protected set; }
 
         public IReadOnlyList<Note> Notes 
             => _notes.AsReadOnly();
@@ -88,6 +95,30 @@ namespace TaskBase.Core.TaskAggregate
                 : note.EntityStatus = EntityStatus.Deleted;
 
             note.IsModified = true;
+        }
+
+        public void SetHighPriorityLevel()
+        {
+            if (PriorityLevel.Value == PriorityLevel.High.Value)
+                return;
+
+            this.PriorityLevel = PriorityLevel.High;
+        }
+
+        public void SetVeryHighPriorityLevel()
+        {
+            if (PriorityLevel.Value == PriorityLevel.VeryHigh.Value)
+                return;
+
+            this.PriorityLevel = PriorityLevel.VeryHigh;
+        }
+
+        public void SetLowPriorityLevel()
+        {
+            if (PriorityLevel.Value == PriorityLevel.Low.Value)
+                return;
+
+            this.PriorityLevel = PriorityLevel.Low;
         }
     }
 }

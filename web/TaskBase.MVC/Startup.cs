@@ -11,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TaskBase.Application.Services;
 using TaskBase.Components.Services;
-using TaskBase.Core.Facades;
 using TaskBase.Core.Interfaces;
 using TaskBase.Data;
 
@@ -45,7 +44,6 @@ namespace TaskBase.MVC
 
             services.AddIdentity();
             services.AddInfrastructure(Configuration);
-            services.AddTransient<IFacade, Facade>();
             services.AddTransient<IIdentityService, IdentityProvider>();
         }
 

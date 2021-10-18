@@ -20,6 +20,7 @@ using TaskBase.Application.Commands.CreateNote;
 using TaskBase.Application.Commands.EliminateNote;
 using TaskBase.Application.Commands.EditNote;
 using TaskBase.Application.Commands.RemoveNotification;
+using PriorityLevel = TaskBase.Core.TaskAggregate.PriorityLevel;
 using TaskBase.Data.Identity;
 using TaskBase.Application.Services;
 
@@ -28,19 +29,16 @@ namespace TaskBase.RazorPages.Pages
     [Authorize(Roles = "Member")]
     public class TasksModel : PageModel
     {
-        readonly IFacade _taskFacade;
         readonly IMediator _mediator;
         readonly IAuthTokenFactory _tokenFactory;
         readonly IIdentityService _identityService;
 
         public TasksModel(IMediator mediator,
-            IFacade facade,
             IAuthTokenFactory tokenFactory,
             IIdentityService identityService
             )
         {
             _mediator = mediator;
-            _taskFacade = facade;
             _tokenFactory = tokenFactory;
             _identityService = identityService;
         }
@@ -53,7 +51,7 @@ namespace TaskBase.RazorPages.Pages
 
         public async Task<IActionResult> OnPostAsync(CreateTaskModel model, CancellationToken cancellationToken)
         {
-            CreateTaskCommand command = new(model.Title, model.Description, model.DueDate, model.AssignTo);
+            CreateTaskCommand command = new(model.Title, model.Description, model.DueDate, model.AssignTo, model.PriorityLevel);
             var result = await _mediator.Send(command, cancellationToken);
 
             return ViewComponent("Tasks");
@@ -79,10 +77,7 @@ namespace TaskBase.RazorPages.Pages
 
         public async Task<IActionResult> OnGetTaskDetailsAsync(string taskId, CancellationToken cancellationToken)
         {
-            var taskDetails = await _taskFacade.GetTaskDetailsAsync(Guid.Parse(taskId));
-            var taskDetailsModel = new TaskDetailsModel(taskDetails.Id.ToString(), taskDetails.Title, taskDetails.Description);
-
-            return ViewComponent("TaskDetails", taskDetailsModel);
+            return await Task.FromResult(ViewComponent("TaskDetails", Guid.Parse(taskId)));
         }
 
         public async Task<IActionResult> OnPostUpdateTaskDescriptionAsync(string taskId, string newDescription, CancellationToken cancellationToken)
@@ -104,7 +99,7 @@ namespace TaskBase.RazorPages.Pages
             CreateNoteCommand command = new(Guid.Parse(taskId), noteContent, DateTime.Now);
             var result = await _mediator.Send(command, cancellationToken);
 
-            return ViewComponent("TaskNotes", new TaskNoteId(taskId));
+            return ViewComponent("TaskNotes", Guid.Parse(taskId));
         }
 
         public async Task OnPostRemoveNoteAsync(string taskId, string noteId, CancellationToken cancellationToken)
