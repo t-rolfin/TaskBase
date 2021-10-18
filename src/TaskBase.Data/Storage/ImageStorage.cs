@@ -15,9 +15,9 @@ namespace TaskBase.Data.Storage
         string[] allowExtensions = new string[] { ".png", ".jpg" };
 
         private readonly string UPLOAD_PATH = "Avatars";
-        private IHostingEnvironment _environment;
+        private IWebHostEnvironment _environment;
 
-        public ImageStorage(IHostingEnvironment environment, UserManager<User> userManager)
+        public ImageStorage(IWebHostEnvironment environment, UserManager<User> userManager)
         {
             _environment = environment;
         }

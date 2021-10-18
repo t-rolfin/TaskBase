@@ -42,9 +42,8 @@ namespace TaskBase.RazorPages
 
             services.AddInfrastructure(Configuration);
             services.AddApplication();
-            services.AddTransient<IIdentityService, IdentityProvider>();
-            services.AddTransient<INotificationService, NotificationService>();
-            services.AddTransient<IImageStorage, ImageStorage>();
+
+            services.AddSingleton<IIdentityService, IdentityProvider>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
