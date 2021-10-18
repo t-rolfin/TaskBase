@@ -9,6 +9,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using TaskBase.Application.Commands.CreateTask;
+using TaskBase.Application.Queries.GetTaskNotes;
+using TaskBase.Application.Queries.GetTasksByUser;
 using TaskBase.Core.Interfaces;
 using TaskBase.Data.Identity;
 using BaseTask = TaskBase.Core.TaskAggregate.Task;
@@ -19,62 +22,39 @@ namespace API.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class TaskController : ControllerBase
+    public class TaskController : BaseController
     {
-        readonly ITaskAsyncRepository _taskRepository;
-        readonly UserManager<User> _userManager;
-
-        public TaskController(ITaskAsyncRepository taskRepository, UserManager<User> userManager)
-        {
-            _taskRepository = taskRepository;
-            _userManager = userManager;
-        }
 
         [HttpGet]
         [Route("Tasks")]
         public async Task<IActionResult> Tasks()
         {
             Guid.TryParse(User.FindFirst(ClaimTypes.NameIdentifier).Value, out Guid currentUserId);
-            var currentUserTasks = await _taskRepository.GetTasksByUserAsync(currentUserId);
 
-            return Ok(currentUserTasks);
+            GetTasksByUserQuery query = new(currentUserId);
+            var result = await Mediator.Send(query);
+
+            return Ok(result.Value.ToList());
         }
 
         [HttpPost]
         [Route("CreateTask")]
         [Authorize(Roles = "Member")]
-        public async Task<IActionResult> CreateTask(CreateTaskModel taskModel, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateTask(CreateTaskCommand model, CancellationToken cancellationToken)
         {
-            if (ModelState.IsValid)
-            {
-                var assignToUserId = string.IsNullOrWhiteSpace(taskModel.UserId) || taskModel.UserId == "string"
-                    ? User.FindFirst(ClaimTypes.NameIdentifier).Value
-                    : taskModel.UserId;
+            if (!ModelState.IsValid)
+                return BadRequest();
 
-                var dueDate = taskModel.DueDate == default ? DateTime.Now : taskModel.DueDate;
+            var dueDate = model.DueDate == default ? DateTime.Now : model.DueDate;
 
-                var user = await _taskRepository.GetUserByIdAsync(Guid.Parse(assignToUserId));
+            var command = model with { DueDate = dueDate };
 
-                BaseTask result = default;
+            var result = await Mediator.Send(command);
 
-                if(user is not null)
-                {
-                    var newTask = new BaseTask(taskModel.Title, taskModel.Description, dueDate, user);
-                    result = await _taskRepository.AddAsync(newTask, cancellationToken);
-
-                }
-                else
-                {
-                    var identityUser = await _userManager.FindByIdAsync(assignToUserId);
-                    var newTask = new BaseTask(taskModel.Title, taskModel.Description, dueDate, new TaskUser(Guid.Parse(identityUser.Id), identityUser.UserName));
-                    result = await _taskRepository.AddAsync(newTask, cancellationToken);
-                }
-
-                if(result is not null)
-                    return Created("", result);
-            }
-
-            return BadRequest(ModelState.Values.SelectMany(x => x.Errors));
+            if(result.IsSuccess)
+                return Created("", result.Value);
+            else
+                return BadRequest(result.MetaResult.Message);
         }
     }
 }

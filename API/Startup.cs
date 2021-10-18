@@ -17,6 +17,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using TaskBase.Data.Identity;
+using TaskBase.Application;
+using TaskBase.Application.Services;
+using API.Services;
 
 namespace API
 {
@@ -33,6 +36,9 @@ namespace API
         {
             services.AddControllers();
 
+            services.AddSingleton<IIdentityService, IdentityService>();
+
+            services.AddApplication();
             services.AddInfrastructure(Configuration);
 
             services.AddDbContext<IdentityContext>();
