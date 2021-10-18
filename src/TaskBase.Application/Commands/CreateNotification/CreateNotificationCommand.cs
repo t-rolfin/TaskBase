@@ -5,5 +5,6 @@ using TaskBase.Core.NotificationAggregate;
 
 namespace TaskBase.Application.Commands.CreateNotification
 {
-    public record CreateNotificationCommand(Guid UserId, string Title, string Description) : IRequest<Result<Notification>>;
+    public record CreateNotificationCommand(Guid UserId, string Title, string Description) 
+        : IRequest<Result<Notification>>;
 }

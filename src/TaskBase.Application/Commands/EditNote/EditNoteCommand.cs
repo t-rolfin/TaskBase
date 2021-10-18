@@ -8,5 +8,6 @@ using System.Threading.Tasks;
 
 namespace TaskBase.Application.Commands.EditNote
 {
-    public record EditNoteCommand(Guid TaskId, Guid NoteId, string Content) : IRequest<Result<bool>>;
+    public record EditNoteCommand(Guid TaskId, Guid NoteId, string Content)
+        : IRequest<Result<bool>>;
 }
