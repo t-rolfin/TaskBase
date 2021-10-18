@@ -25,6 +25,10 @@ namespace TaskBase.Application.Models
             Notes = notes;
         }
 
+        public static TaskModel EmptyModel
+            => new TaskModel(Guid.Empty, "", "", TaskState.ToDo, DateTime.Now,
+                new PriorityLevelModel(1, ""), new List<NoteModel>());
+
         public Guid Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }

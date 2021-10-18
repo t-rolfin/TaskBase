@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaskBase.Application.Models;
+using TaskBase.Application.Queries.GetTask;
 using TaskBase.Application.Services;
 using TaskBase.Components.Models;
 using TaskBase.Core.Enums;
@@ -15,22 +17,22 @@ namespace TaskBase.Components.Views.Shared.Components.TaskDetails
     [ViewComponent(Name = "TaskDetails")]
     public class TaskDetailsViewComponent : ViewComponent
     {
-        readonly IQueryRepository _queryRepository;
+        readonly IMediator _mediator;
 
-        public TaskDetailsViewComponent(IQueryRepository queryRepository)
+        public TaskDetailsViewComponent(IMediator mediator)
         {
-            _queryRepository = queryRepository;
+            _mediator = mediator;
         }
 
         public async Task<IViewComponentResult> InvokeAsync(Guid TaskId)
         {
             if (TaskId == Guid.Empty)
-                return View(new TaskModel(Guid.Empty, "", "", TaskState.ToDo, DateTime.Now, 
-                    new PriorityLevelModel(1, ""), new List<NoteModel>()));
+                return View(TaskModel.EmptyModel);
 
-            var model = await _queryRepository.GetTaskAsync(TaskId);
+            GetTaskQuery query = new(TaskId);
+            var result = await _mediator.Send(query);
 
-            return View(model);
+            return View(result.IsSuccess ? result.Value : TaskModel.EmptyModel);
         }
     }
 }

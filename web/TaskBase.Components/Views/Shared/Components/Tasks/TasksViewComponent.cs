@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaskBase.Application.Models;
+using TaskBase.Application.Queries.GetTasksByUser;
 using TaskBase.Application.Services;
 using TaskBase.Components.Models;
 using TaskBase.Components.Services;
@@ -17,23 +19,28 @@ namespace TaskBase.Components.Views.Shared.Components.Tasks
     [ViewComponent(Name = "Tasks")]
     public class TasksViewComponent : ViewComponent
     {
-        readonly IIdentityService _identityProvider;
-        readonly IQueryRepository _queryRepository;
-
         List<TaskModel> Tasks { get; set; } = new();
+
+        readonly IIdentityService _identityProvider;
+        readonly IMediator _mediator;
 
         public List<TaskRowModel> Rows { get; set; } = new();
 
-        public TasksViewComponent(IIdentityService identityProvider, IQueryRepository queryRepository)
+        public TasksViewComponent(IIdentityService identityProvider, IMediator mediator)
         {
             _identityProvider = identityProvider;
-            _queryRepository = queryRepository;
+            _mediator = mediator;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var currentUserId = _identityProvider.GetCurrentUserIdentity();
-            this.Tasks = (await _queryRepository.GetTasksByUserIdAsync(currentUserId)).ToList();
+
+            GetTasksByUserQuery query = new(currentUserId);
+            var result = await _mediator.Send(query);
+
+            if (result.IsSuccess) this.Tasks = result.Value.ToList();
+
             GenerateRows();
 
             return View(Rows);

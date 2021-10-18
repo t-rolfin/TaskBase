@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaskBase.Application.Models;
+using TaskBase.Application.Queries.GetTaskNotes;
 using TaskBase.Application.Services;
 using TaskBase.Components.Models;
 using TaskBase.Core.Interfaces;
@@ -14,11 +16,11 @@ namespace TaskBase.Components.Views.Shared.Components.TaskNotes
     [ViewComponent( Name = "TaskNotes")]
     public class TaskNotesViewComponent : ViewComponent
     {
-        readonly IQueryRepository _queryRepository;
+        readonly IMediator _mediator;
 
-        public TaskNotesViewComponent(IQueryRepository queryRepository)
+        public TaskNotesViewComponent(IMediator mediator)
         {
-            _queryRepository = queryRepository;
+            _mediator = mediator;
         }
 
         public async Task<IViewComponentResult> InvokeAsync(Guid TaskId)
@@ -26,8 +28,10 @@ namespace TaskBase.Components.Views.Shared.Components.TaskNotes
             if (TaskId == Guid.Empty)
                 return View((Guid.NewGuid(), new List<NoteModel>()));
 
-            var taskNotes = (await _queryRepository.GetTaskNotesAsync(TaskId.ToString(), default)).ToList();
-            return View((TaskId, taskNotes));
+            GetTaskNotesQuery query = new(TaskId);
+            var result = await _mediator.Send(query);
+
+            return View((TaskId, result.IsSuccess ? result.Value.ToList() : new List<NoteModel>()));
         }
     }
 }

@@ -11,7 +11,7 @@
     <div class="card-footer d-flex bg-dark p-2 m-0 border-bottom">
         <span class="mr-2 m-0 h6">Tags:</span>
         <span class="badge badge-secondary mr-2 m-0 h4">@Model.PriorityLevel.DisplayName</span>
-        <span class="badge badge-secondary m-0 h4">@Model.DueDate</span>
+        <span class="badge badge-secondary m-0 h4">@Model.DueDate.ToShortDateString()</span>
     </div>
 
     <div class="d-flex flex-row w-auto m-2" style="font-size:1.1rem">
