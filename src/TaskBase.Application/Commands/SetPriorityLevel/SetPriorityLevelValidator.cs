@@ -11,8 +11,13 @@ namespace TaskBase.Application.Commands.SetPriorityLevel
     {
         public SetPriorityLevelValidator()
         {
-            RuleFor(x => x.TaskId).NotEmpty().NotEqual(Guid.Empty);
-            RuleFor(x => x.PriorityLevelKey).LessThan(1).GreaterThan(3);
+            RuleFor(x => x.TaskId)
+                .NotEmpty()
+                .NotEqual(Guid.Empty);
+            
+            RuleFor(x => x.PriorityLevelKey)
+                .GreaterThanOrEqualTo(1)
+                .LessThanOrEqualTo(3);
         }
     }
 }

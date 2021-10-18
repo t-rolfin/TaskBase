@@ -80,7 +80,12 @@ namespace TaskBase.Data.Repositories
 
         public async Task<CoreUser> GetUserByUserNameAsync(string userName)
         {
-            return await _context.Set<CoreUser>().Where(x => x.FullName == userName).FirstOrDefaultAsync();
+            var user = await _context.Set<CoreUser>().Where(x => x.FullName == userName).FirstOrDefaultAsync();
+            
+            if (user == default)
+                throw new UserNotFoundException("Searched user wasn't found.");
+
+            return user;
         }
 
         public async Task<IEnumerable<CoreNote>> GetTaskNotesAsync(Guid taskId, CancellationToken cancellationToken)

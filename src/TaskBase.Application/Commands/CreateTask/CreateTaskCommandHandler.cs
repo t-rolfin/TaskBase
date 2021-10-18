@@ -69,7 +69,7 @@ namespace TaskBase.Application.Commands.CreateTask
             }
             catch (Exception ex)
             {
-                await _notificationService.Notify(user.Id, false, ex.Message, cancellationToken);
+                await _notificationService.Notify(_identityService.GetCurrentUserIdentity(), false, ex.Message, cancellationToken);
                 return Result<CoreTask>.Invalid().With(ex.Message);
             }
         }

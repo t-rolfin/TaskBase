@@ -10,6 +10,7 @@ using System;
 using Microsoft.AspNetCore.Http;
 using TaskBase.Data.NotificationService;
 using TaskBase.Application.Services;
+using TaskBase.Data.Storage;
 
 namespace TaskBase.Data
 {
@@ -39,6 +40,9 @@ namespace TaskBase.Data
             services.AddTransient<ITaskAsyncRepository, TaskRepository>();
             services.AddTransient<INotificationRepository, NotificationRepository>();
             services.AddTransient<IQueryRepository, QueryRepository>();
+            services.AddTransient<INotificationService, NotificationService.NotificationService>();
+            services.AddTransient<IImageStorage, ImageStorage>();
+            services.AddTransient<IAuthTokenFactory, AuthTokenFactory>();
 
             return services;
         }
