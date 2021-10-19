@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentValidation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -17,4 +18,20 @@ namespace API.Models
             [Required(ErrorMessage = "Password is required.")]
             string Password
         );
+
+    public class RegisterModelValidator : AbstractValidator<RegisterModel>
+    {
+        public RegisterModelValidator()
+        {
+            RuleFor(x => x.UserName)
+                .NotEmpty();
+
+            RuleFor(x => x.Password)
+                .NotEmpty();
+
+            RuleFor(x => x.Email)
+                .EmailAddress()
+                .NotEmpty();
+        }
+    }
 }

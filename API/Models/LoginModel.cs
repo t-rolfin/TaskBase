@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentValidation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,10 +8,19 @@ using System.Threading.Tasks;
 namespace API.Models
 {
     public record LoginModel(
-        [Required(ErrorMessage = "UserName is required.")]
         string UserName, 
-        
-        [Required(ErrorMessage = "Password is required.")]
         string Password
     );
+
+    public class LoginModelValidator : AbstractValidator<LoginModel>
+    {
+        public LoginModelValidator()
+        {
+            RuleFor(x => x.UserName)
+                .NotEmpty();
+
+            RuleFor(x => x.Password)
+                .NotEmpty();
+        }
+    }
 }
