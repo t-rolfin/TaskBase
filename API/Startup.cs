@@ -20,6 +20,8 @@ using TaskBase.Data.Identity;
 using TaskBase.Application;
 using TaskBase.Application.Services;
 using API.Services;
+using System.IO;
+using System.Reflection;
 
 namespace API
 {
@@ -78,13 +80,30 @@ namespace API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TaskBase API", Version = "v1" });
 
-                c.AddSecurityDefinition("Jwt", new OpenApiSecurityScheme()
+                var SecurityScheme = new OpenApiSecurityScheme()
                 {
+                    Name = "bearer",
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
+
+                    Reference = new OpenApiReference()
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+
+                };
+
+                c.AddSecurityDefinition(SecurityScheme.Reference.Id, SecurityScheme);
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                    {SecurityScheme, new List<string>() }
                 });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
         }
 
@@ -94,7 +113,11 @@ namespace API
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
+                app.UseSwaggerUI(c => {
+                        c.DisplayRequestDuration();
+                        c.DefaultModelsExpandDepth(-1);
+                        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+                    });
             }
 
             app.UseHttpsRedirection();

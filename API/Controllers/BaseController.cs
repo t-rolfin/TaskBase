@@ -26,8 +26,8 @@ namespace API.Controllers
             var result = await Mediator.Send(model, cancellationToken);
 
             return result.IsSuccess
-                ? Created("", result.Value)
-                : BadRequest(result.MetaResult.Message);
+                ? Created("", result)
+                : BadRequest(result.MetaResult);
         }
 
         protected async Task<IActionResult> SendWithMediator<T>(
@@ -42,7 +42,7 @@ namespace API.Controllers
 
             return result.IsSuccess
                 ? Ok(returnValue ? result.Value : result.MetaResult)
-                : BadRequest(result.MetaResult.Message);
+                : BadRequest(result.MetaResult);
         }
 
     }

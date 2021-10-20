@@ -6,12 +6,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Rolfin.Result;
+using TaskBase.Application.Models;
 using TaskBase.Core.Interfaces;
 using TaskBase.Core.NotificationAggregate;
 
 namespace TaskBase.Application.Commands.CreateNotification
 {
-    public class CreateNotificationCommandHandler : IRequestHandler<CreateNotificationCommand, Result<Notification>>
+    public class CreateNotificationCommandHandler : IRequestHandler<CreateNotificationCommand, Result<NotificationModel>>
     {
         readonly IUnitOfWork _unitOfWork;
 
@@ -20,7 +21,7 @@ namespace TaskBase.Application.Commands.CreateNotification
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result<Notification>> Handle(CreateNotificationCommand request, CancellationToken cancellationToken)
+        public async Task<Result<NotificationModel>> Handle(CreateNotificationCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -30,11 +31,14 @@ namespace TaskBase.Application.Commands.CreateNotification
                 await _unitOfWork.Notifications.AddAsync(notification);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return Result<Notification>.Success(notification).With($"The task was assign to {assignedUser.FullName}.");
+                var notificationModel = new NotificationModel(notification.Id, notification.Title, notification.Description);
+
+                return Result<NotificationModel>.Success(notificationModel)
+                    .With($"The task was assign to {assignedUser.FullName}.");
             }
             catch (Exception ex)
             {
-                return Result<Notification>.Invalid().With(ex.Message);
+                return Result<NotificationModel>.Invalid().With(ex.Message);
             }
         }
     }

@@ -11,6 +11,7 @@ using CoreTask = TaskBase.Core.TaskAggregate.Task;
 
 namespace TaskBase.Application.Commands.CreateTask
 {
+    /// <param name="AssignTo">The user name.</param>
     public record CreateTaskCommand(
             string Title, 
             string Description, 

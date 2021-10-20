@@ -50,10 +50,13 @@ namespace API.Controllers
 
                 if (user != null)
                 {
-                    var checkPassowrd = await _userManager.CheckPasswordAsync(user, loginModel.Password);
+                    var validPassowrd = await _userManager.CheckPasswordAsync(user, loginModel.Password);
                     var userProfile = await GenerateJwtTokenForUser(user);
 
-                    return Ok(userProfile);
+                    if(validPassowrd)
+                        return Ok(userProfile);
+                    else
+                        ModelState.AddModelError(string.Empty, "Invalid UserName or Password.");
                 }
                 else
                 {
