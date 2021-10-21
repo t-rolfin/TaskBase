@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using Rolfin.Result;
 using System;
 using System.Collections.Generic;
@@ -14,17 +15,23 @@ using CoreTask = TaskBase.Core.TaskAggregate.Task;
 
 namespace TaskBase.Application.Commands.CreateTask
 {
-    public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, Result<CoreTask>>
+    public class CreateTaskCommandHandler :
+        IRequestHandler<CreateTaskCommand, Result<CoreTask>>
     {
-        readonly IUnitOfWork _unitOfWork;
         readonly INotificationService _notificationService;
         readonly IIdentityService _identityService;
+        readonly ILogger<CreateTaskCommandHandler> _logger;
+        readonly IUnitOfWork _unitOfWork;
 
-        public CreateTaskCommandHandler(IUnitOfWork unitOfWork, INotificationService notificationService, IIdentityService identityService)
+        public CreateTaskCommandHandler(INotificationService notificationService,
+            IIdentityService identityService,
+            ILogger<CreateTaskCommandHandler> logger,
+            IUnitOfWork unitOfWork)
         {
-            _unitOfWork = unitOfWork;
             _notificationService = notificationService;
             _identityService = identityService;
+            _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result<CoreTask>> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
@@ -63,12 +70,15 @@ namespace TaskBase.Application.Commands.CreateTask
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+                _logger.LogInformation($"---> A new task was created and assign to: \"{user.Id}\"");
+
                 await SendNotifications(user, notification?.Id.ToString(), isPersistentNotification, task, cancellationToken);
 
                 return Result.Success(task).With("A new task was successfully created.");
             }
             catch (Exception ex)
             {
+                _logger.LogError($"---> An error occur when an user tried to create a task, error message: \"{ex.Message}\"");
                 await _notificationService.Notify(_identityService.GetCurrentUserIdentity(), false, ex.Message, cancellationToken);
                 return Result<CoreTask>.Invalid().With(ex.Message);
             }

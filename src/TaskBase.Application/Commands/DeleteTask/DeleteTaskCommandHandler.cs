@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using Rolfin.Result;
 using System;
 using System.Collections.Generic;
@@ -11,19 +12,23 @@ using TaskBase.Core.Interfaces;
 
 namespace TaskBase.Application.Commands.DeleteTask
 {
-    public class DeleteTaskCommandHandler : IRequestHandler<DeleteTaskCommand, Result<bool>>
+    public class DeleteTaskCommandHandler :
+        IRequestHandler<DeleteTaskCommand, Result<bool>>
     {
-        readonly IUnitOfWork _unitOfWork;
         readonly INotificationService _notificationService;
         readonly IIdentityService _identityService;
+        readonly ILogger<DeleteTaskCommandHandler> _logger;
+        readonly IUnitOfWork _unitOfWork;
 
-        public DeleteTaskCommandHandler(IUnitOfWork unitOfWork,
-            INotificationService notificationService,
-            IIdentityService identityService)
+        public DeleteTaskCommandHandler(INotificationService notificationService,
+            IIdentityService identityService,
+            ILogger<DeleteTaskCommandHandler> logger,
+            IUnitOfWork unitOfWork)
         {
-            _unitOfWork = unitOfWork;
             _notificationService = notificationService;
             _identityService = identityService;
+            _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result<bool>> Handle(DeleteTaskCommand request, CancellationToken cancellationToken)
@@ -36,15 +41,22 @@ namespace TaskBase.Application.Commands.DeleteTask
                 await _unitOfWork.Tasks.Remove(task);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+                _logger.LogInformation($"---> {_identityService.GetCurrentUserName()} successfully deleted the task" +
+                    $"with ID: \"{task.Id}\"");
+
                 await _notificationService.Notify(
                     _identityService.GetCurrentUserIdentity(),
                     true,
                     $"The task was removed.", cancellationToken);
 
-                return Result<bool>.Success().With("The task was removed");
+                return Result<bool>.Success().With("The task was removed.");
             }
             catch (Exception ex)
             {
+
+                _logger.LogError($"---> An error occur when {_identityService.GetCurrentUserName()} tried to delete" +
+                    $"the task with ID:\"{request.TaskId}\"");
+
                 await _notificationService.Notify(
                     _identityService.GetCurrentUserIdentity(),
                     true,

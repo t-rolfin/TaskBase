@@ -16,17 +16,17 @@ namespace TaskBase.Application.Commands.SetPriorityLevel
     public class SetPriorityLevelCommandHandler : IRequestHandler<SetPriorityLevelCommand, Result<bool>>
     {
         readonly IUnitOfWork _unitOfWork;
-        readonly ILogger<SetPriorityLevelCommandHandler> _log;
+        readonly ILogger<SetPriorityLevelCommandHandler> _logger;
         readonly INotificationService _notificationService;
         readonly IIdentityService _identityService;
 
         public SetPriorityLevelCommandHandler(IUnitOfWork unitOfWork,
-            ILogger<SetPriorityLevelCommandHandler> log,
+            ILogger<SetPriorityLevelCommandHandler> logger,
             INotificationService notificationService,
             IIdentityService identityService)
         {
             _unitOfWork = unitOfWork;
-            _log = log;
+            _logger = logger;
             _notificationService = notificationService;
             _identityService = identityService;
         }
@@ -41,6 +41,8 @@ namespace TaskBase.Application.Commands.SetPriorityLevel
                 task.SetLowPriorityLevel();
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+                _logger.LogInformation($"Priority level for the task: {task.Id} was setted to: \"{task.PriorityLevel.Value}\"");
+
                 await _notificationService.Notify(_identityService.GetCurrentUserIdentity(), true,
                     $"The priority level was successfully changed to { priorityLevel.DisplayName }", cancellationToken);
 
@@ -48,7 +50,7 @@ namespace TaskBase.Application.Commands.SetPriorityLevel
             }
             catch (Exception ex)
             {
-                _log.LogError(ex.Message);
+                _logger.LogError($"Priority level for the task: {request.TaskId} couldn't be setted, error message: \"{ex.Message}\"");
 
                 await _notificationService.Notify(
                     _identityService.GetCurrentUserIdentity(),false, 
