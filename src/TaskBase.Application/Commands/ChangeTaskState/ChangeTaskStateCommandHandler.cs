@@ -5,17 +5,29 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Rolfin.Result;
+using TaskBase.Application.Services;
 using TaskBase.Core.Interfaces;
 
 namespace TaskBase.Application.Commands.ChangeTaskState
 {
-    public class ChangeTaskStateCommandHandler : IRequestHandler<ChangeTaskStateCommand, Result<bool>>
+    public class ChangeTaskStateCommandHandler :
+        IRequestHandler<ChangeTaskStateCommand, Result<bool>>
     {
+        readonly INotificationService _notificationService;
+        readonly IIdentityService _identityService;
+        readonly ILogger<ChangeTaskStateCommandHandler> _logger;
         readonly IUnitOfWork _unitOfWork;
 
-        public ChangeTaskStateCommandHandler(IUnitOfWork unitOfWork)
+        public ChangeTaskStateCommandHandler(INotificationService notificationService,
+            IIdentityService identityService,
+            ILogger<ChangeTaskStateCommandHandler> logger,
+            IUnitOfWork unitOfWork)
         {
+            _notificationService = notificationService;
+            _identityService = identityService;
+            _logger = logger;
             _unitOfWork = unitOfWork;
         }
 
@@ -29,10 +41,15 @@ namespace TaskBase.Application.Commands.ChangeTaskState
                 await _unitOfWork.Tasks.UpdateAsync(task, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return Result.Success(true).With($"The state of task was successfully change in to ${nameof(request.TaskState)}");
+                _logger.LogInformation($"---> The state of the task: {task.Id} was changed in \"{request.TaskState}\".");
+
+                return Result.Success(true).With($"The state of task was successfully changed in to {request.TaskState}");
             }
             catch (Exception ex)
             {
+                _logger.LogError($"--> An error occur when user tried to change the state of the task {request.TaskId}, " +
+                    $"inner message: \"{ex.Message}\"");
+
                 return Result<bool>.Invalid().With(ex.Message);
             }
         }

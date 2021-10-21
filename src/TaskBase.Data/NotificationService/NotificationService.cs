@@ -79,8 +79,8 @@ namespace TaskBase.Data.NotificationService
 
         public void Dispose()
         {
-            _hubConnection.StopAsync();
-            _hubConnection.DisposeAsync();
+            _hubConnection?.StopAsync();
+            _hubConnection?.DisposeAsync();
         }
     }
 }

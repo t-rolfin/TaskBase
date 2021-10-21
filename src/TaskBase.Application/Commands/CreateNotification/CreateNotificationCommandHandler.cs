@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Rolfin.Result;
 using TaskBase.Application.Models;
+using TaskBase.Application.Services;
 using TaskBase.Core.Interfaces;
 using TaskBase.Core.NotificationAggregate;
 
@@ -14,10 +16,19 @@ namespace TaskBase.Application.Commands.CreateNotification
 {
     public class CreateNotificationCommandHandler : IRequestHandler<CreateNotificationCommand, Result<NotificationModel>>
     {
+        readonly INotificationService _notificationService;
+        readonly IIdentityService _identityService;
+        readonly ILogger<CreateNotificationCommandHandler> _logger;
         readonly IUnitOfWork _unitOfWork;
 
-        public CreateNotificationCommandHandler(IUnitOfWork unitOfWork)
+        public CreateNotificationCommandHandler(INotificationService notificationService,
+            IIdentityService identityService,
+            ILogger<CreateNotificationCommandHandler> logger,
+            IUnitOfWork unitOfWork)
         {
+            _notificationService = notificationService;
+            _identityService = identityService;
+            _logger = logger;
             _unitOfWork = unitOfWork;
         }
 
