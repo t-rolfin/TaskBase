@@ -36,15 +36,17 @@ namespace API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
-                .AddNewtonsoftJson();
-
             services.AddSingleton<IIdentityService, IdentityService>();
 
             services.AddApplication();
             services.AddInfrastructure(Configuration);
 
             services.AddJwtAuth(Configuration);
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
 
             services.AddSwaggerGen(c =>
             {

@@ -34,25 +34,19 @@ namespace TaskBase.Application.Commands.CreateNote
 
         public async Task<Result<Note>> Handle(CreateNoteCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var task = await _unitOfWork.Tasks.GetTaskAsync(request.TaskId);
-                var note = task.CreateNote(request.Content);
+            if (!Guid.TryParse(request.TaskId, out Guid taskId))
+                throw new InvalidCastException("The task id is not in the right format.");
 
-                await _unitOfWork.Tasks.UpdateAsync(task, cancellationToken);
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            var task = await _unitOfWork.Tasks.GetTaskAsync(taskId);
+            var note = task.CreateNote(request.Content);
 
-                _logger.LogInformation($" ---> A new note was created for the task: {task.Id}.");
+            await _unitOfWork.Tasks.UpdateAsync(task, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return Result<Note>.Success(note)
-                    .With($"A note was added to the task { task.Title.Take(10).ToString().PadRight(3, '.') }");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($" ---> A error occur at note creation, error message: \"{ex.Message}\"");
+            _logger.LogInformation($" ---> A new note was created for the task: {task.Id}.");
 
-                return Result<Note>.Invalid().With(ex.Message);
-            }
+            return Result<Note>.Success(note)
+                .With($"A note was added to the task { task.Title.Take(10).ToString().PadRight(3, '.') }");
         }
     }
 }

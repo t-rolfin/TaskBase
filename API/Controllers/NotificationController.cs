@@ -31,7 +31,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetNotifications([FromRoute]Guid userId, CancellationToken cancellationToken)
         {
             GetUserNotificationsQuery query = new(userId);
-            return await SendWithMediator(query, true, cancellationToken);
+            return await SendWithMediator(query, cancellationToken);
         }
 
         /// <summary>

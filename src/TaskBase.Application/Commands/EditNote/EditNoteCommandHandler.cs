@@ -33,25 +33,15 @@ namespace TaskBase.Application.Commands.EditNote
 
         public async Task<Result<bool>> Handle(EditNoteCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var task = await _unitOfWork.Tasks.GetTaskWithNotesAsync(request.TaskId);
-                task.EditeNote(request.NoteId, request.Content);
+            var task = await _unitOfWork.Tasks.GetTaskWithNotesAsync(request.TaskId);
+            task.EditeNote(request.NoteId, request.Content);
 
-                await _unitOfWork.Tasks.UpdateAsync(task, cancellationToken);
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.Tasks.UpdateAsync(task, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                _logger.LogInformation($"---> The note with ID: \"{request.NoteId}\" was successfully edited.");
+            _logger.LogInformation($"---> The note with ID: \"{request.NoteId}\" was successfully edited.");
 
-                return Result<bool>.Success().With($"The note was successfully updated.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"---> The note with ID: \"{request.NoteId}\" could not be edited, error message: " +
-                    $"{ex.Message}");
-
-                return Result<bool>.Invalid().With(ex.Message);
-            }
+            return Result<bool>.Success().With($"The note was successfully updated.");
         }
     }
 }

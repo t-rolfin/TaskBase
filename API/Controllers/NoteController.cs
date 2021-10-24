@@ -32,7 +32,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetTaskNotes([FromRoute]Guid taskId, CancellationToken cancellationToken)
         {
             GetTaskNotesQuery query = new(taskId);
-            return await SendWithMediator(query, true, cancellationToken);
+            return await SendWithMediator(query, cancellationToken);
         }
 
         /// <summary>

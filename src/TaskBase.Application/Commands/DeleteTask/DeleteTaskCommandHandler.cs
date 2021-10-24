@@ -35,35 +35,19 @@ namespace TaskBase.Application.Commands.DeleteTask
         {
             Core.TaskAggregate.Task task = default(Core.TaskAggregate.Task);
 
-            try
-            {
-                task = await _unitOfWork.Tasks.GetTaskAsync(request.TaskId);
-                await _unitOfWork.Tasks.Remove(task);
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            task = await _unitOfWork.Tasks.GetTaskAsync(request.TaskId);
+            await _unitOfWork.Tasks.Remove(task);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                _logger.LogInformation($"---> {_identityService.GetCurrentUserName()} successfully deleted the task" +
-                    $"with ID: \"{task.Id}\"");
+            _logger.LogInformation($"---> {_identityService.GetCurrentUserName()} successfully deleted the task" +
+                $"with ID: \"{task.Id}\"");
 
-                await _notificationService.Notify(
-                    _identityService.GetCurrentUserIdentity(),
-                    true,
-                    $"The task was removed.", cancellationToken);
+            await _notificationService.Notify(
+                _identityService.GetCurrentUserIdentity(),
+                true,
+                $"The task was removed.", cancellationToken);
 
-                return Result<bool>.Success().With("The task was removed.");
-            }
-            catch (Exception ex)
-            {
-
-                _logger.LogError($"---> An error occur when {_identityService.GetCurrentUserName()} tried to delete" +
-                    $"the task with ID:\"{request.TaskId}\"");
-
-                await _notificationService.Notify(
-                    _identityService.GetCurrentUserIdentity(),
-                    true,
-                    ex.Message, cancellationToken);
-
-                return Result<bool>.Invalid().With(ex.Message);
-            }
+            return Result<bool>.Success().With("The task was removed.");
         }
     }
 }

@@ -33,25 +33,15 @@ namespace TaskBase.Application.Commands.ChangeTaskState
 
         public async Task<Result<bool>> Handle(ChangeTaskStateCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var task = await _unitOfWork.Tasks.GetTaskAsync(request.TaskId);
+            var task = await _unitOfWork.Tasks.GetTaskAsync(request.TaskId);
 
-                task.ChangeTaskState(request.TaskState);
-                await _unitOfWork.Tasks.UpdateAsync(task, cancellationToken);
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            task.ChangeTaskState(request.TaskState);
+            await _unitOfWork.Tasks.UpdateAsync(task, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                _logger.LogInformation($"---> The state of the task: {task.Id} was changed in \"{request.TaskState}\".");
+            _logger.LogInformation($"---> The state of the task: {task.Id} was changed in \"{request.TaskState}\".");
 
-                return Result.Success(true).With($"The state of task was successfully changed in to {request.TaskState}");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"--> An error occur when user tried to change the state of the task {request.TaskId}, " +
-                    $"inner message: \"{ex.Message}\"");
-
-                return Result<bool>.Invalid().With(ex.Message);
-            }
+            return Result.Success(true).With($"The state of task was successfully changed in to {request.TaskState}");
         }
     }
 }

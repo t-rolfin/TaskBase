@@ -32,27 +32,18 @@ namespace TaskBase.Application.Commands.UpdateTask
 
         public async Task<Result<bool>> Handle(UpdateTaskCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var task = await _unitOfWork.Tasks.GetTaskAsync(request.TaskId);
+            var task = await _unitOfWork.Tasks.GetTaskAsync(request.TaskId);
 
-                if (!string.IsNullOrWhiteSpace(request.Description)) task.EditDescription(request.Description);
+            if (!string.IsNullOrWhiteSpace(request.Description)) task.EditDescription(request.Description);
 
-                if (!string.IsNullOrWhiteSpace(request.Title)) task.EditTitle(request.Title);
+            if (!string.IsNullOrWhiteSpace(request.Title)) task.EditTitle(request.Title);
 
-                await _unitOfWork.Tasks.UpdateAsync(task, cancellationToken);
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.Tasks.UpdateAsync(task, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                _logger.LogInformation($"The task with ID: {task.Id} was successfully updated.");
+            _logger.LogInformation($"The task with ID: {task.Id} was successfully updated.");
 
-                return Result<bool>.Success().With("Description for the task was changed!");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"The task with ID: {request.TaskId} couldn't be updated, error message: \"{ex.Message}\"");
-
-                return Result<bool>.Invalid().With(ex.Message);
-            }
+            return Result<bool>.Success().With("Description for the task was changed!");
         }
     }
 }

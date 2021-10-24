@@ -32,25 +32,15 @@ namespace TaskBase.Application.Commands.EliminateNote
 
         public async Task<Result<bool>> Handle(EliminateNoteCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var task = await _unitOfWork.Tasks.GetTaskWithNotesAsync(request.TaskId);
-                task.EliminateNote(request.NoteId);
+            var task = await _unitOfWork.Tasks.GetTaskWithNotesAsync(request.TaskId);
+            task.EliminateNote(request.NoteId);
 
-                await _unitOfWork.Tasks.UpdateAsync(task, cancellationToken);
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.Tasks.UpdateAsync(task, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                _logger.LogInformation($"---> The note with ID: {request.NoteId} was eliminated.");
+            _logger.LogInformation($"---> The note with ID: {request.NoteId} was eliminated.");
 
-                return Result<bool>.Success().With($"The specified note was deleted!");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"---> The note with ID: \"{request.NoteId}\" couldn't be deleted, error message:" +
-                    $"\"{ex.Message}\"");
-
-                return Result<bool>.Invalid().With(ex.Message);
-            }
+            return Result<bool>.Success().With($"The specified note was deleted!");
         }
     }
 }

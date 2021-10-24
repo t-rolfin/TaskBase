@@ -20,29 +20,22 @@ namespace API.Controllers
             IRequest<Result<T>> model,
             CancellationToken cancellationToken = default)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
-
             var result = await Mediator.Send(model, cancellationToken);
 
             return result.IsSuccess
                 ? Created("", result)
-                : BadRequest(result.MetaResult);
+                : BadRequest();
         }
 
         protected async Task<IActionResult> SendWithMediator<T>(
             IRequest<Result<T>> model,
-            bool returnValue = false,
             CancellationToken cancellationToken = default)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
-
             var result = await Mediator.Send(model, cancellationToken);
 
             return result.IsSuccess
-                ? Ok(returnValue ? result.Value : result.MetaResult)
-                : BadRequest(result.MetaResult);
+                ? Ok(result.Value)
+                : BadRequest();
         }
 
     }

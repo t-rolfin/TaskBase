@@ -35,7 +35,7 @@ namespace API.Controllers
         {
             Guid.TryParse(User.FindFirst(ClaimTypes.NameIdentifier).Value, out Guid currentUserId);
             GetTasksByUserQuery query = new(currentUserId);
-            return await SendWithMediator(query, true);
+            return await SendWithMediator(query);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace API.Controllers
         public async Task<IActionResult> Task([FromRoute]Guid taskId, CancellationToken cancellationToken)
         {
             GetTaskQuery query = new(taskId);
-            return await SendWithMediator(query, true, cancellationToken);
+            return await SendWithMediator(query, cancellationToken);
         }
 
         /// <summary>
@@ -62,9 +62,6 @@ namespace API.Controllers
         [ProducesResponseType(typeof(IMetaResult), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateTask(CreateTaskCommand model, CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
-
             var dueDate = model.DueDate == default ? DateTime.Now : model.DueDate;
 
             var command = model with { DueDate = dueDate };
@@ -73,7 +70,7 @@ namespace API.Controllers
 
             return result.IsSuccess
                 ? Created("", result.Value)
-                : BadRequest(result.MetaResult.Message);
+                : BadRequest(result.MetaResult);
         }
 
         /// <summary>
@@ -99,7 +96,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(IMetaResult), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> UpdateTask(UpdateTaskCommand model, CancellationToken cancellationToken)
         {
-            return await SendWithMediator(model, false, cancellationToken);
+            return await SendWithMediator(model, cancellationToken);
         }
 
         /// <summary>
@@ -112,7 +109,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(IMetaResult), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> SetPriorityLevel(SetPriorityLevelCommand model, CancellationToken cancellationToken)
         {
-            return await SendWithMediator(model, false, cancellationToken);
+            return await SendWithMediator(model, cancellationToken);
         }
 
         /// <summary>
@@ -125,7 +122,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(IMetaResult), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ChangeTaskState(ChangeTaskStateCommand model, CancellationToken cancellationToken)
         {
-            return await SendWithMediator(model, false, cancellationToken);
+            return await SendWithMediator(model, cancellationToken);
         }
     }
 }
