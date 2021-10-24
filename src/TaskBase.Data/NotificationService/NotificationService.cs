@@ -32,6 +32,9 @@ namespace TaskBase.Data.NotificationService
         {
             try
             {
+                if (bool.TryParse(_configuration["SignalR:IsEnabled"], out bool isEnabled) || isEnabled)
+                    return;
+
                 await CreateHubConnection(userId.ToString());
 
                 await _hubConnection.InvokeAsync(
@@ -50,6 +53,9 @@ namespace TaskBase.Data.NotificationService
         {
             try
             {
+                if (bool.TryParse(_configuration["SignalR:IsEnabled"], out bool isEnabled) || isEnabled)
+                    return;
+
                 await CreateHubConnection(userId.ToString());
                 await _hubConnection.InvokeAsync(
                     "PersistenceNotification",
