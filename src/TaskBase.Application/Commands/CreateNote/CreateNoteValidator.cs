@@ -11,7 +11,7 @@ namespace TaskBase.Application.Commands.CreateNote
     {
         public CreateNoteValidator()
         {
-            RuleFor(x => x.TaskId).NotNull().NotEqual(Guid.Empty);
+            RuleFor(x => x.TaskId).NotNull().NotEqual(Guid.Empty.ToString());
             RuleFor(x => x.Content).NotEmpty();
         }
     }

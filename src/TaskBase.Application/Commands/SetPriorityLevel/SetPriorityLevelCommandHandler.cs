@@ -33,31 +33,18 @@ namespace TaskBase.Application.Commands.SetPriorityLevel
 
         public async Task<Result<bool>> Handle(SetPriorityLevelCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var task = await _unitOfWork.Tasks.GetTaskAsync(request.TaskId);
-                var priorityLevel = await _unitOfWork.Tasks.GetPriorityLevelAsync(request.PriorityLevelKey);
+            var task = await _unitOfWork.Tasks.GetTaskAsync(request.TaskId);
+            var priorityLevel = await _unitOfWork.Tasks.GetPriorityLevelAsync(request.PriorityLevelKey);
 
-                task.SetLowPriorityLevel();
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            task.SetLowPriorityLevel();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                _logger.LogInformation($"Priority level for the task: {task.Id} was setted to: \"{task.PriorityLevel.Value}\"");
+            _logger.LogInformation($"Priority level for the task: {task.Id} was setted to: \"{task.PriorityLevel.Value}\"");
 
-                await _notificationService.Notify(_identityService.GetCurrentUserIdentity(), true,
-                    $"The priority level was successfully changed to { priorityLevel.DisplayName }", cancellationToken);
+            await _notificationService.Notify(_identityService.GetCurrentUserIdentity(), true,
+                $"The priority level was successfully changed to { priorityLevel.DisplayName }", cancellationToken);
 
-                return Result<bool>.Success().With($"The priority level was successfully changed to { priorityLevel.DisplayName }");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Priority level for the task: {request.TaskId} couldn't be setted, error message: \"{ex.Message}\"");
-
-                await _notificationService.Notify(
-                    _identityService.GetCurrentUserIdentity(),false, 
-                    "Priority level for this task couldn't be set.", cancellationToken);
-
-                return Result<bool>.Invalid().With("Priority level for this task couldn't be set.");
-            }
+            return Result<bool>.Success().With($"The priority level was successfully changed to { priorityLevel.DisplayName }");
         }
     }
 }

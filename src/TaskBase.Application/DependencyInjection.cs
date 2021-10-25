@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 using MediatR;
 using System.Reflection;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
+using TaskBase.Application.Filters;
+using TaskBase.Application.Behaviors;
 
 namespace TaskBase.Application
 {
@@ -14,14 +17,21 @@ namespace TaskBase.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            services.AddMvc()
-                .AddFluentValidation(config =>
+            services.AddControllers(options =>
+            {
+                options.Filters.Add(typeof(GlobalExceptionFilter));
+            });
+
+            services.AddFluentValidation(config =>
                 {
                     config.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
                     config.DisableDataAnnotationsValidation = true;
                 });
 
             services.AddMediatR(Assembly.GetExecutingAssembly());
+
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UserExistValidatorBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidatorBehavior<,>));
 
             return services;
         }

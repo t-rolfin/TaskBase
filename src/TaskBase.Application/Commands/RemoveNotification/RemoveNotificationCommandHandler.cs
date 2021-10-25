@@ -32,22 +32,13 @@ namespace TaskBase.Application.Commands.RemoveNotification
 
         public async Task<Result<bool>> Handle(RemoveNotificationCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var notification = await _unitOfWork.Notifications.GetNotificationAsync(request.NotificationId, cancellationToken);
-                await _unitOfWork.Notifications.Remove(notification);
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            var notification = await _unitOfWork.Notifications.GetNotificationAsync(request.NotificationId, cancellationToken);
+            await _unitOfWork.Notifications.Remove(notification);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                _logger.LogInformation($"---> The notification: {request.NotificationId} was deleted by: {notification.UserId}.");
+            _logger.LogInformation($"---> The notification: {request.NotificationId} was deleted by: {notification.UserId}.");
 
-                return Result<bool>.Success().With("The notification was deleted.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"---> Notification: {request.NotificationId} couldn't be deleted, error message: \"{ex.Message}\"");
-
-                return Result<bool>.Invalid().With(ex.Message);
-            }
+            return Result<bool>.Success().With("The notification was deleted.");
         }
     }
 }
