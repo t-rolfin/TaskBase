@@ -79,6 +79,9 @@ namespace TaskBase.Data
             });
 
             services.AddTransient<IAuthTokenFactory, AuthTokenFactory>();
+            services.AddTransient<INotificationService, NotificationService.NotificationService>();
+            services.AddTransient<IAuthTokenFactory, AuthTokenFactory>();
+            services.AddTransient<IImageStorage, ImageStorage>();
 
             return services;
         }
