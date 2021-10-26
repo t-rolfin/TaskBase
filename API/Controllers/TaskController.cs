@@ -77,13 +77,14 @@ namespace API.Controllers
         /// Delete a task from a user.
         /// </summary>
         [HttpDelete]
-        [Route("task")]
+        [Route("task/{taskId:Guid}")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IMetaResult), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(IMetaResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> DeleteTask(DeleteTaskCommand model, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteTask([FromRoute] Guid taskId, CancellationToken cancellationToken)
         {
-            return await SendWithMediator(model, cancellationToken: cancellationToken);
+            DeleteTaskCommand command = new(taskId);
+            return await SendWithMediator(command, cancellationToken: cancellationToken);
         }
 
         /// <summary>
