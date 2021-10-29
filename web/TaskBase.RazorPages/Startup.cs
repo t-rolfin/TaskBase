@@ -5,14 +5,20 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using TaskBase.Data;
-using TaskBase.Core.Interfaces;
 using System.Globalization;
 using TaskBase.Components.Services;
-using TaskBase.Data.Storage;
-using TaskBase.Application;
-using TaskBase.Application.Services;
-using TaskBase.Data.NotificationService;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
+using System;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using TaskBase.Components.Utils;
 
 namespace TaskBase.RazorPages
 {
@@ -27,23 +33,30 @@ namespace TaskBase.RazorPages
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers().AddRazorOptions(options => { options.PageViewLocationFormats.Add("/Views/{0}.cshtml"); })
+            services.AddRazorPages().AddRazorOptions(options => {
+                options.PageViewLocationFormats.Add("/Views/{0}.cshtml");
+            })
+                .AddRazorRuntimeCompilation()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
 
-            services.AddRazorPages();
-            services.AddIdentity();
+            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<AttachTokenDelegateHandler>();
+            services.AddServices(Configuration);
 
-            services.AddAuthorization(options => {
-                options.AddPolicy("Admin", x => x.RequireRole("Admin"));
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.ExpireTimeSpan = TimeSpan.FromDays(30);
+                    options.Cookie.Name = "auth.cookie";
+                });
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromDays(30);
             });
 
             services.AddPortableObjectLocalization(opt => { opt.ResourcesPath = "Resources"; });
-
-            services.AddInfrastructure(Configuration);
-            services.AddApplication();
-
-            services.AddSingleton<IIdentityService, IdentityProvider>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -60,6 +73,7 @@ namespace TaskBase.RazorPages
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseSession();
 
             app.UseRequestLocalization(GetLocalizationOptions());
 
@@ -85,6 +99,35 @@ namespace TaskBase.RazorPages
             options.SupportedUICultures = supportedCultures;
 
             return options;
+        }
+    }
+
+    public static class DIConteinerExtension
+    {
+        public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration Configuration)
+        {
+
+            services.AddHttpClient<ITaskService, TaskService>(options => {
+                options.BaseAddress = new Uri(Configuration["Api:BaseAddress"]);
+            })
+                .AddHttpMessageHandler<AttachTokenDelegateHandler>();
+
+            services.AddHttpClient<IAuthService, AuthService>(options => {
+                options.BaseAddress = new Uri(Configuration["Api:BaseAddress"]);
+            })
+                .AddHttpMessageHandler<AttachTokenDelegateHandler>();
+
+            services.AddHttpClient<INoteService, NoteService>(options => {
+                options.BaseAddress = new Uri(Configuration["Api:BaseAddress"]);
+            })
+                .AddHttpMessageHandler<AttachTokenDelegateHandler>();
+
+            services.AddHttpClient<INotificationService, NotificationService>(options => {
+                options.BaseAddress = new Uri(Configuration["Api:BaseAddress"]);
+            })
+                .AddHttpMessageHandler<AttachTokenDelegateHandler>();
+
+            return services;
         }
     }
 }
