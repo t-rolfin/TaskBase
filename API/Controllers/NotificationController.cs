@@ -51,11 +51,11 @@ namespace API.Controllers
         /// Remove user notification.
         /// </summary>
         [HttpDelete]
-        [Route("notification")]
+        [Route("notification/{notificationId:Guid}")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IMetaResult), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(IMetaResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> RemoveNotification(RemoveNotificationCommand model, CancellationToken cancellationToken)
+        public async Task<IActionResult> RemoveNotification([FromRoute] RemoveNotificationCommand model, CancellationToken cancellationToken)
         {
             return await SendWithMediator(model, cancellationToken: cancellationToken);
         }
