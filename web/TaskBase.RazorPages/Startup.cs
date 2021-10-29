@@ -12,12 +12,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using System;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using TaskBase.Components.Utils;
 
 namespace TaskBase.RazorPages
@@ -36,7 +30,6 @@ namespace TaskBase.RazorPages
             services.AddRazorPages().AddRazorOptions(options => {
                 options.PageViewLocationFormats.Add("/Views/{0}.cshtml");
             })
-                .AddRazorRuntimeCompilation()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
 
