@@ -12,8 +12,6 @@ namespace TaskBase.Application.Commands.UpdateTask
         public UpdateTaskValidator()
         {
             RuleFor(x => x.TaskId).NotEmpty().NotEqual(Guid.Empty);
-            RuleFor(x => x.Description).NotEmpty();
-            RuleFor(x => x.Title).NotEmpty();
         }
     }
 }
