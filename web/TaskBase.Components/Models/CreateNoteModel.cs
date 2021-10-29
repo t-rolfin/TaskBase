@@ -6,8 +6,5 @@ using System.Threading.Tasks;
 
 namespace TaskBase.Components.Models
 {
-    public class SearchModel
-    {
-        public string UserName { get; set; }
-    }
+    public record CreateNoteModel(string TaskId, string Content, DateTime CreatedAt);
 }

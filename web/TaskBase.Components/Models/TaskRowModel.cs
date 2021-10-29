@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TaskBase.Application.Models;
-using TaskBase.Core.Enums;
+using TaskBase.Components.Enums;
+using TaskBase.Components.Services;
 
 namespace TaskBase.Components.Models
 {

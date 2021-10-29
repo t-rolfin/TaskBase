@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace TaskBase.Components.Models
 {
-    public record TaskNoteId(string Id);
+    public record EditNoteModel(Guid TaskId, Guid NoteId, string Content);
 }
