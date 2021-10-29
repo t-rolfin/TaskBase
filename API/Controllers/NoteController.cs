@@ -52,11 +52,11 @@ namespace API.Controllers
         /// Delete a note from a task.
         /// </summary>
         [HttpDelete]
-        [Route("note")]
+        [Route("note/{TaskId:Guid}/{NoteId:Guid}")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IMetaResult), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(IMetaResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> DeleteNote(EliminateNoteCommand model, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteNote([FromRoute] EliminateNoteCommand model, CancellationToken cancellationToken)
         {
             return await SendWithMediator(model, cancellationToken: cancellationToken);
         }
