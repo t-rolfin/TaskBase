@@ -22,6 +22,7 @@ using TaskBase.Application.Services;
 using API.Services;
 using System.IO;
 using System.Reflection;
+using API.Filters;
 
 namespace API
 {
@@ -36,6 +37,11 @@ namespace API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers(options =>
+            {
+                options.Filters.Add(typeof(GlobalExceptionFilter));
+            });
+
             services.AddSingleton<IIdentityService, IdentityService>();
 
             services.AddApplication();

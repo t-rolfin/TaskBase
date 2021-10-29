@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TaskBase.Application.Utils
+namespace API.Filters
 {
     public class SimpleProblemDetails : ProblemDetails
     {

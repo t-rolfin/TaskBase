@@ -8,7 +8,6 @@ using MediatR;
 using System.Reflection;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
-using TaskBase.Application.Filters;
 using TaskBase.Application.Behaviors;
 
 namespace TaskBase.Application
@@ -17,11 +16,6 @@ namespace TaskBase.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            services.AddControllers(options =>
-            {
-                options.Filters.Add(typeof(GlobalExceptionFilter));
-            });
-
             services.AddFluentValidation(config =>
                 {
                     config.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
@@ -30,8 +24,8 @@ namespace TaskBase.Application
 
             services.AddMediatR(Assembly.GetExecutingAssembly());
 
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UserExistValidatorBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidatorBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UserExistValidatorBehavior<,>));
 
             return services;
         }
