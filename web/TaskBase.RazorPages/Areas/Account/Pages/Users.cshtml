@@ -1,18 +1,20 @@
 ﻿@page "{handler?}"
+@model UsersModel
+
 @{
     ViewData["Title"] = "Users";
     Layout = "_DashboardLayout";
 }
 
-@model TaskBase.Components.Areas.Identity.Pages.Account.UsersModel
+<h1>NOT AVAILABLE AT THIS MOMENT!</h1>
 
-<div class="container-flex row justify-content-center text-white">
+@*<div class="container-flex row justify-content-center text-white">
     @foreach (var member in Model.Users)
     {
         <div class="card m-3 w-25 bg-transparent p-0" style="max-width:350px; min-width:300px">
             <div class="card-body row justify-content-around align-items-center">
                 <div class="border p-0 overflow-hidden" style="border-radius:100%; width:50px; height:50px;">
-                    <img style="width:100%; height:100%;" src="@(string.IsNullOrWhiteSpace(member.AvatarUrl) ? "/Avatars/avatar.jpg" : member.AvatarUrl)" alt="Avatar" />
+                    <img style="width:100%; height:100%;" src="@(string.IsNullOrWhiteSpace(member.AvatarUrl) ? " /Avatars/avatar.jpg" : member.AvatarUrl)" alt="Avatar" />
                 </div>
                 <h5 class="w-auto">@member.UserName</h5>
             </div>
@@ -21,4 +23,4 @@
 
         </div>
     }
-</div>
+</div>*@

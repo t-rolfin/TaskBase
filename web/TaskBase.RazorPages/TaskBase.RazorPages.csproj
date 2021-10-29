@@ -22,6 +22,8 @@
 
   <ItemGroup>
 	<PackageReference Include="MediatR" Version="9.0.0" />
+	<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.11" />
+	<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.11" />
 	<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.10" />
     <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.9" />
@@ -38,12 +40,10 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="5.0.4" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
     <PackageReference Include="OrchardCore.Localization.Core" Version="1.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.13.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\TaskBase.Application\TaskBase.Application.csproj" />
-    <ProjectReference Include="..\..\src\TaskBase.Core\TaskBase.Core.csproj" />
-    <ProjectReference Include="..\..\src\TaskBase.Data\TaskBase.Data.csproj" />
     <ProjectReference Include="..\TaskBase.Components\TaskBase.Components.csproj" />
   </ItemGroup>
 

@@ -1,27 +1,22 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TaskBase.Application.Models;
-using TaskBase.Application.Queries.GetTask;
-using TaskBase.Application.Services;
 using TaskBase.Components.Models;
-using TaskBase.Core.Enums;
-using TaskBase.Core.TaskAggregate;
+using TaskBase.Components.Services;
 
 namespace TaskBase.Components.Views.Shared.Components.TaskDetails
 {
     [ViewComponent(Name = "TaskDetails")]
     public class TaskDetailsViewComponent : ViewComponent
     {
-        readonly IMediator _mediator;
+        readonly ITaskService _taskService;
 
-        public TaskDetailsViewComponent(IMediator mediator)
+        public TaskDetailsViewComponent(ITaskService taskService)
         {
-            _mediator = mediator;
+            _taskService = taskService;
         }
 
         public async Task<IViewComponentResult> InvokeAsync(Guid TaskId)
@@ -29,10 +24,9 @@ namespace TaskBase.Components.Views.Shared.Components.TaskDetails
             if (TaskId == Guid.Empty)
                 return View(TaskModel.EmptyModel);
 
-            GetTaskQuery query = new(TaskId);
-            var result = await _mediator.Send(query);
+            var result = await _taskService.GetTask(TaskId);
 
-            return View(result.IsSuccess ? result.Value : TaskModel.EmptyModel);
+            return View(result is not null ? result : TaskModel.EmptyModel);
         }
     }
 }

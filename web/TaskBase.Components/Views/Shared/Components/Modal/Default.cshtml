@@ -33,10 +33,9 @@
 
                     <div class="mb-3">
                         <select name="PriorityLevel" class="w-100 p-1 bg-dark" style="font-size: 1.2rem">
-                            @foreach(var priorityLevel in Enumeration.GetAll<PriorityLevel>())
-                            {
-                                <option value="@priorityLevel.Value">@priorityLevel.DisplayName</option>
-                            }
+                            <option value="1" >Low</option>
+                            <option value="2" >High</option>
+                            <option value="1" >Very High</option>
                         </select>
                     </div>
 
@@ -48,7 +47,7 @@
                             <input type="date" name="dueDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control text-white" />
                         </div>
 
-                        @if ((await AuthorizationService.AuthorizeAsync(User, "Admin")).Succeeded)
+                        @if (User.IsInRole("Admin"))
                         {
 
                             <div class="d-flex flex-column">

@@ -1,45 +1,37 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using TaskBase.Application.Models;
-using TaskBase.Application.Queries.GetUserNotifications;
-using TaskBase.Application.Services;
 using TaskBase.Components.Models;
 using TaskBase.Components.Services;
-using TaskBase.Core.Interfaces;
 
 namespace TaskBase.Components.Views.Shared.Components.Notifications
 {
     [ViewComponent( Name = "Notifications")]
     public class NotificationsViewComponent : ViewComponent
     {
-        readonly IMediator _mediator;
-        readonly IIdentityService _identityProvider;
+        private readonly INotificationService _notificationService;
 
-        public NotificationsViewComponent(IMediator mediator, IIdentityService identityProvider)
+        public NotificationsViewComponent(INotificationService notificationService)
         {
-            _mediator = mediator;
-            _identityProvider = identityProvider;
+            _notificationService = notificationService;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var currentUserId = _identityProvider.GetCurrentUserIdentity();
+            Guid.TryParse(
+                    HttpContext.User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier).Value,
+                    out Guid currentUserId
+                    );
 
-            GetUserNotificationsQuery command = new(currentUserId);
-            var result = await _mediator.Send(command);
+            NotificationsModel notificationsModel = await _notificationService
+                .GetNotificationsAsync(currentUserId);
 
-            var model = new NotificationsModel(
-                    result.IsSuccess ? result.Value.ToList() : new List<NotificationModel>(),
-                    result.IsSuccess ? result.Value.Count() : 0
-                );
-
-            return View(model);
+            return View(notificationsModel);
         }
     }
 }

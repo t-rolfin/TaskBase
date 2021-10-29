@@ -1,12 +1,7 @@
 ﻿@model TaskModel
 
-@{ 
-    TaskNoteId model = Model is null
-        ? new TaskNoteId("")
-        : new TaskNoteId(Model.Id.ToString());
-}
 
-<div class="d-flex flex-column w-100" id="task-details">
+    <div class="d-flex flex-column w-100" id="task-details">
 
     <div class="card-footer d-flex bg-dark p-2 m-0 border-bottom">
         <span class="mr-2 m-0 h6">Tags:</span>
@@ -69,4 +64,4 @@
 
     </div>
 
-</div>
+    </div>

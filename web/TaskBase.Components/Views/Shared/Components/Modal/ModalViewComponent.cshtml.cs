@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaskBase.Components.Models;
-using TaskBase.Core.Interfaces;
 
 namespace TaskBase.Components.Views.Components.Modal
 {

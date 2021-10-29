@@ -1,14 +1,6 @@
 ﻿@page "{handler?}"
 @model TaskBase.RazorPages.Pages.TasksModel
 
-@using TaskBase.Core.TaskAggregate
-
-@using TaskBase.Data.Identity
-
-@inject IAuthTokenFactory tokenFactory 
-
-@using System.Security.Claims
-
 @{
     ViewData["Title"] = "My Tasks";
     Layout = "_DashboardLayout";
@@ -27,7 +19,7 @@
             <i onclick="closeDetailsModal()" class="fas fa-times"></i>
         </div>
 
-        <div>
+        <div class="h-auto">
             <vc:task-details task-id="Guid.Empty" />
         </div>
 

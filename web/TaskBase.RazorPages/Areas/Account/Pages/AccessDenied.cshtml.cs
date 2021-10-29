@@ -5,10 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace TaskBase.Components.Areas.Identity.Pages.Account
+namespace TaskBase.RazorPages.Areas.Account.Pages
 {
     public class AccessDeniedModel : PageModel
     {
+        [FromQuery]
+        string ReturnUrl { get; set; }
+
         public void OnGet()
         {
         }
