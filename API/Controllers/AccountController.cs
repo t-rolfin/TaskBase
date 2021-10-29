@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -51,10 +52,22 @@ namespace API.Controllers
                 if (user != null)
                 {
                     var validPassowrd = await _userManager.CheckPasswordAsync(user, loginModel.Password);
-                    var userProfile = await GenerateJwtTokenForUser(user);
+                    var access_token = await GenerateJwtTokenForUser(user);
 
-                    if(validPassowrd)
-                        return Ok(userProfile);
+                    if (validPassowrd)
+                    {
+                        var responseObject = new
+                        {
+                            access_token,
+                            token_type = "jwt"
+                        };
+
+                        var responseByte = Encoding.UTF8.GetBytes(
+                                JsonConvert.SerializeObject(responseObject)
+                            );
+
+                        return Ok(responseObject);
+                    }
                     else
                         ModelState.AddModelError(string.Empty, "Invalid UserName or Password.");
                 }
@@ -123,7 +136,7 @@ namespace API.Controllers
             return Created(url, null);
         }
 
-        private async Task<UserProfileModel> GenerateJwtTokenForUser(User user)
+        private async Task<string> GenerateJwtTokenForUser(User user)
         {
             var userRoles = await _userManager.GetRolesAsync(user);
 
@@ -151,11 +164,7 @@ namespace API.Controllers
 
             var jwtToken = new JwtSecurityToken(jwtHeader, new JwtPayload(claims));
 
-            return new UserProfileModel(
-                user.Id,
-                user.UserName,
-                user.Email,
-                new JwtSecurityTokenHandler().WriteToken(jwtToken));
+            return new JwtSecurityTokenHandler().WriteToken(jwtToken);
         }
     }
 }
