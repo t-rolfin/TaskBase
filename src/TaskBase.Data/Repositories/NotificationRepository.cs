@@ -12,7 +12,7 @@ using TaskBase.Data.Exceptions;
 
 namespace TaskBase.Data.Repositories
 {
-    public class NotificationRepository : BaseRepository<Notification>, INotificationRepository
+    internal class NotificationRepository : BaseRepository<Notification>, INotificationRepository
     {
         public NotificationRepository(TaskDbContext _context) : base(_context) { }
 

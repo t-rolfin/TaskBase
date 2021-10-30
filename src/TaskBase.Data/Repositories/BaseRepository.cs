@@ -8,7 +8,7 @@ using TaskBase.Core.Interfaces;
 
 namespace TaskBase.Data.Repositories
 {
-    public abstract class BaseRepository<T> where T : class, IRootAggregate
+    internal abstract class BaseRepository<T> where T : class, IRootAggregate
     {
         protected readonly TaskDbContext _context;
         internal DbSet<T> dbSet;

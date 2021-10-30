@@ -16,7 +16,7 @@ using TaskBase.Application.Models;
 
 namespace TaskBase.Data.Repositories
 {
-    public class QueryRepository : IQueryRepository
+    internal class QueryRepository : IQueryRepository
     {
         private ConnectionStrings _connectionStrings;
 

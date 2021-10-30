@@ -15,7 +15,7 @@ using CorePriorityLevel = TaskBase.Core.TaskAggregate.PriorityLevel;
 
 namespace TaskBase.Data.Repositories
 {
-    public class TaskRepository : BaseRepository<CoreTask>, ITaskAsyncRepository
+    internal class TaskRepository : BaseRepository<CoreTask>, ITaskAsyncRepository
     {
         public TaskRepository(TaskDbContext context) : base(context) { }
 
