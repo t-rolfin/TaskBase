@@ -24,12 +24,7 @@ namespace TaskBase.Data.Identity
             _userManager = userManager;
         }
 
-        public async Task<string> GetToken(Guid userId)
-        {
-            return await GenerateToken(userId);
-        }
-
-        async Task<string> GenerateToken(Guid UserId)
+        public async Task<string> GetToken(Guid UserId)
         {
             var tokenHeader = new JwtHeader(
                 new SigningCredentials(
