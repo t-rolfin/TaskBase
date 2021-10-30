@@ -42,12 +42,12 @@ namespace API
                 options.Filters.Add(typeof(GlobalExceptionFilter));
             });
 
-            services.AddSingleton<IIdentityService, IdentityService>();
+            services.AddTransient<IIdentityService, IdentityService>();
 
             services.AddApplication();
             services.AddInfrastructure(Configuration);
-
-            services.AddJwtAuth(Configuration);
+            services.AddCustomIdentity();
+            services.AddJwtAuthentication(Configuration);
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -115,23 +115,9 @@ namespace API
 
     static class CustomExtensionMethods
     {
-        public static IServiceCollection AddJwtAuth(this IServiceCollection services, IConfiguration Configuration)
+        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration Configuration)
         {
-            services.AddDbContext<IdentityContext>();
-
-            services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<IdentityContext>()
-                .AddDefaultTokenProviders();
-
-            services.Configure<IdentityOptions>(options =>
-            {
-                options.Password = new PasswordOptions
-                {
-                    RequiredLength = 4,
-                };
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789. _";
-                options.User.RequireUniqueEmail = true;
-            });
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]));
 
             services.AddAuthentication(options => {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -145,7 +131,7 @@ namespace API
                         ValidateAudience = false,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                        IssuerSigningKey = key
                     };
                 });
 

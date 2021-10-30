@@ -36,10 +36,12 @@ namespace TaskBase.Data
             });
 
             services.AddDbContext<TaskDbContext>();
+
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ITaskAsyncRepository, TaskRepository>();
             services.AddTransient<INotificationRepository, NotificationRepository>();
             services.AddTransient<IQueryRepository, QueryRepository>();
+
             services.AddTransient<INotificationService, NotificationService.NotificationService>();
             services.AddTransient<IImageStorage, ImageStorage>();
             services.AddTransient<IAuthTokenFactory, AuthTokenFactory>();
@@ -47,7 +49,7 @@ namespace TaskBase.Data
             return services;
         }
 
-        public static IServiceCollection AddIdentity(this IServiceCollection services)
+        public static IServiceCollection AddCustomIdentity(this IServiceCollection services)
         {
             services.AddDbContext<IdentityContext>();
 
@@ -65,6 +67,11 @@ namespace TaskBase.Data
                 options.User.RequireUniqueEmail = true;
             });
 
+            return services;
+        }
+
+        public static IServiceCollection AddCookieAuthentication(this IServiceCollection services)
+        {
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
@@ -77,11 +84,6 @@ namespace TaskBase.Data
             services.Configure<SecurityStampValidatorOptions>(options => {
                 options.ValidationInterval = TimeSpan.Zero;
             });
-
-            services.AddTransient<IAuthTokenFactory, AuthTokenFactory>();
-            services.AddTransient<INotificationService, NotificationService.NotificationService>();
-            services.AddTransient<IAuthTokenFactory, AuthTokenFactory>();
-            services.AddTransient<IImageStorage, ImageStorage>();
 
             return services;
         }
