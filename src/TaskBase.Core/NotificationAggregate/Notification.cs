@@ -20,8 +20,8 @@ namespace TaskBase.Core.NotificationAggregate
             UserId = userId;
         }
 
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public Guid UserId { get; set; }
+        public string Title { get; init; }
+        public string Description { get; init; }
+        public Guid UserId { get; init; }
     }
 }
