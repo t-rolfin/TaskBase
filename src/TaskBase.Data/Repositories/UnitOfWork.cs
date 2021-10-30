@@ -10,9 +10,9 @@ namespace TaskBase.Data.Repositories
 {
     internal class UnitOfWork : IUnitOfWork
     {
-        private readonly TaskDbContext _context;
+        private readonly TaskContext _context;
 
-        public UnitOfWork(TaskDbContext context)
+        public UnitOfWork(TaskContext context)
         {
             _context = context;
         }

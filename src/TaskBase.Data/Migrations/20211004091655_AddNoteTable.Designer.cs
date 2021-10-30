@@ -9,7 +9,7 @@ using TaskBase.Data;
 
 namespace TaskBase.Data.Migrations
 {
-    [DbContext(typeof(TaskDbContext))]
+    [DbContext(typeof(TaskContext))]
     [Migration("20211004091655_AddNoteTable")]
     partial class AddNoteTable
     {

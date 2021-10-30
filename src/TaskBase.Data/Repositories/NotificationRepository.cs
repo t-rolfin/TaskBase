@@ -14,7 +14,7 @@ namespace TaskBase.Data.Repositories
 {
     internal class NotificationRepository : BaseRepository<Notification>, INotificationRepository
     {
-        public NotificationRepository(TaskDbContext _context) : base(_context) { }
+        public NotificationRepository(TaskContext _context) : base(_context) { }
 
         public async Task<Notification> AddAsync(Notification entity, CancellationToken cancellationToken = default)
         {

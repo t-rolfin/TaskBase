@@ -17,7 +17,7 @@ namespace TaskBase.Data.Repositories
 {
     internal class TaskRepository : BaseRepository<CoreTask>, ITaskAsyncRepository
     {
-        public TaskRepository(TaskDbContext context) : base(context) { }
+        public TaskRepository(TaskContext context) : base(context) { }
 
         public async Task<CoreTask> AddAsync(CoreTask entity, CancellationToken cancellationToken = default)
         {

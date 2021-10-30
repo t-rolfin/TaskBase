@@ -8,7 +8,7 @@ using TaskBase.Data;
 
 namespace TaskBase.Data.Migrations
 {
-    [DbContext(typeof(TaskDbContext))]
+    [DbContext(typeof(TaskContext))]
     partial class TaskDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

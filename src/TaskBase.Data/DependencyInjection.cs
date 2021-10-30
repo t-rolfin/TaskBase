@@ -35,7 +35,7 @@ namespace TaskBase.Data
                 return connectionStrings;
             });
 
-            services.AddDbContext<TaskDbContext>();
+            services.AddDbContext<TaskContext>();
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ITaskAsyncRepository, TaskRepository>();

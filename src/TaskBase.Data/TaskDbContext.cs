@@ -12,11 +12,11 @@ using CoreTask = TaskBase.Core.TaskAggregate.Task;
 
 namespace TaskBase.Data
 {
-    public class TaskDbContext : DbContext
+    public class TaskContext : DbContext
     {
         readonly ConnectionStrings _connectionString;
 
-        public TaskDbContext(ConnectionStrings connectionString) : base()
+        public TaskContext(ConnectionStrings connectionString) : base()
         {
             _connectionString = connectionString;
         }

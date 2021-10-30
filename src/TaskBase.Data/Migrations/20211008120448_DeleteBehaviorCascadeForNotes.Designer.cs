@@ -9,7 +9,7 @@ using TaskBase.Data;
 
 namespace TaskBase.Data.Migrations
 {
-    [DbContext(typeof(TaskDbContext))]
+    [DbContext(typeof(TaskContext))]
     [Migration("20211008120448_DeleteBehaviorCascadeForNotes")]
     partial class DeleteBehaviorCascadeForNotes
     {

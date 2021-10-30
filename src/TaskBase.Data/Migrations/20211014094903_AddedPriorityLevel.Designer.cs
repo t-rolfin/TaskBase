@@ -9,7 +9,7 @@ using TaskBase.Data;
 
 namespace TaskBase.Data.Migrations
 {
-    [DbContext(typeof(TaskDbContext))]
+    [DbContext(typeof(TaskContext))]
     [Migration("20211014094903_AddedPriorityLevel")]
     partial class AddedPriorityLevel
     {

@@ -10,10 +10,10 @@ namespace TaskBase.Data.Repositories
 {
     internal abstract class BaseRepository<T> where T : class, IRootAggregate
     {
-        protected readonly TaskDbContext _context;
+        protected readonly TaskContext _context;
         internal DbSet<T> dbSet;
 
-        protected BaseRepository(TaskDbContext context)
+        protected BaseRepository(TaskContext context)
         {
             _context = context;
             dbSet = _context.Set<T>();
