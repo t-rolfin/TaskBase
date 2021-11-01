@@ -15,12 +15,12 @@ namespace TaskBase.Application.Commands.RemoveNotification
     public class RemoveNotificationCommandHandler : IRequestHandler<RemoveNotificationCommand, Result<bool>>
     {
         readonly INotificationService _notificationService;
-        readonly IIdentityService _identityService;
+        readonly IIdentityProvider _identityService;
         readonly ILogger<RemoveNotificationCommandHandler> _logger;
         readonly IUnitOfWork _unitOfWork;
 
         public RemoveNotificationCommandHandler(INotificationService notificationService,
-            IIdentityService identityService,
+            IIdentityProvider identityService,
             ILogger<RemoveNotificationCommandHandler> logger,
             IUnitOfWork unitOfWork)
         {

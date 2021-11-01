@@ -16,12 +16,12 @@ namespace TaskBase.Application.Commands.DeleteTask
         IRequestHandler<DeleteTaskCommand, Result<bool>>
     {
         readonly INotificationService _notificationService;
-        readonly IIdentityService _identityService;
+        readonly IIdentityProvider _identityService;
         readonly ILogger<DeleteTaskCommandHandler> _logger;
         readonly IUnitOfWork _unitOfWork;
 
         public DeleteTaskCommandHandler(INotificationService notificationService,
-            IIdentityService identityService,
+            IIdentityProvider identityService,
             ILogger<DeleteTaskCommandHandler> logger,
             IUnitOfWork unitOfWork)
         {

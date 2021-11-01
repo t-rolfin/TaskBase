@@ -18,12 +18,12 @@ namespace TaskBase.Application.Commands.SetPriorityLevel
         readonly IUnitOfWork _unitOfWork;
         readonly ILogger<SetPriorityLevelCommandHandler> _logger;
         readonly INotificationService _notificationService;
-        readonly IIdentityService _identityService;
+        readonly IIdentityProvider _identityService;
 
         public SetPriorityLevelCommandHandler(IUnitOfWork unitOfWork,
             ILogger<SetPriorityLevelCommandHandler> logger,
             INotificationService notificationService,
-            IIdentityService identityService)
+            IIdentityProvider identityService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;

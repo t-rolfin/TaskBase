@@ -16,12 +16,12 @@ namespace TaskBase.Application.Commands.EditNote
         IRequestHandler<EditNoteCommand, Result<bool>>
     {
         readonly INotificationService _notificationService;
-        readonly IIdentityService _identityService;
+        readonly IIdentityProvider _identityService;
         readonly ILogger<EditNoteCommandHandler> _logger;
         readonly IUnitOfWork _unitOfWork;
 
         public EditNoteCommandHandler(INotificationService notificationService,
-            IIdentityService identityService,
+            IIdentityProvider identityService,
             ILogger<EditNoteCommandHandler> logger,
             IUnitOfWork unitOfWork)
         {

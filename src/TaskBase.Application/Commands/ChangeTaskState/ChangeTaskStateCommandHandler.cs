@@ -16,12 +16,12 @@ namespace TaskBase.Application.Commands.ChangeTaskState
         IRequestHandler<ChangeTaskStateCommand, Result<bool>>
     {
         readonly INotificationService _notificationService;
-        readonly IIdentityService _identityService;
+        readonly IIdentityProvider _identityService;
         readonly ILogger<ChangeTaskStateCommandHandler> _logger;
         readonly IUnitOfWork _unitOfWork;
 
         public ChangeTaskStateCommandHandler(INotificationService notificationService,
-            IIdentityService identityService,
+            IIdentityProvider identityService,
             ILogger<ChangeTaskStateCommandHandler> logger,
             IUnitOfWork unitOfWork)
         {

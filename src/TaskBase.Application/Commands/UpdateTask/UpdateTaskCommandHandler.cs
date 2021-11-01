@@ -17,12 +17,12 @@ namespace TaskBase.Application.Commands.UpdateTask
         readonly IUnitOfWork _unitOfWork;
         readonly ILogger<UpdateTaskCommandHandler> _logger;
         readonly INotificationService _notificationService;
-        readonly IIdentityService _identityService;
+        readonly IIdentityProvider _identityService;
 
         public UpdateTaskCommandHandler(IUnitOfWork unitOfWork,
             ILogger<UpdateTaskCommandHandler> logger,
             INotificationService notificationService,
-            IIdentityService identityService)
+            IIdentityProvider identityService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;

@@ -19,12 +19,12 @@ namespace TaskBase.Application.Commands.CreateTask
         IRequestHandler<CreateTaskCommand, Result<CoreTask>>
     {
         readonly INotificationService _notificationService;
-        readonly IIdentityService _identityService;
+        readonly IIdentityProvider _identityService;
         readonly ILogger<CreateTaskCommandHandler> _logger;
         readonly IUnitOfWork _unitOfWork;
 
         public CreateTaskCommandHandler(INotificationService notificationService,
-            IIdentityService identityService,
+            IIdentityProvider identityService,
             ILogger<CreateTaskCommandHandler> logger,
             IUnitOfWork unitOfWork)
         {

@@ -15,12 +15,12 @@ namespace TaskBase.Application.Commands.EliminateNote
     public class EliminateNoteCommandHandler : IRequestHandler<EliminateNoteCommand, Result<bool>>
     {
         readonly INotificationService _notificationService;
-        readonly IIdentityService _identityService;
+        readonly IIdentityProvider _identityService;
         readonly ILogger<EliminateNoteCommandHandler> _logger;
         readonly IUnitOfWork _unitOfWork;
 
         public EliminateNoteCommandHandler(INotificationService notificationService,
-            IIdentityService identityService,
+            IIdentityProvider identityService,
             ILogger<EliminateNoteCommandHandler> logger,
             IUnitOfWork unitOfWork)
         {

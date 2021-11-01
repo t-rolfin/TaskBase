@@ -42,7 +42,7 @@ namespace API
                 options.Filters.Add(typeof(GlobalExceptionFilter));
             });
 
-            services.AddTransient<IIdentityService, IdentityService>();
+            services.AddTransient<IIdentityProvider, IdentityProvider>();
 
             services.AddApplication();
             services.AddInfrastructure(Configuration);

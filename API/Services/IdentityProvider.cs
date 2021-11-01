@@ -8,11 +8,11 @@ using TaskBase.Application.Services;
 
 namespace API.Services
 {
-    public class IdentityService : IIdentityService
+    public class IdentityProvider : IIdentityProvider
     {
         readonly IHttpContextAccessor _accessor;
 
-        public IdentityService(IHttpContextAccessor accessor)
+        public IdentityProvider(IHttpContextAccessor accessor)
         {
             _accessor = accessor;
         }

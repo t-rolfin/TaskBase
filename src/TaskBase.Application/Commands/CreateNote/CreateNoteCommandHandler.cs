@@ -17,12 +17,12 @@ namespace TaskBase.Application.Commands.CreateNote
         IRequestHandler<CreateNoteCommand, Result<Note>>
     {
         readonly INotificationService _notificationService;
-        readonly IIdentityService _identityService;
+        readonly IIdentityProvider _identityService;
         readonly ILogger<CreateNoteCommandHandler> _logger;
         readonly IUnitOfWork _unitOfWork;
 
         public CreateNoteCommandHandler(INotificationService notificationService,
-            IIdentityService identityService,
+            IIdentityProvider identityService,
             ILogger<CreateNoteCommandHandler> logger,
             IUnitOfWork unitOfWork)
         {

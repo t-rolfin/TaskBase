@@ -17,12 +17,12 @@ namespace TaskBase.Application.Commands.CreateNotification
     public class CreateNotificationCommandHandler : IRequestHandler<CreateNotificationCommand, Result<NotificationModel>>
     {
         readonly INotificationService _notificationService;
-        readonly IIdentityService _identityService;
+        readonly IIdentityProvider _identityService;
         readonly ILogger<CreateNotificationCommandHandler> _logger;
         readonly IUnitOfWork _unitOfWork;
 
         public CreateNotificationCommandHandler(INotificationService notificationService,
-            IIdentityService identityService,
+            IIdentityProvider identityService,
             ILogger<CreateNotificationCommandHandler> logger,
             IUnitOfWork unitOfWork)
         {
