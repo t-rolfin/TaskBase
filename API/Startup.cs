@@ -23,6 +23,7 @@ using API.Services;
 using System.IO;
 using System.Reflection;
 using API.Filters;
+using Microsoft.Extensions.Logging.Log4Net.AspNetCore;
 
 namespace API
 {
