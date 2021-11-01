@@ -17,7 +17,7 @@ namespace TaskBase.Data.Storage
         private readonly string UPLOAD_PATH = "Avatars";
         private IWebHostEnvironment _environment;
 
-        public ImageStorage(IWebHostEnvironment environment, UserManager<User> userManager)
+        public ImageStorage(IWebHostEnvironment environment)
         {
             _environment = environment;
         }

@@ -49,11 +49,6 @@ namespace API
             services.AddCustomIdentity();
             services.AddJwtAuthentication(Configuration);
 
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.SuppressModelStateInvalidFilter = true;
-            });
-
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TaskBase API", Version = "v1" });
@@ -111,31 +106,5 @@ namespace API
             });
         }
         
-    }
-
-    static class CustomExtensionMethods
-    {
-        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration Configuration)
-        {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]));
-
-            services.AddAuthentication(options => {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters()
-                    {
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = key
-                    };
-                });
-
-            return services;
-        }
     }
 }

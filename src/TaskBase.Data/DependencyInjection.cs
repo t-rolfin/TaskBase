@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Http;
 using TaskBase.Data.NotificationService;
 using TaskBase.Application.Services;
 using TaskBase.Data.Storage;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace TaskBase.Data
 {
@@ -85,6 +88,29 @@ namespace TaskBase.Data
             services.Configure<SecurityStampValidatorOptions>(options => {
                 options.ValidationInterval = TimeSpan.Zero;
             });
+
+            return services;
+        }
+
+        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration Configuration)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]));
+
+            services.AddAuthentication(options => {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = key
+                    };
+                });
 
             return services;
         }
