@@ -15,13 +15,13 @@ namespace TaskBase.Data.Identity
     public class AuthTokenFactory : IAuthTokenFactory
     {
         readonly IConfiguration _configuration;
-        readonly UserManager<User> _userManager;
+        readonly ILoginService<User> _loginService;
 
         public AuthTokenFactory(IConfiguration configuration,
-            UserManager<User> userManager)
+            ILoginService<User> loginService)
         {
             _configuration = configuration;
-            _userManager = userManager;
+            _loginService = loginService;
         }
 
         public async Task<string> GetToken(Guid UserId)
@@ -32,29 +32,26 @@ namespace TaskBase.Data.Identity
                         SecurityAlgorithms.HmacSha256
                     ));
 
+            var user = await _loginService.FindUserByIdAsync(UserId.ToString());
+
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.NameIdentifier, UserId.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Iss, _configuration["Jwt:Issuer"]),
                 new Claim(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString()),
                 new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.Now.AddDays(1)).ToUnixTimeSeconds().ToString())
             };
 
-            foreach (var role in await GetUserRoles(UserId))
+            foreach (var role in (await _loginService.GetRolesAsync(user)).ToList())
                 claims.Add(new Claim(ClaimTypes.Role, role));
 
             var tokenPayload = new JwtPayload(claims);
-
             var tokenBuilder = new JwtSecurityToken(tokenHeader, tokenPayload);
-
 
             return new JwtSecurityTokenHandler().WriteToken(tokenBuilder);
         }
 
-        async Task<List<string>> GetUserRoles(Guid UserId)
-        {
-            var user = await _userManager.FindByIdAsync(UserId.ToString());
-            return (await _userManager.GetRolesAsync(user)).ToList();
-        }
     }
 }

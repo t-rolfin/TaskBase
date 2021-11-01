@@ -45,6 +45,7 @@ namespace TaskBase.Data
             services.AddTransient<INotificationService, NotificationService.NotificationService>();
             services.AddTransient<IImageStorage, ImageStorage>();
             services.AddTransient<IAuthTokenFactory, AuthTokenFactory>();
+            services.AddTransient<ILoginService<User>, LoginService>();
 
             return services;
         }

@@ -11,6 +11,10 @@ namespace TaskBase.Data.Identity
     {
         public User() : base() { }
 
+        public User(string userName, string email, string avatarUrl = "") 
+            : this(userName, avatarUrl)
+            => (Email) = (email);
+
         public User(string userName, string avatarUrl) : base(userName)
             => (AvatarUrl) = (avatarUrl);
 

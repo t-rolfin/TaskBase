@@ -16,6 +16,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using TaskBase.Application.Services;
 using TaskBase.Data.Identity;
 using TaskBase.Data.Storage;
 
@@ -25,87 +26,48 @@ namespace API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
-        private readonly IConfiguration _configuration;
-        readonly IImageStorage _imageStorage;
+        private readonly ILoginService<User> _loginService;
+        private readonly IImageStorage _imageStorage;
+        private readonly IAuthTokenFactory _tokenFactory;
         private IWebHostEnvironment _environment;
 
         public AccountController(
-            UserManager<User> userManager,
-            IConfiguration configuration,
+            ILoginService<User> loginService,
             IImageStorage imageStorage,
-            IWebHostEnvironment environment)
+            IWebHostEnvironment environment,
+            IAuthTokenFactory tokenFactory)
         {
-            _userManager = userManager;
-            _configuration = configuration;
+            _loginService = loginService;
             _imageStorage = imageStorage;
             _environment = environment;
+            _tokenFactory = tokenFactory;
         }
 
         [HttpPost("LogIn")]
         public async Task<IActionResult> LogIn(LoginModel loginModel)
         {
-            if (ModelState.IsValid)
+            var user = await _loginService.FindUserByNameAsync(loginModel.UserName);
+
+            if (user is not null)
             {
-                var user = await _userManager.FindByNameAsync(loginModel.UserName);
+                var isValidCredentials = await _loginService.ValidateCredentialsAsync(
+                    loginModel.UserName, loginModel.Password);
 
-                if (user != null)
-                {
-                    var validPassowrd = await _userManager.CheckPasswordAsync(user, loginModel.Password);
-                    var access_token = await GenerateJwtTokenForUser(user);
+                var access_token = await _tokenFactory.GetToken(Guid.Parse(user.Id));
+                var byteArrayResponse = await GenerateByteArrayResponse(isValidCredentials, access_token);
 
-                    if (validPassowrd)
-                    {
-                        var responseObject = new
-                        {
-                            access_token,
-                            token_type = "jwt"
-                        };
-
-                        var responseByte = Encoding.UTF8.GetBytes(
-                                JsonConvert.SerializeObject(responseObject)
-                            );
-
-                        return Ok(responseObject);
-                    }
-                    else
-                        ModelState.AddModelError(string.Empty, "Invalid UserName or Password.");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid UserName or Password.");
-                }
+                return byteArrayResponse is not null ? Ok(byteArrayResponse) : BadRequest();
             }
 
-            return BadRequest(ModelState.Values.Select(x => x.Errors).First().First().ErrorMessage);
+            return BadRequest();
         }
 
         [HttpPost("Register")]
         public async Task<IActionResult> Register(RegisterModel registerModel)
         {
-            if(ModelState.IsValid)
-            {
-               var result = await _userManager.CreateAsync(new User()
-                        {
-                            UserName = registerModel.UserName,
-                            Email = registerModel.Email
-                            
-                        }, registerModel.Password);
-
-                if (result.Succeeded)
-                {
-                    return Ok();
-                }
-                else
-                {
-                    foreach (var error in result.Errors)
-                        ModelState.AddModelError(String.Empty, error.Description);
-
-                    return BadRequest(ModelState.Values.SelectMany(x => x.Errors));
-                }
-            }
-
-            return BadRequest(ModelState.Values.SelectMany(x => x.Errors));
+            var user = new User(registerModel.UserName, registerModel.Email);
+            var result = await _loginService.CreateAsync(user, registerModel.Password);
+            return result == true ? Ok() : BadRequest();
         }
 
         [Authorize]
@@ -115,56 +77,52 @@ namespace API.Controllers
             if (file is null)
                 return BadRequest();
 
-            var url = string.Empty;
-
-            using var stream = file.OpenReadStream();
-            string fileExtension = Path.GetExtension(file.FileName);
-
-            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var currentUserData = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == currentUserId);
-
-            var baseDirectory = _environment.ContentRootPath;
-
-            if (string.IsNullOrWhiteSpace(currentUserData.AvatarUrl))
-                url = await _imageStorage.UploadImage(stream, fileExtension, baseDirectory);
-            else
-                url = await _imageStorage.UpdateImage(currentUserData.AvatarUrl.Split("\\")[1], stream, fileExtension, baseDirectory);
-
+            User currentUserData = await GetCurrentUser();
+            var url = await UploadUserAvatar(file, currentUserData.AvatarUrl);
             currentUserData.AvatarUrl = url;
-            await _userManager.UpdateAsync(currentUserData);
+            await _loginService.UpdateAsync(currentUserData);
 
             return Created(url, null);
         }
 
-        private async Task<string> GenerateJwtTokenForUser(User user)
+
+        async Task<User> GetCurrentUser()
         {
-            var userRoles = await _userManager.GetRolesAsync(user);
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return await _loginService.FindUserByIdAsync(currentUserId);
+        }
+        async Task<string> UploadUserAvatar(IFormFile file, string currentUserAvatar)
+        {
+            var url = string.Empty;
 
-            var claims = new List<Claim>()
-                    {
-                        new Claim(ClaimTypes.NameIdentifier, user.Id),
-                        new Claim(ClaimTypes.Name, user.UserName),
-                        new Claim(ClaimTypes.Email, user.Email),
-                        new Claim(JwtRegisteredClaimNames.Iss, _configuration["Jwt:Issuer"]),
-                        new Claim(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString()),
-                        new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.Now.AddDays(1)).ToUnixTimeSeconds().ToString())
-                    };
+            using var stream = file.OpenReadStream();
+            string fileExtension = Path.GetExtension(file.FileName);
+            var baseDirectory = _environment.ContentRootPath;
 
-            foreach (var role in userRoles)
+            if (string.IsNullOrWhiteSpace(currentUserAvatar))
+                url = await _imageStorage.UploadImage(stream, fileExtension, baseDirectory);
+            else
+                url = await _imageStorage.UpdateImage(currentUserAvatar.Split("\\")[1], stream, fileExtension, baseDirectory);
+
+            return url;
+        }
+        Task<byte[]> GenerateByteArrayResponse(bool isValidCredentials, string access_token)
+        {
+            if (isValidCredentials == true && !string.IsNullOrWhiteSpace(access_token))
             {
-                claims.Add(new Claim(ClaimTypes.Role, role));
+                var responseObject = new
+                {
+                    access_token,
+                    token_type = "Bearer"
+                };
+
+                var serializedResponse = JsonConvert.SerializeObject(responseObject);
+                var responseByte = Encoding.UTF8.GetBytes(serializedResponse);
+
+                return Task.FromResult(responseByte);
             }
 
-            JwtHeader jwtHeader = new JwtHeader(
-                    new SigningCredentials(
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])),
-                        SecurityAlgorithms.HmacSha256
-                        )
-                );
-
-            var jwtToken = new JwtSecurityToken(jwtHeader, new JwtPayload(claims));
-
-            return new JwtSecurityTokenHandler().WriteToken(jwtToken);
+            return null;
         }
     }
 }
