@@ -54,9 +54,11 @@ namespace API.Controllers
                     loginModel.UserName, loginModel.Password);
 
                 var access_token = await _tokenFactory.GetToken(Guid.Parse(user.Id));
-                var byteArrayResponse = await GenerateByteArrayResponse(isValidCredentials, access_token);
+                var response = await GenerateByteArrayResponse(isValidCredentials, access_token);
 
-                return byteArrayResponse is not null ? Ok(byteArrayResponse) : BadRequest();
+                return string.IsNullOrWhiteSpace(response)
+                    ? BadRequest()
+                    : Ok(response);
             }
 
             return BadRequest();
@@ -106,7 +108,7 @@ namespace API.Controllers
 
             return url;
         }
-        Task<byte[]> GenerateByteArrayResponse(bool isValidCredentials, string access_token)
+        Task<string> GenerateByteArrayResponse(bool isValidCredentials, string access_token)
         {
             if (isValidCredentials == true && !string.IsNullOrWhiteSpace(access_token))
             {
@@ -117,12 +119,11 @@ namespace API.Controllers
                 };
 
                 var serializedResponse = JsonConvert.SerializeObject(responseObject);
-                var responseByte = Encoding.UTF8.GetBytes(serializedResponse);
 
-                return Task.FromResult(responseByte);
+                return Task.FromResult(serializedResponse);
             }
 
-            return null;
+            return Task.FromResult(string.Empty);
         }
     }
 }
