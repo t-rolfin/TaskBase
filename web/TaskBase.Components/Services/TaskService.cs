@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using TaskBase.Components.Models;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
+using OneOf;
 
 namespace TaskBase.Components.Services
 {
@@ -21,14 +22,15 @@ namespace TaskBase.Components.Services
             _apiClient = httpClient;
         }
 
-        public async Task<TaskModel> CreateTask(CreateTaskModel model)
+        public async Task<OneOf<TaskModel, FailApiResponse>> CreateTask(CreateTaskModel model)
         {
             var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
             var response = await _apiClient.PostAsync("api/Task", content);
 
-            response.EnsureSuccessStatusCode();
-
-            return await GenerateResponse<TaskModel>(response.Content);
+            if (response.IsSuccessStatusCode)
+                return await GenerateResponse<TaskModel>(response.Content);
+            else
+                return await GenerateResponse<FailApiResponse>(response.Content);
         }
 
         public async Task DeleteTask(Guid TaskId)

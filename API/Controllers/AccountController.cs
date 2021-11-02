@@ -67,7 +67,7 @@ namespace API.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> Register(RegisterModel registerModel)
         {
-            var user = new User(registerModel.UserName, registerModel.Email);
+            var user = new User(registerModel.UserName, registerModel.Email, "");
             var result = await _loginService.CreateAsync(user, registerModel.Password);
             return result == true ? Ok() : BadRequest();
         }

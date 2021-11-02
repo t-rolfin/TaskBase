@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using OneOf;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
@@ -44,11 +45,15 @@ namespace TaskBase.Components.Services
 
         }
 
-        public async Task<UserProfileModel> Login(LogInModel model)
+        public async Task<OneOf<UserProfileModel, FailApiResponse>> Login(LogInModel model)
         {
             var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
             var response = await _apiClient.PostAsync("api/account/login", content);
-            response.EnsureSuccessStatusCode();
+            
+            if(!response.IsSuccessStatusCode)
+            {
+                return await GenerateResponse<FailApiResponse>(response.Content);
+            }
 
             var profile = await GenerateResponse<UserProfileModel>(response.Content);
 

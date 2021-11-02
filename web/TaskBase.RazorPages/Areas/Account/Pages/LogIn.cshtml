@@ -1,5 +1,5 @@
 ﻿@page
-@model LoginModel
+@model Areas.Account.LogInModel
 
 @{
     ViewData["Title"] = "Log in";
@@ -13,7 +13,7 @@
     <section>
         <form id="account" method="post">
 
-            <div asp-validation-summary="All" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
 

@@ -9,16 +9,17 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using TaskBase.Components.Models;
 using TaskBase.Components.Services;
+using TaskBase.Components.Utils;
 
 namespace TaskBase.RazorPages.Areas.Account
 {
     [AllowAnonymous]
-    public class LoginModel : PageModel
+    public class LogInModel : PageModel
     {
-        private readonly ILogger<LoginModel> _logger;
+        private readonly ILogger<LogInModel> _logger;
         private readonly IAuthService _authService;
 
-        public LoginModel(ILogger<LoginModel> logger, IAuthService authService)
+        public LogInModel(ILogger<LogInModel> logger, IAuthService authService)
         {
             _logger = logger;
             _authService = authService;
@@ -64,14 +65,19 @@ namespace TaskBase.RazorPages.Areas.Account
         {
             returnUrl ??= "/tasks";
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return Page();
+
+            var result = await _authService.Login(new Components.Models.LogInModel 
+                { UserName = Input.UserName, Password = Input.Password });
+                
+            if(result.IsT1)
             {
-                await _authService.Login(new LogInModel { UserName = Input.UserName, Password = Input.Password });
-                return RedirectPermanent(returnUrl);
+                result.AsT1.ConvertToModelStateErrors(ModelState);
+                return Page();
             }
 
-            // If we got this far, something failed, redisplay form
-            return Page();
+            return RedirectPermanent(returnUrl);
         }
     }
 }

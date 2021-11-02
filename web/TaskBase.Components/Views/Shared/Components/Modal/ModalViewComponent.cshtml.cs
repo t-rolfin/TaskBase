@@ -15,7 +15,7 @@ namespace TaskBase.Components.Views.Components.Modal
         {
             return await Task.Factory.StartNew(() =>
             {
-                return View();
+                return View(new CreateTaskModel());
             });
         }
     }

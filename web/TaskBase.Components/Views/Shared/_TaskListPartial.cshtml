@@ -33,7 +33,7 @@
 
                             <form method="post" action="/Tasks/Delete" data-ajax="true" asp-antiforgery="true" data-ajax-method="post"
                                   data-ajax-mode="replace-with" data-ajax-update="#tasks-container" data-ajax-complete="enableDragula()"
-                                  class="w-auto">
+                                  class="w-auto" data-ajax-success="PageNotification('The task was successfully deleted.', true)" >
 
                                 <input type="hidden" name="taskId" value="@task.Id" />
 

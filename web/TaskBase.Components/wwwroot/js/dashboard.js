@@ -92,3 +92,12 @@ function PageNotification(message, isSuccess) {
         $(this).alert('close');
     });
 }
+
+function RefreshTasks() {
+    var toBeReplaced = $("#tasks-container");
+    $.get("/Tasks/RefreshTasks", data => {
+        toBeReplaced.replaceWith(data);
+    });
+
+    autoTextarea();
+}

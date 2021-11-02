@@ -1,0 +1,61 @@
+﻿@model Models.CreateTaskModel
+
+@inject IViewLocalizer Localizer
+
+<div class="modal-body bg-dark" id="modal-form">
+
+    <form id="form-ss" method="post" data-ajax="true" asp-controller="Tasks" data-ajax-method="post" data-ajax-mode="replace-with"
+          data-ajax-update="#modal-form" data-ajax-success="RefreshTasks()" >
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label for="taskTitle" class="form-label">@Localizer["Title"]</label>
+            <input type="text" asp-for="Title" class="form-control text-white" id="taskTitle" aria-describedby="taskTitleHelp">
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label for="taskDescription" class="form-label">@Localizer["Description"]</label>
+            <textarea asp-for="Description" class="form-control text-white bg-dark" id="taskDescription"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <select asp-for="PriorityLevel" class="w-100 p-1 bg-dark" style="font-size: 1.2rem" id="taskPriorityLevel">
+                <option selected value="1">Low</option>
+                <option value="2">High</option>
+                <option value="3">Very High</option>
+            </select>
+        </div>
+
+
+        <div class="d-flex flex-row justify-content-around align-items-center mb-3">
+
+            <div class="d-flex flex-column">
+                <label for="dueDate" class="form-label">@Localizer["Due Date"]</label>
+                <input type="date" asp-for="DueDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" 
+                       class="form-control text-white" id="dueDate" />
+            </div>
+
+            @if (User.IsInRole("Admin"))
+            {
+
+                <div class="d-flex flex-column">
+                    <label for="select-member" class="form-label">@Localizer["Assign To"]</label>
+                    <div>
+                        <input id="select-member" asp-for="AssignTo" autoComplete="on" list="members" 
+                               class="form-control text-white" />
+                        <datalist id="members">
+                            <vc:search-member />
+                        </datalist>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">@Localizer["Create"]</button>
+
+    </form>
+</div>

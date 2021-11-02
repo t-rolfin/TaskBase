@@ -21,13 +21,13 @@ function submiteForm() {
     btn.click();
 }
 
-function closeModal() {
-    $('#createTaskModal').modal('hide');
-    $('body').removeClass('modal-open');
-    $('.modal-backdrop').remove();
+//function closeModal() {
+//    $('#createTaskModal').modal('hide');
+//    $('body').removeClass('modal-open');
+//    $('.modal-backdrop').remove();
 
-    enableDragula();
-}
+//    enableDragula();
+//}
 
 const rowType = [
     "New",

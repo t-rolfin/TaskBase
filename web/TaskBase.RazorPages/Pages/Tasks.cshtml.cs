@@ -13,6 +13,8 @@ using TaskBase.Components.Enums;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using TaskBase.Components.Utils;
+using System.IO;
 
 namespace TaskBase.RazorPages.Pages
 {
@@ -41,8 +43,24 @@ namespace TaskBase.RazorPages.Pages
 
         public async Task<IActionResult> OnPostAsync(CreateTaskModel model, CancellationToken cancellationToken)
         {
-            await _taskService.CreateTask(model);
-            return ViewComponent("Tasks");
+            if (!ModelState.IsValid)
+                return Partial("_CreationModalBody", model);
+
+            var result = await _taskService.CreateTask(model);
+
+            if(result.IsT1)
+            {
+                var resultError = result.AsT1;
+                resultError.ConvertToModelStateErrors(ModelState);
+                return Partial("_CreationModalBody", new CreateTaskModel());
+            }
+            else
+                return Partial("_CreationModalBody", new CreateTaskModel());
+        }
+
+        public async Task<IActionResult> OnGetRefreshTasks()
+        {
+            return await Task.FromResult(ViewComponent("Tasks"));
         }
 
         public async Task OnPostChangeTaskState(Guid taskId, string newState, CancellationToken cancellationToken)

@@ -1,6 +1,8 @@
 ﻿@page "{handler?}"
 @model TaskBase.RazorPages.Pages.TasksModel
 
+@inject IViewLocalizer Localizer
+
 @{
     ViewData["Title"] = "My Tasks";
     Layout = "_DashboardLayout";
@@ -10,7 +12,12 @@
 
 <div class="pb-2 position-relative" style="overflow:visible;">
 
-    <vc:modal />
+    <div class="d-flex flex-row border rounded align-items-center mb-3 p-1 justify-content-around" style="font-size:1.1rem; width:120px;" data-toggle="modal" data-target="#createTaskModal">
+        <i class="fas fa-plus p-0 w-auto"></i>
+        <p class="p-0 m-0 w-auto">@Localizer["New"]</p>
+    </div>
+
+    <partial name="_CreationModalPartialView" model="new CreateTaskModel()" />
 
     <vc:tasks />
 
