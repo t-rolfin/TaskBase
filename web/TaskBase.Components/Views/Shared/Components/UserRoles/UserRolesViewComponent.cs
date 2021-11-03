@@ -6,17 +6,40 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaskBase.Components.Models;
+using TaskBase.Components.Services;
+
 namespace TaskBase.Components.Views.Shared.Components.RoleList
 {
     public class UserRolesViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync((string userId, List<string> availableRoles) model)
-        {
-            //var user = _userManager.Users.FirstOrDefault(x => x.Id == model.userId);
-            //var userRoles = await _userManager.GetRolesAsync(user);
-            //return View((Guid.Parse(user.Id), userRoles, model.availableRoles));
+        private readonly IAuthService _authService;
 
-            return await Task.FromResult(View());
+        public UserRolesViewComponent(IAuthService authService)
+        {
+            _authService = authService;
+        }
+
+        public async Task<IViewComponentResult> InvokeAsync(UserModel model)
+        {
+            var availableRoles = EliminateCommonRoles(
+                model.UserRoles, await _authService.GetAvailableRolesAsync());
+
+            await Task.CompletedTask;
+
+            return View((model, availableRoles));
+        }
+
+        List<string> EliminateCommonRoles(List<string> userRoles, List<string> availableRoles)
+        {
+            if(userRoles is not null)
+            {
+                foreach (var userRole in userRoles)
+                    availableRoles?.Remove(userRole);
+
+                return availableRoles;
+            }
+
+            return new List<string>();
         }
     }
 }

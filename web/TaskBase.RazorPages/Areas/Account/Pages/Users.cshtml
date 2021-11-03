@@ -6,9 +6,7 @@
     Layout = "_DashboardLayout";
 }
 
-<h1>NOT AVAILABLE AT THIS MOMENT!</h1>
-
-@*<div class="container-flex row justify-content-center text-white">
+<div class="container-flex row justify-content-center text-white">
     @foreach (var member in Model.Users)
     {
         <div class="card m-3 w-25 bg-transparent p-0" style="max-width:350px; min-width:300px">
@@ -19,8 +17,8 @@
                 <h5 class="w-auto">@member.UserName</h5>
             </div>
 
-            @await Component.InvokeAsync("UserRoles", (member.Id, member.AvailableRoles))
+            <vc:user-roles model="member" />
 
         </div>
     }
-</div>*@
+</div>

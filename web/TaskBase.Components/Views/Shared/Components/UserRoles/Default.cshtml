@@ -1,15 +1,15 @@
-﻿@model (Guid userId, IList<string> roles, List<string> AvailableRoles)
+﻿@model (UserModel userModel, List<string> AvailableRoles)
 
 @inject IViewLocalizer Localizer
 
-<div class="card-footer p-1" id="@Model.userId">
+<div class="card-footer p-1" id="@Model.userModel.Id">
 
     @if (Model.AvailableRoles != null && Model.AvailableRoles.Count != 0)
     {
         <form action="Users/AssignToRole" method="post" class="d-flex m-1"
-              data-ajax="true" data-ajax-update="#@Model.userId" data-ajax-mode="replace-with" asp-antiforgery="true">
+              data-ajax="true" data-ajax-update="#@Model.userModel.Id" data-ajax-mode="replace-with" asp-antiforgery="true">
 
-            <input type="hidden" name="userId" value="@Model.userId" />
+            <input type="hidden" name="userId" value="@Model.userModel.Id" />
 
             <select name="role" class="mr-2 w-auto bg-dark p-1 rounded">
                 @foreach (var item in Model.AvailableRoles)
@@ -26,15 +26,15 @@
 
     <div class="container d-flex p-0 mx-1">
 
-        @foreach (var role in Model.roles)
+        @foreach (var role in Model.userModel.UserRoles)
         {
             <div class="d-flex border align-items-center p-1 mr-1 my-1 rounded w-auto">
 
                 <p class="w-auto p-0 m-0">@Localizer[role]</p>
 
                 <form class="w-auto bg-transparent" method="post" action="Users/RemoveFromRole" data-ajax="true" asp-antiforgery="true"
-                      data-ajax-update="#@Model.userId" data-ajax-mode="replace-with">
-                    <input type="hidden" name="userId" value="@Model.Item1" />
+                      data-ajax-update="#@Model.userModel.Id" data-ajax-mode="replace-with">
+                    <input type="hidden" name="userId" value="@Model.userModel.Id" />
                     <input type="hidden" name="role" value="@role" />
                     <button type="submit" class="border-0"><i class="fas fa-times w-auto"></i></button>
                 </form>

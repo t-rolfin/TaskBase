@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using OneOf;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
 using System.Security.Claims;
@@ -96,6 +97,55 @@ namespace TaskBase.Components.Services
             _contextAccessor.HttpContext.Session.Clear();
         }
 
+
+
+        public async Task<List<UserModel>> GetMembersAsync()
+        {
+            var response = await _apiClient.GetAsync("api/Account/Users");
+            return await GenerateResponse<List<UserModel>>(response.Content);
+        }
+
+        public async Task<List<string>> GetAvailableRolesAsync()
+        {
+            var response = await _apiClient.GetAsync("api/Account/Roles");
+            return await GenerateResponse<List<string>>(response.Content);
+        }
+
+        public async Task<OneOf<UserModel, FailApiResponse>> AssignUserToRole(string roleName, string userId)
+        {
+            var model = new { roleName, userId };
+
+            var content = new StringContent(
+                JsonConvert.SerializeObject(model),
+                Encoding.UTF8,
+                "application/json"
+                );
+
+            var response = await _apiClient.PutAsync("api/Account/Roles/Assign", content);
+
+            return response.IsSuccessStatusCode
+                ? await GenerateResponse<UserModel>(response.Content)
+                : await GenerateResponse<FailApiResponse>(response.Content);
+        }
+
+        public async Task<OneOf<UserModel, FailApiResponse>> FireUserToRole(string roleName, string userId)
+        {
+            var model = new { roleName, userId };
+
+            var content = new StringContent(
+                JsonConvert.SerializeObject(model),
+                Encoding.UTF8,
+                "application/json"
+                );
+
+            var response = await _apiClient.PutAsync("api/Account/Roles/Fire", content);
+
+            return response.IsSuccessStatusCode
+                ? await GenerateResponse<UserModel>(response.Content)
+                : await GenerateResponse<FailApiResponse>(response.Content);
+        }
+
+
         async Task<T> GenerateResponse<T>(HttpContent content)
         {
             string Content = await content.ReadAsStringAsync();
@@ -103,6 +153,5 @@ namespace TaskBase.Components.Services
 
             return stringContent;
         }
-
     }
 }

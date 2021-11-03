@@ -9,14 +9,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using TaskBase.Components.Models;
+using TaskBase.Components.Services;
 
 namespace TaskBase.RazorPages.Areas.Account.Pages
 {
     [Authorize(Roles = "Admin")]
     public class UsersModel : PageModel
     {
+        private readonly IAuthService _authService;
+
+        public UsersModel(IAuthService authService)
+        {
+            _authService = authService;
+        }
+
         List<UserModel> _users = new List<UserModel>();
-        //delegate Task<IdentityResult> RoleAction(User user, string role);
 
         public List<UserModel> Users
         {
@@ -25,90 +32,22 @@ namespace TaskBase.RazorPages.Areas.Account.Pages
         }
         
 
-        public async Task OnGetAsync() { await Task.CompletedTask; }
+        public async Task OnGetAsync() 
+        { 
+            _users = await _authService.GetMembersAsync(); 
+        }
 
-        //public async Task<IActionResult> OnPostRemoveFromRole(Guid userId, string role)
-        //{
-        //    (string, List<string>) response = await ChangeUserRoles(
-        //            userId, role,
-        //            (User user, string role) =>
-        //            {
-        //                return _userManager.RemoveFromRoleAsync(user, role);
-        //            }
-        //        );
+        public async Task<IActionResult> OnPostRemoveFromRole(Guid userId, string role)
+        {
+            var response = await _authService.FireUserToRole(role, userId.ToString());
+            return ViewComponent("UserRoles", response.AsT0);
+        }
 
-        //    return ViewComponent("UserRoles", response);
-        //}
-
-        //public async Task<IActionResult> OnPostAssignToRole(Guid userId, string role)
-        //{
-        //    (string, List<string>) response = await ChangeUserRoles(
-        //            userId, role,
-        //            (User user, string role) =>
-        //            {
-        //                return _userManager.AddToRoleAsync(user, role);
-        //            }
-        //        );
-
-        //    return ViewComponent("UserRoles", response);
-        //}
-
-
-        //// private methods
-        //async Task<(string UserId, List<string> AvailableRoles)> ChangeUserRoles(
-        //    Guid userId, string role, RoleAction roleAction)
-        //{
-        //    var user = _userManager.Users.FirstOrDefault(x => x.Id == userId.ToString());
-        //    var response = await roleAction.Invoke(user, role);
-
-        //    if (response.Succeeded)
-        //        await _userManager.UpdateSecurityStampAsync(user);
-
-        //    var availableRoles = await GetUserAvailableRoles(user);
-
-        //    _log.LogInformation($"{user.UserName} is now a/an {role}.");
-
-        //    return (user.Id, availableRoles);
-        //}
-
-        //async Task FetchUsers()
-        //{
-        //    if (_users == null) _users = new();
-
-        //    var users = await _userManager.Users.ToListAsync();
-
-        //    foreach (var user in users)
-        //    {
-        //        var userRoles = await _userManager.GetRolesAsync(user);
-        //        var userAvailableRoles = await EliminateCommonRoles(userRoles.ToList());
-
-        //        _users.Add(
-        //            new UserModel(
-        //                user.Id,
-        //                user.UserName,
-        //                user.AvatarUrl,
-        //                userAvailableRoles
-        //                )
-        //            );
-        //    }
-        //}
-
-        //async Task<List<string>> GetUserAvailableRoles(User user)
-        //{
-        //    var userRoles = await _userManager.GetRolesAsync(user);
-
-        //    return await EliminateCommonRoles(userRoles.ToList());
-        //}
-
-        //async Task<List<string>> EliminateCommonRoles(List<string> userRoles)
-        //{
-        //    var roles = await _roleManager.Roles.Select(x => x.Name).ToListAsync();
-
-        //    foreach (var userRole in userRoles)
-        //        roles.Remove(userRole);
-
-        //    return roles;
-        //}
+        public async Task<IActionResult> OnPostAssignToRole(Guid userId, string role)
+        {
+            var response = await _authService.AssignUserToRole(role, userId.ToString());
+            return ViewComponent("UserRoles", response.AsT0);
+        }
 
     }
 }

@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace TaskBase.Components.Models
 {
-    public record UserModel(string Id, string UserName, string AvatarUrl, List<string> AvailableRoles);
+    public record UserModel(string Id, string UserName, string AvatarUrl, List<string> UserRoles);
 }
