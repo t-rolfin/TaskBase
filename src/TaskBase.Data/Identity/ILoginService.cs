@@ -18,8 +18,11 @@ namespace TaskBase.Data.Identity
         Task SignInAsync(T user, AuthenticationProperties properties, string authenticationMethod);
         Task<bool> CreateAsync(T user, string password);
         Task<bool> UpdateAsync(T user);
+
         Task<IEnumerable<string>> GetRolesAsync(T user);
         Task<IEnumerable<UserModel>> GetMembersAsync();
         Task<IEnumerable<string>> GetAvailableRoles();
+        Task<UserModel> AssignRoleToUserAsync(string roleName, string userId);
+        Task<UserModel> RemoveUserFromRoleAsync(string roleName, string userId);
     }
 }

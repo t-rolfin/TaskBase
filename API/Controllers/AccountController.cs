@@ -16,6 +16,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using TaskBase.Application.Models;
 using TaskBase.Application.Services;
 using TaskBase.Data.Identity;
 using TaskBase.Data.Storage;
@@ -99,6 +100,22 @@ namespace API.Controllers
         public async Task<IActionResult> Roles()
         {
             return Ok(await _loginService.GetAvailableRoles());
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("Roles/Assign")]
+        public async Task<IActionResult> AssignRoleToUser(AssignRoleModel model)
+        {
+            var result = await _loginService.AssignRoleToUserAsync(model.RoleName, model.UserId);
+            return Ok(result);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("Roles/Fire")]
+        public async Task<IActionResult> FiresUserFromRole(FireRoleModel model)
+        {
+            var result = await _loginService.RemoveUserFromRoleAsync(model.RoleName, model.UserId);
+            return Ok(result);
         }
 
 

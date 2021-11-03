@@ -17,14 +17,17 @@ namespace TaskBase.Data.Identity
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IdentityContext _identityContext;
         public LoginService(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IdentityContext identityContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _identityContext = identityContext;
         }
 
 
@@ -106,6 +109,51 @@ namespace TaskBase.Data.Identity
         public async Task<IEnumerable<string>> GetAvailableRoles()
         {
             return await _roleManager.Roles.Select(x => x.Name).ToListAsync();
+        }
+
+        public async Task<UserModel> AssignRoleToUserAsync(string roleName, string userId)
+        {
+            var user = await _userManager.Users
+                .Where(x => x.Id == userId)
+                .FirstOrDefaultAsync();
+
+            await _userManager.AddToRoleAsync(user, roleName);
+            return await GetUserWithRolesAsync(user);
+        }
+
+        public async Task<UserModel> RemoveUserFromRoleAsync(string roleName, string userId)
+        {
+            var user = await _userManager.Users
+                .Where(x => x.Id == userId)
+                .FirstOrDefaultAsync();
+
+            if(roleName.Equals("Admin"))
+                await CheckIfIsLastAdmin();
+
+            await _userManager.RemoveFromRoleAsync(user, roleName);
+            return await GetUserWithRolesAsync(user);
+        }
+
+
+        async Task<UserModel> GetUserWithRolesAsync(User user)
+        {
+            var userModel = new UserModel(Guid.Parse(user.Id), user.UserName, user.AvatarUrl);
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            foreach (var role in userRoles)
+                userModel.UserRoles.Add(role);
+
+            return userModel;
+        }
+        async Task CheckIfIsLastAdmin()
+        {
+            var adminRole = await _roleManager.Roles.FirstOrDefaultAsync(x => x.Name == "Admin");
+            var numberOfAdmins = _identityContext.UserRoles
+                .Count(x => x.RoleId == adminRole.Id);
+
+            if (numberOfAdmins == 1)
+                throw new LastAdminException(
+                    "The 'Admin' role cannot be removed for this user.");
         }
     }
 }
