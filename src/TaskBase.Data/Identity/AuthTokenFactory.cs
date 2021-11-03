@@ -24,15 +24,26 @@ namespace TaskBase.Data.Identity
             _loginService = loginService;
         }
 
-        public async Task<string> GetToken(Guid UserId)
+        public async Task<string> GetTokenAsync(string userId)
+        {
+            var user = await _loginService.FindUserByIdAsync(userId);
+            return await GenerateTokenAsync(user);
+        }
+
+        public async Task<string> GetTokenByUserNameAsync(string userName)
+        {
+            var user = await _loginService.FindUserByNameAsync(userName);
+            return await GenerateTokenAsync(user);
+        }
+
+        private async Task<string> GenerateTokenAsync(User user)
         {
             var tokenHeader = new JwtHeader(
-                new SigningCredentials(
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])),
-                        SecurityAlgorithms.HmacSha256
-                    ));
+                            new SigningCredentials(
+                                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])),
+                                    SecurityAlgorithms.HmacSha256
+                                ));
 
-            var user = await _loginService.FindUserByIdAsync(UserId.ToString());
 
             var claims = new List<Claim>()
             {

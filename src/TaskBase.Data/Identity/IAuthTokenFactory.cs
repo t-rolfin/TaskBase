@@ -5,6 +5,7 @@ namespace TaskBase.Data.Identity
 {
     public interface IAuthTokenFactory
     {
-        Task<string> GetToken(Guid userId);
+        Task<string> GetTokenAsync(string userId);
+        Task<string> GetTokenByUserNameAsync(string userName);
     }
 }

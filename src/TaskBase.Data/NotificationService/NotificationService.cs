@@ -71,7 +71,7 @@ namespace TaskBase.Data.NotificationService
 
         async Task CreateHubConnection(string userId)
         {
-            var accessToken = await _tokenFactory.GetToken(Guid.Parse(userId));
+            var accessToken = await _tokenFactory.GetTokenAsync(userId);
 
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl(new Uri(_configuration["SignalR:HubUrl"]), x =>

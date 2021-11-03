@@ -54,7 +54,7 @@ namespace API.Controllers
                 var isValidCredentials = await _loginService.ValidateCredentialsAsync(
                     loginModel.UserName, loginModel.Password);
 
-                var access_token = await _tokenFactory.GetToken(Guid.Parse(user.Id));
+                var access_token = await _tokenFactory.GetTokenAsync(user.Id);
                 var response = await GenerateByteArrayResponse(isValidCredentials, access_token);
 
                 return string.IsNullOrWhiteSpace(response)
