@@ -16,11 +16,15 @@ namespace TaskBase.Data.Identity
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-
-        public LoginService(UserManager<User> userManager, SignInManager<User> signInManager)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public LoginService(
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
 
@@ -97,6 +101,11 @@ namespace TaskBase.Data.Identity
             }
 
             return members;
+        }
+
+        public async Task<IEnumerable<string>> GetAvailableRoles()
+        {
+            return await _roleManager.Roles.Select(x => x.Name).ToListAsync();
         }
     }
 }

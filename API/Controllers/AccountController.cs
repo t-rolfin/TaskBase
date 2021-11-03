@@ -89,10 +89,18 @@ namespace API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet("Users")]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> Users()
         {
             return Ok(await _loginService.GetMembersAsync());
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("Roles")]
+        public async Task<IActionResult> Roles()
+        {
+            return Ok(await _loginService.GetAvailableRoles());
+        }
+
 
         async Task<User> GetCurrentUser()
         {

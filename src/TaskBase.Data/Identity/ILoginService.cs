@@ -20,5 +20,6 @@ namespace TaskBase.Data.Identity
         Task<bool> UpdateAsync(T user);
         Task<IEnumerable<string>> GetRolesAsync(T user);
         Task<IEnumerable<UserModel>> GetMembersAsync();
+        Task<IEnumerable<string>> GetAvailableRoles();
     }
 }
