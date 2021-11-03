@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskBase.Application.Models;
 using TaskBase.Application.Services;
 using TaskBase.Data.Exceptions;
 
@@ -80,6 +81,22 @@ namespace TaskBase.Data.Identity
             var user = await FindUserByNameAsync(userName);
             var result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
             return result.Succeeded == true ? true : false;
+        }
+
+        public async Task<IEnumerable<UserModel>> GetMembersAsync()
+        {
+            var members = await _userManager.Users
+                .Select(x => new UserModel(Guid.Parse(x.Id), x.UserName, x.AvatarUrl))
+                .ToListAsync();
+
+            foreach (var member in members)
+            {
+                var user = await FindUserByIdAsync(member.Id.ToString());
+                var userRoles = await GetRolesAsync(user);
+                member.UserRoles = userRoles.ToList();
+            }
+
+            return members;
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskBase.Application.Models;
 
 namespace TaskBase.Data.Identity
 {
@@ -18,5 +19,6 @@ namespace TaskBase.Data.Identity
         Task<bool> CreateAsync(T user, string password);
         Task<bool> UpdateAsync(T user);
         Task<IEnumerable<string>> GetRolesAsync(T user);
+        Task<IEnumerable<UserModel>> GetMembersAsync();
     }
 }

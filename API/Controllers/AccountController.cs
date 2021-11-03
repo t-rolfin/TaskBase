@@ -87,6 +87,12 @@ namespace API.Controllers
             return Created(url, null);
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpGet("Users")]
+        public async Task<IActionResult> GetUsers()
+        {
+            return Ok(await _loginService.GetMembersAsync());
+        }
 
         async Task<User> GetCurrentUser()
         {
