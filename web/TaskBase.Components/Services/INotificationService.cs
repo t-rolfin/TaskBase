@@ -11,5 +11,7 @@ namespace TaskBase.Components.Services
     {
         Task<NotificationsModel> GetNotificationsAsync(Guid userId);
         Task<bool> DeleteNotification(Guid notificationId);
+        Task PushNotification(PushNotificationModel model);
+        Task PageNotification(PageNotificationModel model);
     }
 }

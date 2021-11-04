@@ -21,16 +21,8 @@ namespace TaskBase.Components.Services
 
         public async Task<bool> DeleteNotification(Guid notificationId)
         {
-            try
-            {
-                var response = await _apiClient.DeleteAsync($"/api/notification/{notificationId}");
-                response.EnsureSuccessStatusCode();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            var response = await _apiClient.DeleteAsync($"/api/notification/{notificationId}");
+            return response.IsSuccessStatusCode;
         }
 
         public async Task<NotificationsModel> GetNotificationsAsync(Guid userId)
@@ -49,6 +41,28 @@ namespace TaskBase.Components.Services
                 );
 
             return result;
+        }
+
+        public async Task PushNotification(PushNotificationModel model)
+        {
+            var content = new StringContent(
+                JsonConvert.SerializeObject(model),
+                Encoding.UTF8,
+                "application/json");
+
+            var response = await _apiClient.PostAsync($"/api/notification", content);
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task PageNotification(PageNotificationModel model)
+        {
+            var content = new StringContent(
+                JsonConvert.SerializeObject(model),
+                Encoding.UTF8,
+                "application/json");
+
+            var response = await _apiClient.PostAsync($"/api/notification/page", content);
+            response.EnsureSuccessStatusCode();
         }
     }
 }
