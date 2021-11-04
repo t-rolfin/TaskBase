@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TaskBase.Application.Models;
 using TaskBase.Application.Services;
 using TaskBase.Core.Interfaces;
 using TaskBase.Core.NotificationAggregate;
@@ -16,38 +17,27 @@ using CoreTask = TaskBase.Core.TaskAggregate.Task;
 namespace TaskBase.Application.Commands.CreateTask
 {
     public class CreateTaskCommandHandler :
-        IRequestHandler<CreateTaskCommand, Result<CoreTask>>
+        IRequestHandler<CreateTaskCommand, TaskModelExt>
     {
-        readonly INotificationService _notificationService;
         readonly IIdentityProvider _identityService;
         readonly ILogger<CreateTaskCommandHandler> _logger;
         readonly IUnitOfWork _unitOfWork;
 
-        public CreateTaskCommandHandler(INotificationService notificationService,
+        public CreateTaskCommandHandler(
             IIdentityProvider identityService,
             ILogger<CreateTaskCommandHandler> logger,
             IUnitOfWork unitOfWork)
         {
-            _notificationService = notificationService;
             _identityService = identityService;
             _logger = logger;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result<CoreTask>> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
+        public async Task<TaskModelExt> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
         {
-            User user = default;
-            Notification notification = default;
-
-            bool isPersistentNotification = false;
-
-            if (string.IsNullOrWhiteSpace(request.AssignTo))
-                user = await _unitOfWork.Tasks.GetUserByIdAsync(_identityService.GetCurrentUserIdentity());
-            else
-            {
-                user = await _unitOfWork.Tasks.GetUserByUserNameAsync(request.AssignTo);
-                isPersistentNotification = true;
-            }
+            User user = string.IsNullOrWhiteSpace(request.AssignTo)
+                ? await _unitOfWork.Tasks.GetUserByIdAsync(_identityService.GetCurrentUserIdentity())
+                : await _unitOfWork.Tasks.GetUserByUserNameAsync(request.AssignTo);
 
             var priorityLevel = await _unitOfWork.Tasks.GetPriorityLevelAsync(request.PriorityLevel);
 
@@ -57,54 +47,14 @@ namespace TaskBase.Application.Commands.CreateTask
                 user);
 
             await _unitOfWork.Tasks.AddAsync(task, cancellationToken);
-
-            if(isPersistentNotification)
-                notification = await _unitOfWork.Notifications.AddAsync(
-                    new Notification(
-                        task.Title,
-                        "A new task was assign to you, use refresh button from 'To Do' container to see the task", 
-                        user.Id), cancellationToken
-                    );
-
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation($"---> A new task was created and assign to: \"{user.Id}\"");
+            _logger.LogInformation($"---> A new task was created and assign to: \"{user.FullName}\"");
 
-            await SendNotifications(user, notification?.Id.ToString(), isPersistentNotification, task, cancellationToken);
-
-            return Result.Success(task).With("A new task was successfully created.");
-        }
-
-        async System.Threading.Tasks.Task SendNotifications(User user, string notificationId, bool isPersistentNotification, CoreTask task, CancellationToken cancellationToken)
-        {
-            if (isPersistentNotification)
-            {
-                await _notificationService.PersistentNotification(
-                    Guid.Parse(notificationId),
-                    user.Id,
-                    true,
-                    "A new task was assign to you, use refresh button from 'To Do' container to see the task",
-                    task.Title,
-                    cancellationToken
-                    );
-
-                await _notificationService.Notify(
-                    _identityService.GetCurrentUserIdentity(),
-                    true,
-                    $"The task was successfully assigned to {user.FullName}.",
-                    cancellationToken
-                    );
-
-            }
-            else
-            {
-                await _notificationService.Notify(
-                    user.Id,
-                    true,
-                    "A new task was created.",
-                    cancellationToken
-                    );
-            }
+            return new TaskModelExt(task.Id, user.Id.ToString(),
+                task.Title, task.Description, task.TaskState, task.DueDate,
+                new PriorityLevelModel(task.PriorityLevel.Value, task.PriorityLevel.DisplayName), 
+                new List<NoteModel>());
         }
     }
 }

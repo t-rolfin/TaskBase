@@ -58,19 +58,12 @@ namespace API.Controllers
         [HttpPost]
         [Route("task")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(TaskModel), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(TaskModelExt), (int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(IMetaResult), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateTask(CreateTaskCommand model, CancellationToken cancellationToken)
         {
-            var dueDate = model.DueDate == default ? DateTime.Now : model.DueDate;
-
-            var command = model with { DueDate = dueDate };
-
-            var result = await Mediator.Send(command, cancellationToken);
-
-            return result.IsSuccess
-                ? Created("", result.Value)
-                : BadRequest(result.MetaResult);
+            var result = await Mediator.Send(model, cancellationToken);
+            return Ok(result);
         }
 
         /// <summary>

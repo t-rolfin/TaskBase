@@ -38,6 +38,22 @@ namespace TaskBase.Application.Models
         public List<NoteModel> Notes { get; set; }
     }
 
+    public class TaskModelExt : TaskModel
+    {
+        public TaskModelExt() : base() { }
+
+        public TaskModelExt(Guid id, string assignToId,
+            string title, string description,
+            TaskState taskState, DateTime dueDate,
+            PriorityLevelModel priorityLevel, List<NoteModel> notes = null)
+            : base(id, title, description, taskState, dueDate, priorityLevel, notes)
+        {
+            AssignToId = assignToId;
+        }
+
+        public string AssignToId { get; set; }
+    }
+
     public class PriorityLevelModel
     {
         public PriorityLevelModel() { }

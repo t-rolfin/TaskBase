@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskBase.Application.Models;
 using TaskBase.Core.TaskAggregate;
 using CoreTask = TaskBase.Core.TaskAggregate.Task;
 
@@ -18,5 +19,5 @@ namespace TaskBase.Application.Commands.CreateTask
             DateTime DueDate, 
             string AssignTo, 
             int PriorityLevel
-        ) : IRequest<Result<CoreTask>>;
+        ) : IRequest<TaskModelExt>;
 }
