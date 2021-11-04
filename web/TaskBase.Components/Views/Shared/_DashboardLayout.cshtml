@@ -42,6 +42,8 @@
 
         <main role="main" class="position-relative">
 
+            <input type="hidden" name="__AccessToken" value="@Context.Session.GetString("access_token")" />
+
             @RenderBody()
 
             <div class="w-25 p-2" style="position:absolute; right:0px; bottom:0px; z-index: 999;" id="page-notifications"></div>

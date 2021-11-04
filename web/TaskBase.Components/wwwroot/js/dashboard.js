@@ -1,13 +1,7 @@
-﻿function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
-
-const connection = new signalR.HubConnectionBuilder()
+﻿const connection = new signalR.HubConnectionBuilder()
     .withUrl("https://localhost:5004/notificationhub",
         {
-            accessTokenFactory: () => getCookie("jwt_token"),
+            accessTokenFactory: () => $('input[name="__AccessToken"]').val(),
             transport: signalR.HttpTransportType.LongPolling
         })
     .configureLogging(signalR.LogLevel.Information)
