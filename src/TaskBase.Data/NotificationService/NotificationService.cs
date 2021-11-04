@@ -32,7 +32,7 @@ namespace TaskBase.Data.NotificationService
         {
             try
             {
-                if (bool.TryParse(_configuration["SignalR:IsEnabled"], out bool isEnabled) || isEnabled)
+                if (!bool.TryParse(_configuration["SignalR:IsEnabled"], out bool isEnabled) || !isEnabled)
                     return;
 
                 await CreateHubConnection(userId.ToString());
@@ -49,14 +49,14 @@ namespace TaskBase.Data.NotificationService
             }
         }
 
-        public async Task PersistentNotification(Guid id, Guid userId, bool isSuccess, string description, string title, CancellationToken cancellationToken)
+        public async Task PushNotification(Guid id, string userId, bool isSuccess, string description, string title, CancellationToken cancellationToken)
         {
             try
             {
-                if (bool.TryParse(_configuration["SignalR:IsEnabled"], out bool isEnabled) || isEnabled)
+                if (!bool.TryParse(_configuration["SignalR:IsEnabled"], out bool isEnabled) || !isEnabled)
                     return;
 
-                await CreateHubConnection(userId.ToString());
+                await CreateHubConnection(userId);
                 await _hubConnection.InvokeAsync(
                     "PersistenceNotification",
                     new NotificationModel(id, title, description),

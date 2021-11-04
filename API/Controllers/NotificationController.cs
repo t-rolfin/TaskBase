@@ -10,6 +10,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using TaskBase.Application.Commands.CreateNotification;
 using TaskBase.Application.Commands.RemoveNotification;
+using TaskBase.Application.Commands.SendPageNotification;
+using TaskBase.Application.Commands.SendPushNotification;
 using TaskBase.Application.Models;
 using TaskBase.Application.Queries.GetUserNotifications;
 
@@ -45,6 +47,34 @@ namespace API.Controllers
         public async Task<IActionResult> CreateNotification(CreateNotificationCommand model, CancellationToken cancellationToken)
         {
             return await SendCreateWithMediator(model, cancellationToken);
+        }
+
+        /// <summary>
+        /// Send a push notification.
+        /// </summary>
+        [HttpPost]
+        [Route("notification/push")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> PushNotification(SendPushNotificationCommand model, CancellationToken cancellationToken)
+        {
+            await Mediator.Send(model, cancellationToken);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Send a page notification.
+        /// </summary>
+        [HttpPost]
+        [Route("notification/page")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> PageNotification(SendPageNotificationCommand model, CancellationToken cancellationToken)
+        {
+            await Mediator.Send(model, cancellationToken);
+            return Ok();
         }
 
         /// <summary>
