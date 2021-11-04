@@ -35,6 +35,7 @@ namespace TaskBase.Components.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public int TaskState { get; set; }
+        public string AssignToId { get; set; }
         public DateTime DueDate { get; set; }
 
 

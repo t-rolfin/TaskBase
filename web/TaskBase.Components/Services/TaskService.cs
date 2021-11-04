@@ -10,16 +10,24 @@ using TaskBase.Components.Models;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using OneOf;
+using System.Security.Claims;
 
 namespace TaskBase.Components.Services
 {
     public class TaskService : ITaskService
     {
         private readonly HttpClient _apiClient;
+        private readonly INotificationService _notificationService;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public TaskService(HttpClient httpClient)
+        public TaskService(
+            HttpClient httpClient,
+            INotificationService notificationService,
+            IHttpContextAccessor contextAccessor)
         {
             _apiClient = httpClient;
+            _notificationService = notificationService;
+            _contextAccessor = contextAccessor;
         }
 
         public async Task<OneOf<TaskModel, FailApiResponse>> CreateTask(CreateTaskModel model)
@@ -28,7 +36,25 @@ namespace TaskBase.Components.Services
             var response = await _apiClient.PostAsync("api/Task", content);
 
             if (response.IsSuccessStatusCode)
-                return await GenerateResponse<TaskModel>(response.Content);
+            {
+                var result = await GenerateResponse<TaskModel>(response.Content);
+
+                await _notificationService.PushNotification(new PushNotificationModel(
+                        result.Title,
+                        result.Description,
+                        result.AssignToId,
+                        true
+                    ));
+
+                await _notificationService.PageNotification(new PageNotificationModel(
+                        _contextAccessor.HttpContext.User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier).Value,
+                        $"The task was successfully assigned to {model.AssignTo}.",
+                        true
+                    ));
+
+                return result;
+            }
+                
             else
                 return await GenerateResponse<FailApiResponse>(response.Content);
         }
