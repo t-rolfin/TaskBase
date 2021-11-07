@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,13 @@ namespace API.Filters
 {
     public class GlobalExceptionFilter : IExceptionFilter
     {
+        private readonly ILogger<GlobalExceptionFilter> _log;
+
+        public GlobalExceptionFilter(ILogger<GlobalExceptionFilter> log)
+        {
+            _log = log;
+        }
+
         public void OnException(ExceptionContext context)
         {
             var problemDetails = new SimpleProblemDetails()
@@ -33,6 +41,7 @@ namespace API.Filters
             else
             {
                 problemDetails.Errors.Add(context.Exception.Message);
+                _log.LogWarning(context.Exception.Message);
             }
 
             context.Result = new BadRequestObjectResult(problemDetails);
