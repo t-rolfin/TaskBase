@@ -18,5 +18,6 @@ namespace TaskBase.Core.Interfaces
         Task<User> GetUserByUserNameAsync(string userName);
         Task<CoreTask> GetTaskWithNotesAsync(Guid taskId);
         Task<PriorityLevel> GetPriorityLevelAsync(int value);
+        System.Threading.Tasks.Task CreateUser(User user);
     }
 }

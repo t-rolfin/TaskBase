@@ -117,6 +117,12 @@ namespace TaskBase.Data.Repositories
             return priorityLevel;
         }
 
+        public async Task CreateUser(CoreUser user)
+        {
+            _context.Set<CoreUser>().Add(user);
+            await Task.CompletedTask;
+        }
+
 
         /// <summary>
         /// Check every note from 'entity' if is modified and 
@@ -143,5 +149,6 @@ namespace TaskBase.Data.Repositories
                             break;
                     }
         }
+
     }
 }
