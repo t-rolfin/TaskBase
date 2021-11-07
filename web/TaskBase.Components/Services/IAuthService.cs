@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TaskBase.Components.Models;
+using TaskBase.Components.Views.Shared.Components.Avatar;
 
 namespace TaskBase.Components.Services
 {
@@ -15,5 +16,8 @@ namespace TaskBase.Components.Services
         Task<List<string>> GetAvailableRolesAsync();
         Task<OneOf<UserModel, FailApiResponse>> AssignUserToRole(string roleName, string userId);
         Task<OneOf<UserModel, FailApiResponse>> FireUserToRole(string roleName, string userId);
+
+        Task<OneOf<AvatarModel, FailApiResponse>> ChangeAvatar(byte[] avatarByteArray);
+        Task<AvatarModel> GetAvatarUrlAsync(string userId);
     }
 }

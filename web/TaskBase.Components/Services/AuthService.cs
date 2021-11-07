@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -8,11 +9,13 @@ using OneOf;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using TaskBase.Components.Models;
+using TaskBase.Components.Views.Shared.Components.Avatar;
 
 namespace TaskBase.Components.Services
 {
@@ -21,9 +24,10 @@ namespace TaskBase.Components.Services
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IConfiguration _configuration;
         private readonly HttpClient _apiClient;
+        private readonly IWebHostEnvironment _env;
 
         public AuthService(IConfiguration configuration,
-            HttpClient httpClient, IHttpContextAccessor contextAccessor)
+            HttpClient httpClient, IHttpContextAccessor contextAccessor, IWebHostEnvironment env)
         {
             _configuration = configuration
                 ?? throw new ArgumentNullException(
@@ -32,6 +36,7 @@ namespace TaskBase.Components.Services
             _apiClient = httpClient;
             _apiClient.BaseAddress = new Uri(_configuration["Api:BaseAddress"]);
             _contextAccessor = contextAccessor;
+            _env = env;
         }
 
         public async Task Register(RegistrationModel model)
@@ -145,6 +150,23 @@ namespace TaskBase.Components.Services
                 : await GenerateResponse<FailApiResponse>(response.Content);
         }
 
+
+        public async Task<OneOf<AvatarModel, FailApiResponse>> ChangeAvatar(byte[] avatarByteArray)
+        {
+            var form = new MultipartFormDataContent();
+            form.Add(new ByteArrayContent(avatarByteArray, 0, avatarByteArray.Length), "avatar", "avatar.png");
+            form.Add(new StringContent(_env.WebRootPath), "baseDirectory");
+
+            var response = await _apiClient.PutAsync("api/Avatar", form);
+
+            return await GenerateResponse<AvatarModel>(response.Content);
+        }
+
+        public async Task<AvatarModel> GetAvatarUrlAsync(string userId)
+        {
+            var response = await _apiClient.GetAsync($"api/Avatar/{Guid.Parse(userId)}");
+            return await GenerateResponse<AvatarModel>(response.Content);
+        }
 
         async Task<T> GenerateResponse<T>(HttpContent content)
         {
