@@ -52,8 +52,6 @@ function removeNotification(notificationId) {
 
     var token = $('input[name="__RequestVerificationToken"]').val();
 
-    console.log("here!");
-
     $.post("/Tasks/RemoveNotification", { notificationId, "__RequestVerificationToken": token }, (isSuccess) => {
         if (isSuccess) {
             var notificationCounter = $("#notification-counter").val();
@@ -91,7 +89,7 @@ function RefreshTasks() {
     var toBeReplaced = $("#tasks-container");
     $.get("/Tasks/RefreshTasks", data => {
         toBeReplaced.replaceWith(data);
+        enableDragula();
     });
-
     autoTextarea();
 }

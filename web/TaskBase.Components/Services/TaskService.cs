@@ -35,7 +35,7 @@ namespace TaskBase.Components.Services
             var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
             var response = await _apiClient.PostAsync("api/Task", content);
 
-            if (response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode && !string.IsNullOrWhiteSpace(model.AssignTo))
             {
                 var result = await GenerateResponse<TaskModel>(response.Content);
 
@@ -54,9 +54,14 @@ namespace TaskBase.Components.Services
 
                 return result;
             }
-                
-            else
-                return await GenerateResponse<FailApiResponse>(response.Content);
+
+            await _notificationService.PageNotification(new PageNotificationModel(
+                        _contextAccessor.HttpContext.User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier).Value,
+                        $"The task was successfully created!",
+                        true
+                    ));
+
+            return await GenerateResponse<FailApiResponse>(response.Content);
         }
 
         public async Task DeleteTask(Guid TaskId)
