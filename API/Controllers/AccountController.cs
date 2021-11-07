@@ -16,6 +16,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using TaskBase.Application.Commands.CreateUser;
 using TaskBase.Application.Models;
 using TaskBase.Application.Services;
 using TaskBase.Data.Identity;
@@ -25,7 +26,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountController : BaseController
     {
         private readonly ILoginService<User> _loginService;
         private readonly IAuthTokenFactory _tokenFactory;
@@ -63,7 +64,10 @@ namespace API.Controllers
         public async Task<IActionResult> Register(RegisterModel registerModel)
         {
             var user = new User(registerModel.UserName, registerModel.Email, "");
+            await Mediator.Send(new CreateUserCommand(user.Id, user.UserName));
             var result = await _loginService.CreateAsync(user, registerModel.Password);
+            await _loginService.AssignRoleToUserAsync("Member", user.Id);
+
             return result == true ? Ok() : BadRequest();
         }
 
