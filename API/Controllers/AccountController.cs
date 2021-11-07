@@ -28,19 +28,13 @@ namespace API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly ILoginService<User> _loginService;
-        private readonly IImageStorage _imageStorage;
         private readonly IAuthTokenFactory _tokenFactory;
-        private IWebHostEnvironment _environment;
 
         public AccountController(
             ILoginService<User> loginService,
-            IImageStorage imageStorage,
-            IWebHostEnvironment environment,
             IAuthTokenFactory tokenFactory)
         {
             _loginService = loginService;
-            _imageStorage = imageStorage;
-            _environment = environment;
             _tokenFactory = tokenFactory;
         }
 
@@ -73,20 +67,6 @@ namespace API.Controllers
             return result == true ? Ok() : BadRequest();
         }
 
-        [Authorize]
-        [HttpPost("ChangeAvatar")]
-        public async Task<IActionResult> UploadImage(IFormFile file)
-        {
-            if (file is null)
-                return BadRequest();
-
-            User currentUserData = await GetCurrentUser();
-            var url = await UploadUserAvatar(file, currentUserData.AvatarUrl);
-            currentUserData.AvatarUrl = url;
-            await _loginService.UpdateAsync(currentUserData);
-
-            return Created(url, null);
-        }
 
         [Authorize(Roles = "Admin")]
         [HttpGet("Users")]
@@ -119,26 +99,7 @@ namespace API.Controllers
         }
 
 
-        async Task<User> GetCurrentUser()
-        {
-            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return await _loginService.FindUserByIdAsync(currentUserId);
-        }
-        async Task<string> UploadUserAvatar(IFormFile file, string currentUserAvatar)
-        {
-            var url = string.Empty;
 
-            using var stream = file.OpenReadStream();
-            string fileExtension = Path.GetExtension(file.FileName);
-            var baseDirectory = _environment.ContentRootPath;
-
-            if (string.IsNullOrWhiteSpace(currentUserAvatar))
-                url = await _imageStorage.UploadImage(stream, fileExtension, baseDirectory);
-            else
-                url = await _imageStorage.UpdateImage(currentUserAvatar.Split("\\")[1], stream, fileExtension, baseDirectory);
-
-            return url;
-        }
         Task<string> GenerateByteArrayResponse(bool isValidCredentials, string access_token)
         {
             if (isValidCredentials == true && !string.IsNullOrWhiteSpace(access_token))

@@ -24,4 +24,8 @@
     <ProjectReference Include="..\src\TaskBase.Data\TaskBase.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Avatars\" />
+  </ItemGroup>
+
 </Project>
