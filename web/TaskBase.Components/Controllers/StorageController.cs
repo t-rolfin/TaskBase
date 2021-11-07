@@ -14,29 +14,30 @@ namespace TaskBase.Components.Controllers
     [Route("[controller]/[action]")]
     public class StorageController : Controller
     {
-        //[HttpPost]
-        //public async Task<IActionResult> UploadImage(IFormFile file)  
-        //{
-        //    if (file is null)
-        //        return ViewComponent("Avatar", new AvatarModel() { Value = null });
+        private readonly IAuthService _authService;
 
-        //    var url = string.Empty;
+        public StorageController(IAuthService authService)
+        {
+            _authService = authService;
+        }
 
-        //    using var stream = file.OpenReadStream();
-        //    string fileExtension = Path.GetExtension(file.FileName);
+        [HttpPost]
+        public async Task<IActionResult> UploadImage(IFormFile file)
+        {
+            if (file is null)
+                return ViewComponent("Avatar", new AvatarModel() { Url = null });
 
-        //    var currentUserId = _identityProvider.GetCurrentUserIdentity();
-        //    var currentUserData = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == currentUserId.ToString());
+            var url = string.Empty;
 
-        //    if (string.IsNullOrWhiteSpace(currentUserData.AvatarUrl))
-        //        url = await _imageStorage.UploadImage(stream, fileExtension);
-        //    else
-        //        url = await _imageStorage.UpdateImage(currentUserData.AvatarUrl.Split("\\")[1], stream, fileExtension);
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
 
-        //    currentUserData.AvatarUrl = url;
-        //    await _userManager.UpdateAsync(currentUserData);
+            string fileExtension = Path.GetExtension(file.FileName);
 
-        //    return ViewComponent("Avatar", new AvatarModel() { Value = url });
-        //}
+            var result = await _authService.ChangeAvatar(memoryStream.ToArray());
+            url = result.AsT0.Url;
+
+            return ViewComponent("Avatar", new AvatarModel() { Url = url });
+        }
     }
 }

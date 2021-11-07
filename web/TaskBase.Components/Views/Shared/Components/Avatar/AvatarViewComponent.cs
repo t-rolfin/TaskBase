@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,20 +12,25 @@ namespace TaskBase.Components.Views.Shared.Components.Avatar
 {
     public class AvatarViewComponent : ViewComponent
     {
+        private readonly IAuthService _authService;
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public AvatarViewComponent(IAuthService authService)
         {
-            //var userId = _identityProvider.GetCurrentUserIdentity();
-            //var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == userId.ToString());
+            _authService = authService;
+        }
 
-            //return View(new AvatarModel() { Value = user.AvatarUrl });
+        public async Task<IViewComponentResult> InvokeAsync(AvatarModel avatar)
+        {
+            if(string.IsNullOrWhiteSpace(avatar.Url))
+                avatar = await _authService.GetAvatarUrlAsync(
+                    HttpContext.User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier).Value);
 
-            return await Task.FromResult(View(new AvatarModel() { Value = "" }));
+            return await Task.FromResult(View(avatar));
         }
 
     }
     public class AvatarModel
     {
-        public string Value { get; set; }
+        public string Url { get; set; }
     }
 }

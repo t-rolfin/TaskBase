@@ -6,7 +6,7 @@
         <i class="fas fa-upload position-absolute left-50 top-50 translate"></i>
     </div>
 
-    <img style="width:100%; height:100%;" src="@(string.IsNullOrWhiteSpace(Model.Value) ? "/Avatars/avatar.jpg" : Model.Value)" alt="Avatar" />
+    <img style="width:100%; height:100%;" src="@(string.IsNullOrWhiteSpace(Model.Url) ? "/Avatars/avatar.jpg" : Model.Url)" alt="Avatar" />
 
     <form method="post" action="/Storage/UploadImage" data-ajax="true" asp-antiforgery="true"
             data-ajax-method="post" data-ajax-mode="replace-with" data-ajax-update="#avatar-img"
