@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,45 +15,44 @@ namespace TaskBase.Data.Storage
     {
         string[] allowExtensions = new string[] { ".png", ".jpg" };
 
-        private readonly string UPLOAD_PATH = "Avatars";
-        private IWebHostEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
+        private readonly IConfiguration _configuration;
 
-        public ImageStorage(IWebHostEnvironment environment)
+        public ImageStorage(IWebHostEnvironment environment, IConfiguration configuration)
         {
             _environment = environment;
+            _configuration = configuration;
         }
 
-        public async Task<string> UpdateImage(string oldImageName, Stream stream, string imgExtension, string rootPath = default)
+        public async Task<string> UpdateImage(string oldImageName, Stream stream, string imgExtension)
         {
-            var filePath = Path.Combine(rootPath == default ? _environment.WebRootPath : rootPath, UPLOAD_PATH, oldImageName);
+            var fullFilePath = Path.Combine(_environment.ContentRootPath, _configuration["Avatar:FolderName"], oldImageName);
             var response = string.Empty;
 
-            if (File.Exists(filePath))
+            if (File.Exists(fullFilePath))
             {
-                File.Delete(filePath);
-                response = await UploadImage(stream, imgExtension, rootPath);
+                File.Delete(fullFilePath);
+                response = await UploadImage(stream, imgExtension);
             }
             else
             {
-                response = await UploadImage(stream, imgExtension, rootPath);
+                response = await UploadImage(stream, imgExtension);
             }
 
             return response;
         }
 
-        public async Task<string> UploadImage(Stream stream, string imgExtension, string rootPath = default)
+        public async Task<string> UploadImage(Stream stream, string imgExtension)
         {
-            string fileName = null;
-
             if(allowExtensions.Any(x => x == imgExtension) && stream != null)
             {
-                fileName = Guid.NewGuid().ToString() + imgExtension;
-                string filePath = Path.Combine(rootPath == default ? _environment.WebRootPath : rootPath, UPLOAD_PATH, fileName);
-                using var fileStream = new FileStream(filePath, FileMode.Create);
+                string fileName = Guid.NewGuid().ToString() + imgExtension;
+                string fullFilePath = Path.Combine(_environment.ContentRootPath, _configuration["Avatar:FolderName"], fileName);
+                using var fileStream = new FileStream(fullFilePath, FileMode.Create);
 
                 await stream.CopyToAsync(fileStream);
 
-                return Path.Combine("/", UPLOAD_PATH, fileName);
+                return fileName;
             }
 
             return null;
