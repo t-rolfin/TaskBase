@@ -28,11 +28,11 @@ namespace API.Controllers
     [ApiController]
     public class AccountController : BaseController
     {
-        private readonly ILoginService<User> _loginService;
+        private readonly IIdentityService<User> _loginService;
         private readonly IAuthTokenFactory _tokenFactory;
 
         public AccountController(
-            ILoginService<User> loginService,
+            IIdentityService<User> loginService,
             IAuthTokenFactory tokenFactory)
         {
             _loginService = loginService;

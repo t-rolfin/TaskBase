@@ -12,7 +12,7 @@ using TaskBase.Data.Exceptions;
 
 namespace TaskBase.Data.Identity
 {
-    public class LoginService : ILoginService<User>
+    public class LoginService : IIdentityService<User>
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;

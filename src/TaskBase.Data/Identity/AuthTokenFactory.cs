@@ -15,10 +15,10 @@ namespace TaskBase.Data.Identity
     public class AuthTokenFactory : IAuthTokenFactory
     {
         readonly IConfiguration _configuration;
-        readonly ILoginService<User> _loginService;
+        readonly IIdentityService<User> _loginService;
 
         public AuthTokenFactory(IConfiguration configuration,
-            ILoginService<User> loginService)
+            IIdentityService<User> loginService)
         {
             _configuration = configuration;
             _loginService = loginService;

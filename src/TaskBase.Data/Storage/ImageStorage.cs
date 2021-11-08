@@ -11,7 +11,7 @@ using TaskBase.Data.Identity;
 
 namespace TaskBase.Data.Storage
 {
-    public class ImageStorage : IImageStorage
+    public class ImageStorage : IStorage
     {
         string[] allowExtensions = new string[] { ".png", ".jpg" };
 

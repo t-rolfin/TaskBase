@@ -9,7 +9,7 @@ using TaskBase.Application.Models;
 
 namespace TaskBase.Data.Identity
 {
-    public interface ILoginService<T>
+    public interface IIdentityService<T>
     {
         Task<bool> ValidateCredentialsAsync(string userName, string password);
         Task<T> FindUserByNameAsync(string userName);

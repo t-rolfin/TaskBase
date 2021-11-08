@@ -18,13 +18,13 @@ namespace API.Controllers
     public class AvatarController : BaseController
     {
         private readonly IWebHostEnvironment _env;
-        private readonly ILoginService<User> _loginService;
-        private readonly IImageStorage _imageStorage;
+        private readonly IIdentityService<User> _loginService;
+        private readonly IStorage _imageStorage;
 
         public AvatarController(
             IWebHostEnvironment env,
-            ILoginService<User> loginService,
-            IImageStorage imageStorage)
+            IIdentityService<User> loginService,
+            IStorage imageStorage)
         {
             _env = env;
             _loginService = loginService;
