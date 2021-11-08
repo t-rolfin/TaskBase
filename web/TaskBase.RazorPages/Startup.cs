@@ -34,6 +34,7 @@ namespace TaskBase.RazorPages
                 .AddDataAnnotationsLocalization();
 
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<INotificationSender, NotificationSender>();
             services.AddScoped<AttachTokenDelegateHandler>();
             services.AddServices(Configuration);
 

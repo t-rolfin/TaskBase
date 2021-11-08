@@ -8,16 +8,16 @@ namespace TaskBase.Components.Services
 {
     public interface IAuthService
     {
-        Task<OneOf<UserProfileModel, FailApiResponse>> Login(LogInModel model);
+        Task<OneOf<JwtToken, FailApiResponse>> Login(LogInModel model);
         Task LogOut();
         Task Register(RegistrationModel model);
 
         Task<List<UserModel>> GetMembersAsync();
         Task<List<string>> GetAvailableRolesAsync();
-        Task<OneOf<UserModel, FailApiResponse>> AssignUserToRole(string roleName, string userId);
-        Task<OneOf<UserModel, FailApiResponse>> FireUserToRole(string roleName, string userId);
+        Task<UserModel> AssignUserToRole(string roleName, string userId);
+        Task<UserModel> FireUserToRole(string roleName, string userId);
 
-        Task<OneOf<AvatarModel, FailApiResponse>> ChangeAvatar(byte[] avatarByteArray);
+        Task<AvatarModel> ChangeAvatar(byte[] avatarByteArray);
         Task<AvatarModel> GetAvatarUrlAsync(string userId);
     }
 }

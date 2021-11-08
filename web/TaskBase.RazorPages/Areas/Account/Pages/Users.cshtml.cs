@@ -40,13 +40,13 @@ namespace TaskBase.RazorPages.Areas.Account.Pages
         public async Task<IActionResult> OnPostRemoveFromRole(Guid userId, string role)
         {
             var response = await _authService.FireUserToRole(role, userId.ToString());
-            return ViewComponent("UserRoles", response.AsT0);
+            return ViewComponent("UserRoles", response);
         }
 
         public async Task<IActionResult> OnPostAssignToRole(Guid userId, string role)
         {
             var response = await _authService.AssignUserToRole(role, userId.ToString());
-            return ViewComponent("UserRoles", response.AsT0);
+            return ViewComponent("UserRoles", response);
         }
 
     }

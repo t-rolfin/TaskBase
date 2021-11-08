@@ -12,12 +12,14 @@ namespace TaskBase.Components.Services
 {
     public class NoteService : INoteService
     {
+        private readonly INotificationSender _notificationSender;
         private readonly IConfiguration _configuration;
         private readonly HttpClient _apiClient;
 
         public NoteService(
             IConfiguration configuration,
-            HttpClient httpClient)
+            HttpClient httpClient,
+            INotificationSender notificationSender)
         {
             _configuration = configuration
                 ?? throw new ArgumentNullException(
@@ -25,6 +27,7 @@ namespace TaskBase.Components.Services
 
             _apiClient = httpClient;
             _apiClient.BaseAddress = new Uri(_configuration["Api:BaseAddress"]);
+            _notificationSender = notificationSender;
         }
 
         public async Task<NoteModel> CreateNoteAsync(Guid taskId, string content)
@@ -39,13 +42,20 @@ namespace TaskBase.Components.Services
 
             var response = await _apiClient.PostAsync("/api/note", requestContent);
 
-            return await HttpResponseParser.Parse<NoteModel>(response.Content);
+            _ = _notificationSender.GetResponse(response, out NoteModel result)
+                    .CreatePageNotification("The note was successfully created")
+                    .SendAsync();
+
+            return result;
         }
 
         public async Task DeleteNote(Guid taskId, Guid noteId)
         {
+            var response = await _apiClient.DeleteAsync($"/api/note/{taskId}/{noteId}");
 
-            await _apiClient.DeleteAsync($"/api/note/{taskId}/{noteId}");
+            _ = (await _notificationSender.GetResponseAsync(response))
+                .CreatePageNotification("The note was deleted.")
+                .SendAsync();
         }
 
         public async Task<IEnumerable<NoteModel>> GetNotesByTaskAsync(Guid taskId)
@@ -53,7 +63,7 @@ namespace TaskBase.Components.Services
             var response = await _apiClient.GetAsync($"/api/notes/{taskId}");
 
             if (response.IsSuccessStatusCode)
-                return await HttpResponseParser.Parse<List<NoteModel>>(response.Content);
+                return await response.MapTo<List<NoteModel>>();
             else
                 return new List<NoteModel>();
         }
@@ -66,7 +76,11 @@ namespace TaskBase.Components.Services
                 Encoding.UTF8,
                 "application/json");
 
-            await _apiClient.PutAsync("/api/note", requestContent);
+            var response = await _apiClient.PutAsync("/api/note", requestContent);
+
+            _ = (await _notificationSender.GetResponseAsync(response))
+                .CreatePageNotification("Note was edited.")
+                .SendAsync();
         }
     }
 }

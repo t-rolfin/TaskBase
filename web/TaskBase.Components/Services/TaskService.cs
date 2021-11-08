@@ -11,23 +11,21 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using OneOf;
 using System.Security.Claims;
+using TaskBase.Components.Utils;
 
 namespace TaskBase.Components.Services
 {
     public class TaskService : ITaskService
     {
         private readonly HttpClient _apiClient;
-        private readonly INotificationService _notificationService;
-        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly INotificationSender _notificationSender;
 
         public TaskService(
             HttpClient httpClient,
-            INotificationService notificationService,
-            IHttpContextAccessor contextAccessor)
+            INotificationSender notificationSender)
         {
             _apiClient = httpClient;
-            _notificationService = notificationService;
-            _contextAccessor = contextAccessor;
+            _notificationSender = notificationSender;
         }
 
         public async Task<OneOf<TaskModel, FailApiResponse>> CreateTask(CreateTaskModel model)
@@ -35,33 +33,23 @@ namespace TaskBase.Components.Services
             var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
             var response = await _apiClient.PostAsync("api/Task", content);
 
-            if (response.IsSuccessStatusCode && !string.IsNullOrWhiteSpace(model.AssignTo))
-            {
-                var result = await GenerateResponse<TaskModel>(response.Content);
+            var successPageNotificationMessage = string.IsNullOrWhiteSpace(model.AssignTo)
+                        ? "The task was successfully created"
+                        : "The task was assigned.";
 
-                await _notificationService.PushNotification(new PushNotificationModel(
-                        result.Title,
-                        result.Description,
-                        result.AssignToId,
-                        true
-                    ));
+            await _notificationSender.GetResponse(response, out OneOf<TaskModel, FailApiResponse> result)
+                .CreatePushAndPageNotification(
+                    successPageNotificationMessage,
+                    "New Task!",
+                    "A new task was assign to you, please refresh the page to see the task.",
+                    string.IsNullOrWhiteSpace(model.AssignTo) 
+                        ? ""
+                        : result.IsT0
+                            ? result.AsT0.AssignToId
+                            : ""
+                ).SendAsync();
 
-                await _notificationService.PageNotification(new PageNotificationModel(
-                        _contextAccessor.HttpContext.User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier).Value,
-                        $"The task was successfully assigned to {model.AssignTo}.",
-                        true
-                    ));
-
-                return result;
-            }
-
-            await _notificationService.PageNotification(new PageNotificationModel(
-                        _contextAccessor.HttpContext.User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier).Value,
-                        $"The task was successfully created!",
-                        true
-                    ));
-
-            return await GenerateResponse<FailApiResponse>(response.Content);
+            return result;
         }
 
         public async Task DeleteTask(Guid TaskId)

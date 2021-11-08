@@ -35,7 +35,7 @@ namespace TaskBase.Components.Controllers
             string fileExtension = Path.GetExtension(file.FileName);
 
             var result = await _authService.ChangeAvatar(memoryStream.ToArray());
-            url = result.AsT0.Url;
+            url = result.Url;
 
             return ViewComponent("Avatar", new AvatarModel() { Url = url });
         }

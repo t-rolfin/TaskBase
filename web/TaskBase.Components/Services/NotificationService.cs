@@ -32,8 +32,7 @@ namespace TaskBase.Components.Services
             if (!response.IsSuccessStatusCode)
                 return new NotificationsModel(new List<NotificationModel>(), 0);
 
-            var notifications = await HttpResponseParser
-                .Parse<IEnumerable<NotificationModel>>(response.Content);
+            var notifications = await response.MapTo<IEnumerable<NotificationModel>>();
 
             var result = new NotificationsModel(
                     notifications.ToList(),
@@ -50,7 +49,7 @@ namespace TaskBase.Components.Services
                 Encoding.UTF8,
                 "application/json");
 
-            var response = await _apiClient.PostAsync($"/api/notification", content);
+            var response = await _apiClient.PostAsync($"/api/notification/push", content);
             response.EnsureSuccessStatusCode();
         }
 
