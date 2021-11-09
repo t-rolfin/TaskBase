@@ -67,8 +67,9 @@ namespace API.Controllers
             await Mediator.Send(new CreateUserCommand(user.Id, user.UserName));
             var result = await _loginService.CreateAsync(user, registerModel.Password);
             await _loginService.AssignRoleToUserAsync("Member", user.Id);
+            var token = await _tokenFactory.GetTokenByUserNameAsync(user.UserName);
 
-            return result == true ? Ok() : BadRequest();
+            return result == true ? Ok(new JwtToken(token, "bearer")) : BadRequest();
         }
 
 
@@ -108,12 +109,7 @@ namespace API.Controllers
         {
             if (isValidCredentials == true && !string.IsNullOrWhiteSpace(access_token))
             {
-                var responseObject = new
-                {
-                    access_token,
-                    token_type = "Bearer"
-                };
-
+                var responseObject = new JwtToken(access_token, "bearer");
                 var serializedResponse = JsonConvert.SerializeObject(responseObject);
 
                 return Task.FromResult(serializedResponse);
