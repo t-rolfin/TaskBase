@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -34,6 +35,10 @@ namespace TaskBase.Data.Identity
         public async Task<bool> CreateAsync(User user, string password)
         {
             var result = await _userManager.CreateAsync(user, password);
+
+            if (result.Succeeded == false)
+                throw new DuplicateUserNameException(result.Errors.First().Description);
+
             return result.Succeeded == true ? true : false;
         }
 
