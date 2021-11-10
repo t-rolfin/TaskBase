@@ -42,3 +42,12 @@ msgstr "Utilizatori"
 
 msgid "New"
 msgstr "Creează"
+
+msgid "The Title field is required."
+msgstr "Câmpul 'Titlu' trebuie completat."
+
+msgid "The Description field is required."
+msgstr "Câmpul 'Descriere' trebuie completat."
+
+msgid "The task was successfully created"
+msgstr "Sarcina a fost adâugată cu succes."

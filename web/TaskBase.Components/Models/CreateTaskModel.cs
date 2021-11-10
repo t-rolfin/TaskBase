@@ -9,14 +9,21 @@ namespace TaskBase.Components.Models
 {
     public class CreateTaskModel
     {
-        [Required]
+        [Required(ErrorMessage = "The Title field is required.")]
+        [Display(Name = "Title")]
         public string Title { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "The Description field is required.")]
+        [Display(Name = "Description")]
         public string Description { get; set; }
 
+        [Display(Name = "Due Date")]
         public DateTime DueDate { get; set; }
+
+        [Display(Name = "Assign To")]
         public string AssignTo { get; set; }
+
+        [Display(Name = "PriorityLevel")]
         public int PriorityLevel { get; set; }
 
     }
