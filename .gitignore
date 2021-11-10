@@ -14,6 +14,7 @@ web/TaskBase.Components/wwwroot/lib/*
 web/TaskBase.RazorPages/wwwroot/Avatars/*
 web/TaskBase.RazorPages/wwwroot/lib/*
 web/TaskBase.MVC/wwwroot/lib/*
+API/Avatars/*
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
