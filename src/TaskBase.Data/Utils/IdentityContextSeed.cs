@@ -32,8 +32,8 @@ namespace TaskBase.Data.Utils
             {
                 logger.LogInformation("Seeding roles...");
 
-                var memberRole = new IdentityRole("Member");
-                var adminRole = new IdentityRole("Admin");
+                var memberRole = new IdentityRole("Member") { NormalizedName = "MEMBER" };
+                var adminRole = new IdentityRole("Admin") { NormalizedName = "ADMIN" };
 
                 context.Roles.AddRange(memberRole, adminRole);
                 await context.SaveChangesAsync();
@@ -45,7 +45,7 @@ namespace TaskBase.Data.Utils
         {
             if (!context.Users.Any())
             {
-                logger.LogInformation("Seeding roles...");
+                logger.LogInformation("Seeding admin account...");
 
                 string userId = Guid.NewGuid().ToString();
 
@@ -55,7 +55,9 @@ namespace TaskBase.Data.Utils
                     Email = "admin@taskbase.com",
                     PasswordHash = "admin",
                     UserName = "admin",
-                    AvatarUrl = ""
+                    AvatarUrl = "",
+                    NormalizedEmail = "ADMIN@TASKBASE.COM",
+                    NormalizedUserName = "ADMIN"
                 };
 
                 user.PasswordHash = _passwordHasher.HashPassword(user, user.PasswordHash);
