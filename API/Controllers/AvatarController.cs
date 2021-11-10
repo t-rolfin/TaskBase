@@ -49,7 +49,7 @@ namespace API.Controllers
 
             User currentUserData = await GetCurrentUser();
             var url = await UploadUserAvatar(avatar, currentUserData.AvatarUrl);
-            currentUserData.AvatarUrl = url;
+            currentUserData.AvatarUrl = $"https://localhost:5001{url}";
             await _loginService.UpdateAsync(currentUserData);
 
             return Created("", new { url = $"https://localhost:5001{url}" });
@@ -60,7 +60,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetAvatarUrl(Guid userId)
         {
             var user = await _loginService.FindUserByIdAsync(userId.ToString());
-            return Ok(new { url = $"https://localhost:5001{user.AvatarUrl}" });
+            return Ok(new { url = user.AvatarUrl });
         }
 
 
@@ -79,7 +79,7 @@ namespace API.Controllers
             if (string.IsNullOrWhiteSpace(currentUserAvatar))
                 imgName = await _imageStorage.UploadImage(stream, fileExtension);
             else
-                imgName = await _imageStorage.UpdateImage(currentUserAvatar.Split("\\")[1], stream, fileExtension);
+                imgName = await _imageStorage.UpdateImage(currentUserAvatar.Split("\\").Last(), stream, fileExtension);
 
             return $"/api/Avatar/{ imgName }";
         }
